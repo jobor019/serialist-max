@@ -9,7 +9,8 @@ namespace parsing {
 
 
 bool is_empty_like(const c74::min::atom& atm) {
-    return (atm.type() == c74::min::message_type::symbol_argument && static_cast<std::string>(atm).empty())
+    return (atm.type() == c74::min::message_type::no_argument
+            || atm.type() == c74::min::message_type::symbol_argument && static_cast<std::string>(atm).empty())
            || (atm.type() == c74::min::message_type::int_argument && static_cast<int>(atm) == 0)
            || (atm.type() == c74::min::message_type::float_argument && std::abs(static_cast<float>(atm)) < 1e-6);
 }

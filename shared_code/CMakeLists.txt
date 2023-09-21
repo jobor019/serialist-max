@@ -1,5 +1,6 @@
 add_library(sharedCode
         INTERFACE
+        max_timepoint.h
         parsing.h
         result.h)
 
