@@ -12,6 +12,10 @@ public:
 
     Result(const Error& error) : m_value(std::nullopt), m_error(error) {}
 
+    operator bool() const noexcept {
+        return is_ok();
+    }
+
 
     bool is_ok() const noexcept {
         return m_value.has_value();
@@ -34,7 +38,7 @@ public:
         if (!m_error)
             throw std::runtime_error("Result is not an error");
 
-        return m_error.value();
+        return *m_error;
     }
 
 

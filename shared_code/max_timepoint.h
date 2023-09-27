@@ -47,8 +47,8 @@ public:
     }
 
 
-    explicit operator TimePoint() const {
-        return TimePoint(m_ticks, m_tempo
+    TimePoint as_time_point() const {
+        return TimePoint(m_ticks / 480.0, m_tempo
                          , static_cast<double>(m_beats)
                          , Meter(static_cast<int>(m_meter_num), static_cast<int>(m_meter_denom)));
     }
