@@ -15,5 +15,6 @@ set(C74_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/externals)
 
 message(STATUS ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 
-add_subdirectory(ser.oscillator)
-add_subdirectory(ser.randpulse)
+#add_subdirectory(ser.oscillator)
+#add_subdirectory(ser.randpulse)
+add_subdirectory(ser.allocator)

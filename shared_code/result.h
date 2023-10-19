@@ -12,24 +12,18 @@ public:
 
     Result(const Error& error) : m_value(std::nullopt), m_error(error) {}
 
-    operator bool() const noexcept {
+    explicit operator bool() const noexcept {
         return is_ok();
+    }
+
+    T operator*() const {
+        return ok();
     }
 
 
     bool is_ok() const noexcept {
         return m_value.has_value();
     }
-
-
-//    T unwrap() const {
-//        if (m_is_ok) {
-//            return m_value;
-//        } else {
-//            throw std::runtime_error("Unwrapping an error is not supported");
-//        }
-//    }
-
 
     /**
      * @throws std::runtime_error
