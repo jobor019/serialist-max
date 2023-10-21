@@ -3,7 +3,25 @@
 #include <variant>
 #include <string>
 
-using Error = std::string;
+
+class Error {
+public:
+    explicit Error(const std::string& msg) : m_msg(msg) {}
+
+    
+
+    const std::string& message() const {
+        return m_msg;
+    }
+
+
+private:
+    std::string m_msg;
+
+};
+
+
+// ==============================================================================================
 
 template<typename T>
 class Result {
@@ -28,9 +46,9 @@ public:
     /**
      * @throws std::runtime_error
      */
-    Error err() const {
+    const Error& err() const {
         if (!m_error)
-            throw std::runtime_error("Result is not an error");
+            throw std::logic_error("Result is not an error");
 
         return *m_error;
     }
@@ -41,7 +59,7 @@ public:
      */
     T ok() const {
         if (!m_value)
-            throw std::runtime_error("Result is an error");
+            throw std::logic_error("Result is an error");
         return *m_value;
     }
 

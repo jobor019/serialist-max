@@ -104,10 +104,10 @@ Result<c74::min::atom> trigger2atom(const Vec<Trigger>& trigger) {
 
 Result<c74::min::atoms> triggers2atoms(const Voices<Trigger>& triggers) {
     Vec<c74::min::atom> result = Vec<c74::min::atom>::allocated(triggers.size());
-    for (std::size_t i = 0; i < triggers.size(); ++i) {
-        auto atm = trigger2atom(triggers[i]);
+    for (const auto & trigger : triggers) {
+        auto atm = trigger2atom(trigger);
         if (atm.is_ok()) {
-            result[i] = *atm;
+            result.append(*atm);
         } else {
             return atm.err();
         }

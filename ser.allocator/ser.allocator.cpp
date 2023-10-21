@@ -2,7 +2,6 @@
 #include "c74_min.h"
 #include "core/param/parameter_policy.h"
 #include "core/generatives/unit_pulse.h"
-#include "core/algo/pitch/notes.h"
 #include "core/collections/vec.h"
 #include "core/collections/voices.h"
 #include "core/generatives/sequence.h"
@@ -134,6 +133,8 @@ public:
 
     message<> number{this, "number", "Function depends on inlet", handle_input};
     message<> list{this, "list", "Function depends on inlet", handle_input};
+    // needed for messages beginning with 'null'
+    message<> anything{this, "anything", "Function depends on inlet", handle_input};
 
 
 
@@ -188,7 +189,7 @@ private:
             m_allocator.flush_on_change.set_value(*v);
             return true;
         } else {
-            cerr << v.err() << endl;
+            cerr << v.err().message() << endl;
             return false;
         }
     }
@@ -200,7 +201,7 @@ private:
             m_allocator.pitch_classes.set_values(pcs);
             return true;
         } else {
-            cerr << v.err() << endl;
+            cerr << v.err().message() << endl;
             return false;
         }
     }
@@ -211,7 +212,7 @@ private:
             m_allocator.pitch_pivot.set_value(static_cast<unsigned int>(*v));
             return true;
         } else {
-            cerr << v.err() << endl;
+            cerr << v.err().message() << endl;
             return false;
         }
     }
@@ -222,7 +223,7 @@ private:
             m_allocator.spectrum_distribution.set_values(Voices<double>::transposed(*v));
             return true;
         } else {
-            cerr << v.err() << endl;
+            cerr << v.err().message() << endl;
             return false;
         }
     }
@@ -233,7 +234,7 @@ private:
             m_allocator.enabled.set_value(*v);
             return true;
         } else {
-            cerr << v.err() << endl;
+            cerr << v.err().message() << endl;
             return false;
         }
     }
@@ -244,7 +245,7 @@ private:
             m_allocator.num_voices.set_value(static_cast<std::size_t >(*v));
             return true;
         } else {
-            cerr << v.err() << endl;
+            cerr << v.err().message() << endl;
             return false;
         }
     }
@@ -254,4 +255,4 @@ private:
 
 };
 
-MIN_EXTERNAL(allocator);
+MIN_EXTERNAL(allocator)
