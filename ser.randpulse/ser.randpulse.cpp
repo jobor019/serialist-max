@@ -133,8 +133,8 @@ public:
     };
 
 
-    message<> list{this, "list", "my docstring for list arg", handle_input};
-    message<> number{this, "number", "mydocstring for float arg", handle_input};
+    message<> list{this, "list", "Function depends on inlet", handle_input};
+    message<> number{this, "number", "Function depends on inlet", handle_input};
 
 private:
     void on_callback() {

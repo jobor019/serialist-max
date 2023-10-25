@@ -1,128 +1,227 @@
 #include "c74_min.h"
-#include "oscillator.h"
-#include "unit_pulse.h"
+#include "core/generatives/oscillator.h"
 #include "parsing.h"
 #include "max_timepoint.h"
-#include "sequence.h"
+
 
 using namespace c74::min;
 
-class OscillatorWrapper {
-public:
-    ParameterHandler m_parameter_handler;
-
-    // TODO: Proper, bang-based strategy for trigger
-    UnitPulse m_trigger{"", m_parameter_handler};
-    Sequence<Facet, Oscillator::Type> m_type{"", m_parameter_handler, Oscillator::Type::phasor};
-    Sequence<Facet, float> m_freq{"", m_parameter_handler, 0.25f};
-    Sequence<Facet, float> m_mul{"", m_parameter_handler, 1.0f};
-    Sequence<Facet, float> m_add{"", m_parameter_handler, 0.0f};
-    Sequence<Facet, float> m_duty{"", m_parameter_handler, 0.5f};
-    Sequence<Facet, float> m_curve{"", m_parameter_handler, 1.0f};
-    Sequence<Facet, bool> m_stepped{"", m_parameter_handler, false};
-    Sequence<Facet, bool> m_enabled{"", m_parameter_handler, true};
-    Variable<Facet, int> m_num_voices{"", m_parameter_handler, 1};
-
-    Oscillator m_oscillator{"", m_parameter_handler, &m_trigger, &m_type, &m_freq, &m_add, &m_mul
-                            , &m_duty, &m_curve, &m_enabled, &m_stepped, &m_num_voices};
-};
 
 class oscillator : public object<oscillator> {
+private:
+    // MEMBER VARIABLES (position enforced by c74::min architecture)
+    OscillatorWrapper<double> m_oscillator;
+
 public:
     MIN_DESCRIPTION{"Multi-channel oscillator"};
     MIN_TAGS{"utilities"};
     MIN_AUTHOR{"Borg"};
     MIN_RELATED{"ser.generator, ser.pulsator"};
 
-    inlet<> trigger_inlet{this, "(any) control messages"};
-    inlet<> freq_inlet{this, "(float/list) freq"};
-    inlet<> mul_inlet{this, "(float/list) mul"};
-    inlet<> add_inlet{this, "(float/list) add"};
+    inlet<> inlet_main{this, "(any) control messages"};
+    inlet<> inlet_freq{this, "(float/list) freq"};
+    inlet<> inlet_mul{this, "(float/list) mul"};
+    inlet<> inlet_add{this, "(float/list) add"};
 
-    outlet<> outlet{this, "(float/list) oscillator output"};
+    outlet<> outlet_main{this, "(float/list) oscillator output"};
+    outlet<> dumpout{this, "(any) dumpout"};
+
+
+    attribute<std::vector<int>> type{this, "type"
+                                     , {0}
+                                     , title{"Set oscillator type"}
+                                     , description{""}
+                                     , setter{MIN_FUNCTION {
+                if (set_type(args))
+                    return args;
+                return type;
+            }}
+    };
+
+
+    attribute<std::vector<double>> freq{this, "freq"
+                                        , {0.1}
+                                        , title{"Set frequency"}
+                                        , description{""}
+                                        , setter{MIN_FUNCTION {
+                if (set_freq(args))
+                    return args;
+                return freq;
+            }}
+    };
+
+    attribute<std::vector<double>> mul{this, "mul"
+                                       , {1.0}
+                                       , title{"Set multiplier"}
+                                       , description{""}
+                                       , setter{MIN_FUNCTION {
+                if (set_mul(args))
+                    return args;
+                return mul;
+            }}
+    };
+
+    attribute<std::vector<double>> add{this, "add"
+                                       , {0.0}
+                                       , title{"Set additive"}
+                                       , description{""}
+                                       , setter{MIN_FUNCTION {
+                if (set_add(args))
+                    return args;
+                return add;
+            }}
+    };
+
+    attribute<std::vector<double>> duty{this, "duty"
+                                        , {0.5}
+                                        , title{"Set duty"}
+                                        , description{""}
+                                        , setter{MIN_FUNCTION {
+                if (set_duty(args))
+                    return args;
+                return duty;
+            }}
+    };
+
+    attribute<std::vector<double>> curve{this, "curve"
+                                         , {1.0}
+                                         , title{"Set curve"}
+                                         , description{""}
+                                         , setter{MIN_FUNCTION {
+                if (set_curve(args))
+                    return args;
+                return curve;
+            }}
+    };
+
+    attribute<std::vector<double>> tau{this, "tau"
+                                       , {0.0}
+                                       , title{"Set tau"}
+                                       , description{""}
+                                       , setter{MIN_FUNCTION {
+                if (set_tau(args))
+                    return args;
+                return tau;
+            }}
+    };
+
+
+    attribute<std::vector<double>> phase{this, "phase"
+                                         , {0.0}
+                                         , title{"Set phase"}
+                                         , description{""}
+                                         , setter{MIN_FUNCTION {
+                if (set_phase(args))
+                    return args;
+                return phase;
+            }}
+    };
+
+    attribute<bool> stepped{this, "stepped"
+                            , true
+                            , title{""}
+                            , setter{MIN_FUNCTION {
+                if (set_stepped(args))
+                    return args;
+                return stepped;
+            }}
+    };
+
+    attribute<bool> enabled{this, "enabled"
+                            , true
+                            , title{""}
+                            , setter{MIN_FUNCTION {
+                if (set_enabled(args))
+                    return args;
+                return enabled;
+            }}
+    };
+
+
+    attribute<int> voices{this, "voices"
+                          , 0
+                          , title{""}
+                          , setter{MIN_FUNCTION {
+                if (set_num_voices(args))
+                    return args;
+                return voices;
+            }}
+    };
 
     attribute<symbol> clock{this, "clock", "", description{"Set clock source"}};
 
+
     c74::min::function handle_input = MIN_FUNCTION {
-        switch (inlet) {
-            case 0:
-                process(args);
-                break;
-            case 1:
-                set_freq(args);
-                break;
-            case 2:
-                set_mul(args);
-                break;
-            case 3:
-                set_add(args);
-                break;
-            default:
-                cerr << "invalid inlet" << endl;
+        if (inlet == 3) {
+            set_add(args);
+        } else if (inlet == 2) {
+            set_mul(args);
+        } else if (inlet == 1) {
+            set_freq(args);
+        } else {
+            process(args);
         }
         return {};
     };
 
-
-    message<> type{this, "type", "(int/list) my docstring for type arg", MIN_FUNCTION {
-        set_type(args);
+    message<> period{this, "period", "In first inlet: set period", setter{MIN_FUNCTION {
+        if (inlet != 0) {
+            cerr << "invalid message \"period\" for inlet" << inlet << endl;
+            return {};
+        }
+        set_period(args);
         return {};
-    }};
-    message<> freq{this, "freq", "(float/list) my docstring for freq arg", MIN_FUNCTION {
+    }}};
+
+    message<> stepsize{this, "stepsize", "In first inlet: alias for \"freq\"", setter{MIN_FUNCTION {
+        if (inlet != 0) {
+            cerr << "invalid message \"stepsize\" for inlet" << inlet << endl;
+            return {};
+        }
         set_freq(args);
         return {};
-    }};
-    message<> mul{this, "mul", "(float/list) my docstring for mul arg", MIN_FUNCTION {
-        set_mul(args);
-        return {};
-    }};
-    message<> add{this, "add", "(float/list) my docstring for add arg", MIN_FUNCTION {
-        set_add(args);
-        return {};
-    }};
-    message<> duty{this, "duty", "(float/list) my docstring for duty arg", MIN_FUNCTION {
-        set_duty(args);
-        return {};
-    }};
-    message<> curve{this, "curve", "(float/list) my docstring for curve arg", MIN_FUNCTION {
-        set_curve(args);
-        return {};
-    }};
-    message<> stepped{this, "stepped", "(bool/list) my docstring for stepped arg", MIN_FUNCTION {
-        set_stepped(args);
-        return {};
-    }};
-    message<> enabled{this, "enabled", "(bool/list) my docstring for enabled arg", MIN_FUNCTION {
-        set_enabled(args);
-        return {};
-    }};
-    message<> voices{this, "voices", "(int) my docstring for num_voices arg", MIN_FUNCTION {
-        set_num_voices(args);
-        return {};
-    }};
+    }}};
 
-    message<> bang{this, "bang", "my docstring for bang arg", handle_input};
-    message<> list{this, "list", "my docstring for list arg", handle_input};
+    message<> numsteps{this, "numsteps", "In first inlet: alias for \"period\"", setter{MIN_FUNCTION {
+        if (inlet != 0) {
+            cerr << "invalid message \"numsteps\" for inlet" << inlet << endl;
+            return {};
+        }
+        set_period(args);
+        return {};
+    }}};
+
+    message<> list{this, "list", "Function depends on inlet", handle_input};
+    message<> number{this, "number", "Function depends on inlet", handle_input};
+    message<> bang{this, "bang", "In first inlet: trigger output for all voices", handle_input};
 
 
 private:
     void process(const atoms& args) {
-        (void) args;
-        // TODO: use `args` to set pulsator values
+        if (args.empty()) {
+            // bang received: trigger all voices
+            m_oscillator.trigger.set_values(Voices<Trigger>::singular(Trigger::pulse_on));
+
+        } else if (auto triggers = parsing::atoms2triggers(args)) {
+            // trigger message received, trigger specific voices
+            m_oscillator.trigger.set_values(*triggers);
+
+        } else {
+            cerr << "doesn't understand " << args[0] << endl;
+            return;
+        }
+
         auto time = MaxTimePoint::get_time_of(clock.get());
         if (!time) {
             cerr << "unknown clock source" << endl;
             return;
         }
+
         auto time_point = time->as_time_point();
 
-        cout << time_point.get_tick() << endl;
+        m_oscillator.oscillator.update_time(time_point);
 
-        m_oscillator_wrapper.m_trigger.update_time(time_point);
-        m_oscillator_wrapper.m_oscillator.update_time(time_point);
-
-
-        auto voices = m_oscillator_wrapper.m_oscillator.process();
+        auto output = m_oscillator.oscillator.process();
 //        cout << voices.size() << endl;
 
 
@@ -133,104 +232,173 @@ private:
 //        }
 
 
-        auto formatted_atoms = parsing::voices2atoms<float>(voices);
+        auto formatted_atoms = parsing::voices2atoms<float>(output);
         if (formatted_atoms.is_ok()) {
-            outlet.send(formatted_atoms.ok());
-        }
-    }
-
-
-    void set_freq(const atoms& args) {
-        cout << "setting freq" << endl;
-        if (auto v = parsing::from_atoms<float>(args)) {
-            m_oscillator_wrapper.m_freq.set_transposed(v.ok());
+            outlet_main.send(formatted_atoms.ok());
         } else {
-            cerr << v.err() << endl;
+            cerr << "failed to parse output" << endl;
         }
     }
 
 
-    void set_type(const atoms& args) {
+    bool set_type(const atoms& args) {
         cout << "setting type" << endl;
-        if (auto v = parsing::from_atoms<Oscillator::Type>(args)) {
-            m_oscillator_wrapper.m_type.set_transposed(v.ok());
+        if (auto v = parsing::atoms2vec<Oscillator::Type>(args)) {
+            auto t = Voices<Oscillator::Type>::transposed(*v);
+            m_oscillator.type.set_values(t);
+            return true;
         } else {
             cerr << v.err() << endl;
+            return false;
         }
     }
 
 
-    void set_mul(const atoms& args) {
+    bool set_freq(const atoms& args) {
+        cout << "setting freq" << endl;
+        if (auto v = parsing::atoms2vec<double>(args)) {
+            auto f = Voices<double>::transposed(*v);
+            m_oscillator.freq.set_values(f);
+            return true;
+        } else {
+            cerr << v.err() << endl;
+            return false;
+        }
+    }
+
+
+    bool set_period(const atoms& args) {
+        cout << "setting period" << endl;
+        if (auto v = parsing::atoms2vec<double>(args)) {
+            auto f = Voices<double>::transposed(v.ok().map([](auto x) {
+                return std::abs(x) < 1e-6 ? 0.0 : 1.0 / x;
+            }));
+            m_oscillator.freq.set_values(f);
+            return true;
+
+        } else {
+            cerr << v.err() << endl;
+            return false;
+        }
+
+
+    }
+
+
+    bool set_mul(const atoms& args) {
         cout << "setting mul" << endl;
-        if (auto v = parsing::from_atoms<float>(args)) {
-            m_oscillator_wrapper.m_mul.set_transposed(v.ok());
+        if (auto v = parsing::atoms2vec<double>(args)) {
+            auto f = Voices<double>::transposed(*v);
+            m_oscillator.mul.set_values(f);
+            return true;
         } else {
             cerr << v.err() << endl;
+            return false;
         }
     }
 
 
-    void set_add(const atoms& args) {
+    bool set_add(const atoms& args) {
         cout << "setting add" << endl;
-        if (auto v = parsing::from_atoms<float>(args)) {
-            m_oscillator_wrapper.m_add.set_transposed(v.ok());
+        if (auto v = parsing::atoms2vec<double>(args)) {
+            auto f = Voices<double>::transposed(*v);
+            m_oscillator.add.set_values(f);
+            return true;
         } else {
             cerr << v.err() << endl;
+            return false;
         }
     }
 
 
-    void set_duty(const atoms& args) {
+    bool set_duty(const atoms& args) {
         cout << "setting duty" << endl;
-        if (auto v = parsing::from_atoms<float>(args)) {
-            m_oscillator_wrapper.m_duty.set_transposed(v.ok());
+        if (auto v = parsing::atoms2vec<double>(args)) {
+            auto f = Voices<double>::transposed(*v);
+            m_oscillator.duty.set_values(f);
+            return true;
         } else {
             cerr << v.err() << endl;
+            return false;
         }
     }
 
 
-    void set_curve(const atoms& args) {
+    bool set_curve(const atoms& args) {
         cout << "setting curve" << endl;
-        if (auto v = parsing::from_atoms<float>(args)) {
-            m_oscillator_wrapper.m_curve.set_transposed(v.ok());
+        if (auto v = parsing::atoms2vec<double>(args)) {
+            auto f = Voices<double>::transposed(*v);
+            m_oscillator.curve.set_values(f);
+            return true;
         } else {
             cerr << v.err() << endl;
+            return false;
         }
     }
 
 
-    void set_enabled(const atoms& args) {
-        cout << "setting enabled" << endl;
-        if (auto v = parsing::from_atoms<bool>(args)) {
-            m_oscillator_wrapper.m_enabled.set_transposed(v.ok());
-        } else {
-            cerr << v.err() << endl;
-        }
-    }
-
-
-    void set_stepped(const atoms& args) {
+    bool set_stepped(const atoms& args) {
         cout << "setting stepped" << endl;
-        if (auto v = parsing::from_atoms<bool>(args)) {
-            m_oscillator_wrapper.m_stepped.set_transposed(v.ok());
+        if (auto v = parsing::atoms2value<bool>(args)) {
+            m_oscillator.stepped.set_value(*v);
+            return true;
         } else {
             cerr << v.err() << endl;
+            return false;
         }
     }
 
 
-    void set_num_voices(const atoms& args) {
-        if (auto v = parsing::parse_single<int>(args)) {
-            m_oscillator_wrapper.m_num_voices.set_value(v.ok());
+    bool set_tau(const atoms& args) {
+        cout << "setting tau" << endl;
+        if (auto v = parsing::atoms2vec<double>(args)) {
+            auto f = Voices<double>::transposed(*v);
+            m_oscillator.tau.set_values(f);
+            return true;
         } else {
             cerr << v.err() << endl;
-            return;
+            return false;
         }
     }
 
 
-    OscillatorWrapper m_oscillator_wrapper;
+    bool set_phase(const atoms& args) {
+        cout << "setting phase" << endl;
+        if (auto v = parsing::atoms2vec<double>(args)) {
+            auto f = Voices<double>::transposed(*v);
+            m_oscillator.phase.set_values(f);
+            return true;
+        } else {
+            cerr << v.err() << endl;
+            return false;
+        }
+    }
+
+
+    bool set_enabled(const atoms& args) {
+        cout << "setting enabled" << endl;
+        if (auto v = parsing::atoms2vec<bool>(args)) {
+            auto e = Voices<bool>::transposed(*v);
+            m_oscillator.enabled.set_values(e);
+            return true;
+
+        } else {
+            cerr << v.err().message() << endl;
+            return false;
+        }
+    }
+
+
+    bool set_num_voices(const atoms& args) {
+        if (auto v = parsing::atoms2value<int>(args)) {
+            m_oscillator.num_voices.set_value(static_cast<std::size_t >(*v));
+            return true;
+
+        } else {
+            cerr << v.err().message() << endl;
+            return false;
+        }
+    }
 
 
 };
