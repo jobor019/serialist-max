@@ -6,7 +6,6 @@
 
 using namespace c74::min;
 
-
 class oscillator : public object<oscillator> {
 private:
     // MEMBER VARIABLES (position enforced by c74::min architecture)
@@ -194,6 +193,9 @@ public:
     message<> list{this, "list", "Function depends on inlet", handle_input};
     message<> number{this, "number", "Function depends on inlet", handle_input};
     message<> bang{this, "bang", "In first inlet: trigger output for all voices", handle_input};
+
+    // needed for messages beginning with 'null'
+    message<> anything{this, "anything", "Function depends on inlet", handle_input};
 
 
 private:

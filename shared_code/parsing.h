@@ -8,6 +8,7 @@
 #include "core/collections/vec.h"
 #include "core/collections/voices.h"
 #include "core/algo/facet.h"
+#include "core/algo/time/trigger.h"
 
 namespace parsing {
 
@@ -44,196 +45,284 @@ bool is_empty_like(const c74::min::atoms& atms) {
     return false;
 }
 
+} // namespace parsing
 
 
 
 // ==============================================================================================
 
 
-template<typename OutputType, typename InputType, typename = std::enable_if_t<is_atom_convertible<OutputType>::value>>
-c74::min::atom value2atom(const InputType& value
-                          , std::optional<std::function<OutputType(InputType)>> f = std::nullopt) {
-    if (f)
-        return (*f)(value);
+class AtomFormatter {
+public:
 
-    return {static_cast<OutputType>(value)};
-}
+    AtomFormatter() = delete;
 
 
-template<typename OutputType, typename InputType = Facet
-         , typename = std::enable_if_t<is_atom_convertible<OutputType>::value>>
-c74::min::atoms vec2atoms(const Vec<InputType>& v
-                          , std::optional<std::function<OutputType(InputType)>> f = std::nullopt) {
-    c74::min::atoms atms;
-    atms.reserve(v.size());
-
-    for (auto& elem: v) {
-        atms.emplace_back(value2atom(elem, f));
-    }
-    return atms;
-}
-
-
-template<typename OutputType, typename InputType = Facet
-         , typename = std::enable_if_t<is_atom_convertible<OutputType>::value>>
-Result<c74::min::atoms> voices2atoms(const Voices<InputType>& voices
+    template<typename OutputType
+             , typename InputType = OutputType
+             , typename = std::enable_if_t<parsing::is_atom_convertible<OutputType>::value>>
+    static c74::min::atom value2atom(const InputType& value
                                      , std::optional<std::function<OutputType(InputType)>> f = std::nullopt) {
-    c74::min::atoms atms;
-    atms.reserve(voices.size());
+        if (f)
+            return (*f)(value);
 
-    for (std::size_t i = 0; i < voices.size(); ++i) {
-        if (voices[i].empty()) {
-            atms.emplace_back(NULL_STRING);
-        } else if (voices[i].size() == 1) {
-            atms.emplace_back(value2atom(voices[i][0], f));
+        return {static_cast<OutputType>(value)};
+    }
+
+
+    template<typename OutputType
+             , typename InputType = OutputType
+             , typename = std::enable_if_t<parsing::is_atom_convertible<OutputType>::value>>
+    static c74::min::atoms vec2atoms(const Vec<InputType>& v
+                                     , std::optional<std::function<OutputType(InputType)>> f = std::nullopt) {
+        c74::min::atoms atms;
+        atms.reserve(v.size());
+
+        for (auto& elem: v) {
+            atms.emplace_back(value2atom(elem, f));
+        }
+        return atms;
+    }
+
+
+    template<typename OutputType
+             , typename InputType = OutputType
+             , typename = std::enable_if_t<parsing::is_atom_convertible<OutputType>::value>>
+    static c74::min::atoms voices2atoms(const Voices<InputType>& voices
+                                        , std::optional<std::function<OutputType(InputType)>> f = std::nullopt) {
+        if (std::any_of(voices.begin(), voices.end(), [](const Voice<InputType>& v) { return v.size() > 1; })) {
+            return format_list_of_lists(voices, f);
         } else {
-            return Error("Invalid voice: cannot parse voices with multiple elements in a single voice");
+            return format_simple_list(voices, f);
         }
     }
-    return atms;
-}
 
 
-Result<c74::min::atom> trigger2atom(const Vec<Trigger>& trigger) {
-    if (trigger.empty()) {
-        return {NULL_STRING};
-    } else if (trigger.size() == 1) {
-        return {static_cast<int>(trigger[0])};
-    }
-    return Error("Invalid trigger: cannot parse multiple triggers in a single voice");
-}
-
-
-Result<c74::min::atoms> triggers2atoms(const Voices<Trigger>& triggers) {
-    Vec<c74::min::atom> result = Vec<c74::min::atom>::allocated(triggers.size());
-    for (const auto & trigger : triggers) {
-        auto atm = trigger2atom(trigger);
-        if (atm.is_ok()) {
-            result.append(*atm);
-        } else {
-            return atm.err();
+    static Result<c74::min::atom> trigger2atom(const Vec<Trigger>& trigger) {
+        if (trigger.empty()) {
+            return {parsing::NULL_STRING};
+        } else if (trigger.size() == 1) {
+            return {static_cast<int>(trigger[0])};
         }
+        return Error("Invalid trigger: cannot parse multiple triggers in a single voice");
     }
-    return result.vector();
-}
+
+
+    static Result<c74::min::atoms> triggers2atoms(const Voices<Trigger>& triggers) {
+        Vec<c74::min::atom> result = Vec<c74::min::atom>::allocated(triggers.size());
+        for (const auto& trigger: triggers) {
+            auto atm = trigger2atom(trigger);
+            if (atm.is_ok()) {
+                result.append(*atm);
+            } else {
+                return atm.err();
+            }
+        }
+        return result.vector();
+    }
+
+
+private:
+
+    template<typename OutputType
+             , typename InputType = OutputType
+             , typename = std::enable_if_t<parsing::is_atom_convertible<OutputType>::value>>
+    static c74::min::atoms format_simple_list(const Voices<InputType>& voices
+                                              , std::optional<std::function<OutputType(InputType)>> f = std::nullopt) {
+        c74::min::atoms atms;
+        atms.reserve(voices.size());
+
+        for (std::size_t i = 0; i < voices.size(); ++i) {
+            if (voices[i].empty()) {
+                atms.emplace_back(parsing::NULL_STRING);
+            } else {
+                assert(voices[i].size() <= 1);
+                atms.emplace_back(value2atom(voices[i][0], f));
+            }
+        }
+        return atms;
+    }
+
+
+    template<typename OutputType
+             , typename InputType = OutputType
+             , typename = std::enable_if_t<parsing::is_atom_convertible<OutputType>::value>>
+    static c74::min::atoms format_list_of_lists(const Voices<InputType>& voices
+                                                , std::optional<
+            std::function<OutputType(InputType)>> f = std::nullopt) {
+        c74::min::atoms atms;
+        atms.emplace_back("[");
+        for (const auto& voice: voices) {
+            format_inner(voice, atms, f);
+        }
+        atms.emplace_back("]");
+        return atms;
+    }
+
+
+    template<typename OutputType
+             , typename InputType = OutputType
+             , typename = std::enable_if_t<parsing::is_atom_convertible<OutputType>::value>>
+    static void format_inner(const Voice<InputType>& voice
+                             , c74::min::atoms& output
+                             , std::optional<std::function<OutputType(InputType)>> f = std::nullopt) {
+        output.emplace_back("[");
+        for (const auto& v: voice) {
+            output.emplace_back(value2atom(v, f));
+        }
+        output.emplace_back("]");
+    }
+};
+
 
 // ==============================================================================================
 
+class AtomParser {
+public:
+
+    AtomParser() = delete;
 
 
-
-//template<typename T, typename = std::enable_if_t<std::is_arithmetic_v<T>>>
-//Result<T> parse_single(const c74::min::atoms& atms
-//                       , std::optional<T> low_range = std::nullopt
-//                       , std::optional<T> high_range = std::nullopt) {
-//    if (atms.size() != 1) {
-//        return Error("Wrong number of arguments for " + std::string(typeid(T).name()));
-//    }
-//
-//
-//    auto atm = atms.at(0);
-//    if (atm.type() == c74::min::message_type::float_argument || atm.type() == c74::min::message_type::int_argument) {
-//        auto v_unbounded = static_cast<T>(atm);
-//        if ((low_range.has_value() && v_unbounded < *low_range)
-//            || (high_range.has_value() && v_unbounded > *high_range)) {
-//            return Error("Argument out of range");
-//        }
-//
-//        return v_unbounded;
-//
-//    } else {
-//        return Error("Could not convert atom to type " + std::string(typeid(T).name()));
-//    }
-//}
-
-
-template<typename T, typename = std::enable_if_t<is_atom_convertible<T>::value>>
-Result<T> atom2value(const c74::min::atom& atm) {
-    if constexpr (std::is_same_v<T, bool>) {
-        if (atm.type() == c74::min::message_type::int_argument
-            || atm.type() == c74::min::message_type::float_argument) {
-            return {static_cast<int>(atm) > 0};
-        }
-    } else if constexpr (std::is_arithmetic_v<T>) {
-        if (atm.type() == c74::min::message_type::float_argument
-            || atm.type() == c74::min::message_type::int_argument) {
-            return {static_cast<T>(atm)};
-        }
-    } else if constexpr (std::is_same_v<T, std::string>) {
-        if (atm.type() == c74::min::message_type::symbol_argument) {
-            return {static_cast<std::string>(atm)};
-        }
-    } else if constexpr (std::is_enum_v<T>) {
-        if (atm.type() == c74::min::message_type::int_argument
-            && static_cast<int>(atm) < magic_enum::enum_count<T>()) {
-            return {static_cast<T>(atm)};
-        }
-    }
-    return Error("Could not convert atom to type " + std::string(typeid(T).name()));
-}
-
-
-template<typename T, typename = std::enable_if_t<is_atom_convertible<T>::value>>
-Result<T> atoms2value(const c74::min::atoms& atms) {
-    if (atms.empty()) {
-        return Error("Missing value");
-    }
-    return atom2value<T>(atms.at(0));
-}
-
-
-template<typename T, typename = std::enable_if_t<is_atom_convertible<T>::value>>
-Result<Vec<T>> atoms2vec(const c74::min::atoms& atms) {
-    Vec<T> result = Vec<T>::allocated(atms.size());
-    for (auto& atm: atms) {
-        if (auto val = atom2value<T>(atm)) {
-            result.append(val.ok());
-        } else {
-            return Error("Could not convert atom to type " + std::string(typeid(T).name()));
-        }
-    }
-    return result;
-}
-
-
-Result<std::optional<Trigger>> atom2trigger(const c74::min::atom& atm) {
-    if (atm.type() == c74::min::message_type::int_argument) {
-        auto trigger_type_index = static_cast<int>(atm);
-        auto trigger_type = magic_enum::enum_cast<Trigger>(trigger_type_index);
-        if (trigger_type.has_value()) {
-            return trigger_type;
-        } else {
-            return Error("Invalid trigger type: " + std::to_string(trigger_type_index));
-        }
-    } else if (atm.type() == c74::min::message_type::symbol_argument
-               && static_cast<std::string>(atm) == NULL_STRING) {
-        return {std::nullopt}; // "null" is a valid trigger without a value
-    } else {
-        return Error("Invalid trigger type: triggers should only be integer values or 'null'");
-    }
-}
-
-
-Result<Voices<Trigger>> atoms2triggers(const c74::min::atoms& atms) {
-    Voices<Trigger> result = Voices<Trigger>::zeros(atms.size());
-    for (std::size_t i = 0; i < atms.size(); ++i) {
-        auto trigger = atom2trigger(atms[i]);
-        if (trigger.is_ok()) {
-            if (trigger.ok().has_value()) {
-                result[i] = Vec<Trigger>::singular(*trigger.ok()); // valid trigger
-            } else {
-                continue; // null trigger
+    template<typename T, typename = std::enable_if_t<parsing::is_atom_convertible<T>::value>>
+    static Result<T> atom2value(const c74::min::atom& atm) {
+        if constexpr (std::is_same_v<T, bool>) {
+            if (atm.type() == c74::min::message_type::int_argument
+                || atm.type() == c74::min::message_type::float_argument) {
+                return {static_cast<int>(atm) > 0};
             }
+        } else if constexpr (std::is_arithmetic_v<T>) {
+            if (atm.type() == c74::min::message_type::float_argument
+                || atm.type() == c74::min::message_type::int_argument) {
+                return {static_cast<T>(atm)};
+            }
+        } else if constexpr (std::is_same_v<T, std::string>) {
+            if (atm.type() == c74::min::message_type::symbol_argument) {
+                return {static_cast<std::string>(atm)};
+            }
+        } else if constexpr (std::is_enum_v<T>) {
+            if (atm.type() == c74::min::message_type::int_argument
+                && static_cast<int>(atm) < magic_enum::enum_count<T>()) {
+                return {static_cast<T>(atm)};
+            }
+        }
+        return Error("Could not convert atom to type " + std::string(typeid(T).name()));
+    }
+
+
+    template<typename T, typename = std::enable_if_t<parsing::is_atom_convertible<T>::value>>
+    static Result<T> atoms2value(const c74::min::atoms& atms) {
+        if (atms.empty()) {
+            return Error("Missing value");
+        }
+        return atom2value<T>(atms.at(0));
+    }
+
+
+    template<typename T, typename = std::enable_if_t<parsing::is_atom_convertible<T>::value>>
+    static Result<Vec<T>> atoms2vec(const c74::min::atoms& atms) {
+        Vec<T> result = Vec<T>::allocated(atms.size());
+        for (auto& atm: atms) {
+            if (auto val = atom2value<T>(atm)) {
+                result.append(val.ok());
+            } else {
+                return Error("Could not convert atom to type " + std::string(typeid(T).name()));
+            }
+        }
+        return result;
+    }
+
+
+    static Result<std::optional<Trigger>> atom2trigger(const c74::min::atom& atm) {
+        if (atm.type() == c74::min::message_type::int_argument) {
+            auto trigger_type_index = static_cast<int>(atm);
+            auto trigger_type = magic_enum::enum_cast<Trigger>(trigger_type_index);
+            if (trigger_type.has_value()) {
+                return trigger_type;
+            } else {
+                return Error("Invalid trigger type: " + std::to_string(trigger_type_index));
+            }
+        } else if (atm.type() == c74::min::message_type::symbol_argument
+                   && static_cast<std::string>(atm) == parsing::NULL_STRING) {
+            return {std::nullopt}; // "null" is a valid trigger without a value
         } else {
-            // invalid trigger: recast error message
-            return trigger.err();
+            return Error("Invalid trigger type: triggers should only be integer values or 'null'");
         }
     }
-    return result;
-}
 
 
-} // namespace: parsing
+    static Result<Voices<Trigger>> atoms2triggers(const c74::min::atoms& atms) {
+        Voices<Trigger> result = Voices<Trigger>::zeros(atms.size());
+        for (std::size_t i = 0; i < atms.size(); ++i) {
+            auto trigger = atom2trigger(atms[i]);
+            if (trigger.is_ok()) {
+                if (trigger.ok().has_value()) {
+                    result[i] = Vec<Trigger>::singular(*trigger.ok()); // valid trigger
+                } else {
+                    continue; // null trigger
+                }
+            } else {
+                // invalid trigger: recast error message
+                return trigger.err();
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * @note: Given that the list is parsed with message<>{.., "["}, the initial "[" will always be stripped
+     */
+    template<typename T, typename = std::enable_if_t<parsing::is_atom_convertible<T>::value>>
+    static Result<Voices<T>> atoms2voices(const c74::min::atoms& atms) {
+        Vec<Voice<T>> output = {};
+
+        auto it = atms.begin();
+        while (it != atms.end()) {
+            if (*it == "[") {
+                ++it;
+                if (auto inner = parse_inner<T>(it, atms)) {
+                    output.append(std::move(*inner));
+                } else {
+                    return inner.err();
+                }
+
+            } else if (*it == "]") {
+                if (it + 1 == atms.end()) {
+                    return Voices<T>(output);
+                } else {
+                    return Error("Ill-formatted list: ']' before end");
+                }
+            } else {
+                output.append(Voice<T>{*it});
+            }
+            ++it;
+
+        }
+        return Error("Ill-formatted list: missing ']'");
+
+    }
+
+
+private:
+
+    template<typename T, typename = std::enable_if_t<parsing::is_atom_convertible<T>::value>>
+    static Result<Voice<T>> parse_inner(c74::min::atoms::const_iterator& it, const c74::min::atoms& input) {
+        Voice<T> output;
+        while (it != input.end()) {
+            if (*it == "[") {
+                return Error("Cannot parse nested lists");
+            } else if (*it == "]") {
+                return {output};
+            } else {
+                output.append(*it);
+            }
+            ++it;
+        }
+
+        return Error("Reached end while parsing inner list");
+    }
+
+};
 
 
 #endif //SERIALIST_MAX_UTILS_H
