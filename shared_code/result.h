@@ -8,9 +8,12 @@ class Error {
 public:
     explicit Error(const std::string& msg) : m_msg(msg) {}
 
-    
 
     const std::string& message() const {
+        return m_msg;
+    }
+
+    const std::string& operator*() const {
         return m_msg;
     }
 
@@ -23,25 +26,69 @@ private:
 
 // ==============================================================================================
 
-template<typename T>
-class Result {
-public:
-    Result(const T& value) : m_value(value), m_error(std::nullopt) {}
+template <typename T>
+class Result;
 
-    Result(const Error& error) : m_value(std::nullopt), m_error(error) {}
+template<>
+class Result<void> {
+public:
+    Result() : m_error(std::nullopt) {}
+
+
+    Result(const Error& error) : m_error(error) {}
+
 
     explicit operator bool() const noexcept {
         return is_ok();
     }
 
-    T operator*() const {
+
+    bool is_ok() const noexcept {
+        return !m_error.has_value();
+    }
+
+
+    const Error& err() const {
+        if (!m_error)
+            throw std::logic_error("Result is not an error");
+        return *m_error;
+    }
+
+
+private:
+    std::optional<Error> m_error;
+};
+
+template<typename T>
+class Result {
+public:
+    Result(const T& value) : m_value(value), m_error(std::nullopt) {}
+
+
+    Result(const Error& error) : m_value(std::nullopt), m_error(error) {}
+
+
+    explicit operator bool() const noexcept {
+        return is_ok();
+    }
+
+
+    const T& operator*() const {
         return ok();
+    }
+
+    decltype(auto) operator->() {
+        if (!m_value) {
+            throw std::logic_error("Result is an error");
+        }
+        return m_value.operator->();
     }
 
 
     bool is_ok() const noexcept {
         return m_value.has_value();
     }
+
 
     /**
      * @throws std::runtime_error
@@ -57,7 +104,7 @@ public:
     /**
      * @throws std::runtime_error
      */
-    T ok() const {
+    const T& ok() const {
         if (!m_value)
             throw std::logic_error("Result is an error");
         return *m_value;

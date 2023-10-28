@@ -273,10 +273,22 @@ public:
      * @note: Given that the list is parsed with message<>{.., "["}, the initial "[" will always be stripped
      */
     template<typename T, typename = std::enable_if_t<parsing::is_atom_convertible<T>::value>>
-    static Result<Voices<T>> atoms2voices(const c74::min::atoms& atms) {
+    static Result<Voices<T>> atoms2voices(const c74::min::atoms& atms, bool leading_bracket_stripped = false) {
+        auto it = atms.begin();
+
+        if (!leading_bracket_stripped) {
+            if (atms.empty()) {
+                return Error("Ill-formatted list: empty");
+            }
+
+            if (!(atms[0] == "[")) {
+                return Error("Ill-formatted list: missing '['");
+            }
+            ++it;
+        }
+
         Vec<Voice<T>> output = {};
 
-        auto it = atms.begin();
         while (it != atms.end()) {
             if (*it == "[") {
                 ++it;
@@ -288,6 +300,9 @@ public:
 
             } else if (*it == "]") {
                 if (it + 1 == atms.end()) {
+                    if (output.empty()) {
+                        return Voices<T>::empty_like();
+                    }
                     return Voices<T>(output);
                 } else {
                     return Error("Ill-formatted list: ']' before end");
@@ -299,7 +314,11 @@ public:
 
         }
         return Error("Ill-formatted list: missing ']'");
+    }
 
+
+    static  void prepend_leading_bracket(c74::min::atoms& atms) {
+        atms.insert(atms.begin(), "[");
     }
 
 

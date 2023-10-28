@@ -2,7 +2,6 @@
 #include "c74_min.h"
 
 
-
 #include "parsing.h"
 #include "max_timepoint.h"
 
@@ -28,6 +27,7 @@ public:
 
     explicit playground(const atoms& = {}) {
 //        metro.delay(1.0);
+
     }
 
 
@@ -37,26 +37,60 @@ public:
     }};
 
 
-    attribute<std::vector<double>> asdf{this, "asdf"
-                                       , Vec<double>::singular(0.25).vector()
-                                       , title{"Set minimum duration"}
-                                       , description{""}
-                                       , setter{MIN_FUNCTION {
-                    return args;
+    attribute<std::vector<double>> myattribute{this, "myattribute"
+                                               , Vec<double>::singular(0.25).vector()
+                                               , title{"Set minimum duration"}
+                                               , description{""}
+                                               , setter{MIN_FUNCTION {
+                return args;
             }}
     };
 
+    attribute<symbol> attributenotype{this, "attributenotype", "hello"
+                                      , description{"take any type of argument"}
+                                      , setter{MIN_FUNCTION {
+
+                                          Result<void> result(Error("not working"));
+                for (const auto& atm: args) {
+                    if (atm.type() == c74::min::message_type::int_argument)
+                        cout << "int: ";
+                    if (atm.type() == c74::min::message_type::float_argument)
+                        cout << "float: ";
+                    if (atm.type() == c74::min::message_type::symbol_argument)
+                        cout << "symbol: ";
+
+                    cout << atm << endl;
+                }
+                return args;
+    }}};
 
 
-
-    attribute<symbol> clock{this, "clock", "", description{"Set clock source"}};
-
-
-    message<> test{this, "test", "(bang) test", MIN_FUNCTION {
-        // TODO
-        cout << "testing" << endl;
-        outlet_main.send("test");
+    message<> lol{this, "lol", "(list of list)", MIN_FUNCTION {
+        for (const auto& atm: args) {
+            cout << atm << endl;
+        }
         return {};
+    }};
+
+//
+    attribute<symbol> clock{this, "clock", "", description{"Set clock source"}};
+//    attribute<symbol> clock{this, "clock", "", description{"Set clock source"}, setter{MIN_FUNCTION {
+//        return args;
+//    }}};
+
+
+    message<> mymessage{this, "mymessage", "(bang) test", MIN_FUNCTION {
+        // TODO
+//        cout << patcher().name() << endl;
+//        for (const auto& box: patcher().boxes()) {
+//            cout << box.classname() << endl;
+//        }
+
+//        maxobj()
+        cout << "test" << endl;
+
+        outlet_main.send("test");
+        return args;
     }};
 
 //    c74::min::function handle_input = MIN_FUNCTION {
@@ -90,8 +124,8 @@ public:
         auto voices = AtomParser::atoms2voices<int>(args);
         if (voices) {
             cout << "parsed voices:" << endl;
-            for (const auto& voice : *voices) {
-                for (const auto& v : voice) {
+            for (const auto& voice: *voices) {
+                for (const auto& v: voice) {
                     cout << v << " ";
                 }
                 cout << endl;
@@ -108,7 +142,7 @@ public:
         return {};
     }};
 
-    message<> anything{this, "anything", "Function depends on inlet", MIN_FUNCTION{
+    message<> anything{this, "anything", "Function depends on inlet", MIN_FUNCTION {
         cout << "anything" << endl;
         outlet_main.send("anything");
         return {};
@@ -116,9 +150,25 @@ public:
 
 private:
 
-
-
 };
+
+
+
+//void playground_inletinfo(t_playground *x, void *b, long a, char *t)
+//{
+//    long i;
+//
+//    if (x->triggerlist[0] != -1) {
+//        *t = 1;
+//        for (i = 0; i < x->triggerlistlen; i++) {
+//            if (join_is_trigger_inlet(x, a)) {
+//                *t = 0;
+//                break;
+//            }
+//        }
+//    } else
+//        *t = 0;
+//}
 
 
 MIN_EXTERNAL(playground)
