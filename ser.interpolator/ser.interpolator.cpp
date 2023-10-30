@@ -22,90 +22,160 @@ public:
     virtual Result<void> set_strategy_pivot(const atoms& args) = 0;
 
 
-    Result<c74::min::atoms> process_trigger(const atoms& args) {}
+    Result<c74::min::atoms> process_trigger(const atoms& args) {
+        if (auto triggers = AtomParser::atoms2triggers(args)) {
+            m_trigger.set_values(*triggers);
+            return process_internal();
+        } else {
+            return triggers.err();
+        }
+    }
 
 
-    Result<c74::min::atoms> process_cursor(const atoms& args) {}
+    Result<c74::min::atoms> process_cursor(const atoms& args) {
+        if (auto cursor = AtomParser::atoms2vec<double>(args)) {
+            auto cursor_as_voices = Voices<double>::transposed(*cursor);
+            m_cursor.set_values(cursor_as_voices);
+
+            if (m_auto_trigger) {
+                auto triggers = Voices<Trigger>::zeros(cursor_as_voices.size());
+                for (std::size_t i = 0; i < cursor_as_voices.size(); ++i) {
+                    if (!cursor_as_voices[i].empty()) {
+                        triggers[i].append(Trigger::pulse_on);
+                    }
+                }
+
+                m_trigger.set_values(triggers);
+
+                return process_internal();
+            }
+            return {c74::min::atoms()};
+        } else {
+            return cursor.err();
+        }
+    }
 
 
-    Result<void> set_strategy_type(const atoms& args) {}
+    Result<void> set_strategy_type(const atoms& args) {
+        if (auto strategy_indices = AtomParser::atoms2vec<int>(args)) {
+            // InterpolationAdapter requires a Facet which it treats in the same manner as enums
+            // (values mapped to range(0.0, 1.0), hence the type acrobatics here
+
+            auto strategy_as_doubles = strategy_indices.ok().as_type<double>([](const int index) {
+                return InterpolationAdapter<int>::index2double(static_cast<std::size_t>(index));
+            });
+            m_strategy_type.set_values(Voices<double>::transposed(strategy_as_doubles));
+            return {};
+
+        } else {
+            return strategy_indices.err();
+        }
+    }
 
 
-    Result<void> set_enabled(const atoms& args) {}
+    Result<void> set_enabled(const atoms& args) {
+        if (auto v = AtomParser::atoms2value<bool>(args)) {
+            m_enabled.set_values(*v);
+            return {};
+        } else {
+            return v.err();
+        }
+    }
 
 
-    Result<void> set_num_voices(const atoms& args) {}
+    Result<void> set_num_voices(const atoms& args) {
+        if (auto v = AtomParser::atoms2value<int>(args)) {
+            m_num_voices.set_value(static_cast<std::size_t>(*v));
+            return {};
+        } else {
+            return v.err();
+        }
+    }
 
 
-    Result<void> set_auto_trigger(const atoms& args) {}
+    Result<void> set_auto_trigger(const atoms& args) {
+        if (auto v = AtomParser::atoms2value<bool>(args)) {
+            m_auto_trigger = *v;
+            return {};
+        } else {
+            return v.err();
+        }
+    }
 
 
 protected:
-    virtual std::optional<c74::min::atoms> process_internal(const atoms& args) = 0;
+    virtual c74::min::atoms process_internal() = 0;
 
     ParameterHandler m_parameter_handler;
 
     Sequence<Trigger> m_trigger{InterpolatorKeys::TRIGGER, m_parameter_handler};
     Sequence<Facet, double> m_cursor{InterpolatorKeys::CURSOR, m_parameter_handler};
-    Sequence<Facet, double> m_strategy_type{InterpolationAdapter<std::size_t>::STRATEGY, m_parameter_handler};
+    Sequence<Facet, double> m_strategy_type{InterpolationAdapter<double>::STRATEGY, m_parameter_handler};
 
     Sequence<Facet, bool> m_enabled{ParameterKeys::ENABLED, m_parameter_handler, Voices<bool>::singular(true)};
     Variable<Facet, std::size_t> m_num_voices{ParameterKeys::NUM_VOICES, m_parameter_handler, 1};
 
+private:
+    bool m_auto_trigger = false;
+
 
 };
 
-class MaxInterpolatorIntegral : public MaxInterpolatorBase {
-    Result<void> set_corpus(const c74::min::atoms& args) override {}
+
+// ==============================================================================================
+
+template<typename StoredType, typename OutputType = Facet>
+class MaxInterpolatorGeneric : public MaxInterpolatorBase {
+public:
+    Result<void> set_corpus(const c74::min::atoms& args) override {
+        if (auto corpus = AtomParser::atoms2voices<StoredType>(args)) {
+            m_corpus.set_values(*corpus);
+            return {};
+        } else {
+            return corpus.err();
+        }
+    }
 
 
-    Result<void> set_strategy_pivot(const c74::min::atoms& args) override {}
+    Result<void> set_strategy_pivot(const c74::min::atoms& args) override {
+        if (auto pivot = AtomParser::atoms2value<StoredType>(args)) {
+            m_strategy_pivot.set_values(*pivot);
+            return {};
+        } else {
+            return pivot.err();
+        }
+    }
 
 
 protected:
-    std::optional<c74::min::atoms> process_internal(const c74::min::atoms& args) override {}
+    c74::min::atoms process_internal() override {
+        m_last_update_time += 1.0;
+        // Actual time irrelevant, just need a new value for time gating
+        m_interpolator.update_time(TimePoint(m_last_update_time));
+        auto voices = m_interpolator.process();
+        return AtomFormatter::voices2atoms<StoredType>(voices);
+    }
 
 
 private:
-    Sequence<Facet, long> m_corpus{InterpolatorKeys::CORPUS, m_parameter_handler};
-    Sequence<Facet, long> m_strategy_pivot{InterpolationAdapter<Facet>::PIVOT, m_parameter_handler};
-    InterpolationAdapter<Facet> m_strategy{InterpolationAdapter<Facet>::CLASS_NAME
+    Sequence<OutputType, StoredType> m_corpus{InterpolatorKeys::CORPUS, m_parameter_handler};
+    Sequence<OutputType, StoredType> m_strategy_pivot{InterpolationAdapter<Facet>::PIVOT, m_parameter_handler};
+    InterpolationAdapter<OutputType> m_strategy{InterpolationAdapter<Facet>::CLASS_NAME
                                            , m_parameter_handler, &m_strategy_type, &m_strategy_pivot};
 
-    InterpolatorNode<Facet> interpolator{InterpolatorKeys::CLASS_NAME, m_parameter_handler, &m_trigger
-                                         , &m_cursor, &m_corpus, &m_strategy, &m_enabled, &m_num_voices};
+    InterpolatorNode<OutputType> m_interpolator{InterpolatorKeys::CLASS_NAME, m_parameter_handler, &m_trigger
+                                           , &m_cursor, &m_corpus, &m_strategy, &m_enabled, &m_num_voices};
+
+    double m_last_update_time = 0.0;
 };
 
-class MaxInterpolatorFloating : public MaxInterpolatorBase {
-    Result<void> set_corpus(const c74::min::atoms& args) override {}
+// ==============================================================================================
 
+class MaxInterpolatorIntegral : public MaxInterpolatorGeneric<long, Facet> {};
 
-    Result<void> set_strategy_pivot(const c74::min::atoms& args) override {}
+class MaxInterpolatorFloating  : public MaxInterpolatorGeneric<double, Facet> {};
 
-
-protected:
-    std::optional<c74::min::atoms> process_internal(const c74::min::atoms& args) override {}
-};
-
-class MaxInterpolatorSymbol : public MaxInterpolatorBase {
-    Result<void> set_corpus(const c74::min::atoms& args) override {}
-
-
-    Result<void> set_strategy_pivot(const c74::min::atoms& args) override {}
-
-
-protected:
-    std::optional<c74::min::atoms> process_internal(const c74::min::atoms& args) override {}
-
-
-private:
-    Sequence<std::string> m_corpus{InterpolatorKeys::CORPUS, m_parameter_handler};
-    InterpolationAdapter<std::string> m_strategy{InterpolationAdapter<Facet>::CLASS_NAME
-                                                 , m_parameter_handler, &m_strategy_type, nullptr};
-
-    InterpolatorNode<std::string> interpolator{InterpolatorKeys::CLASS_NAME, m_parameter_handler, &m_trigger
-                                               , &m_cursor, &m_corpus, &m_strategy, &m_enabled, &m_num_voices};
-};
+class MaxInterpolatorSymbol : public MaxInterpolatorGeneric<std::string, std::string> {};
 
 
 // ==============================================================================================
@@ -130,28 +200,30 @@ public:
 
 
     explicit interpolator(const atoms& args = {}) {
-        if (args.empty()) {
-            error("missing type specification (i/f/s)");
-        }
-
-        if (args[0].type() == c74::min::message_type::symbol_argument) {
-            auto type = static_cast<std::string>(args[0]);
-            if (type == "i" || type == "int") {
-                m_interpolator = std::make_unique<MaxInterpolatorIntegral>();
-            } else if (type == "f" || type == "float") {
-                m_interpolator = std::make_unique<MaxInterpolatorFloating>();
-            } else if (type == "s" || type == "symbol") {
-                m_interpolator = std::make_unique<MaxInterpolatorSymbol>();
+        // Note: ctor is called twice by min api where error() will only fail on the second pass,
+        // hence the inverted logic here is necessary
+        if (!args.empty()) {
+            if (args[0].type() == c74::min::message_type::symbol_argument) {
+                auto type = static_cast<std::string>(args[0]);
+                if (type == "i" || type == "int") {
+                    m_interpolator = std::make_unique<MaxInterpolatorIntegral>();
+                } else if (type == "f" || type == "float") {
+                    m_interpolator = std::make_unique<MaxInterpolatorFloating>();
+                } else if (type == "s" || type == "symbol") {
+                    m_interpolator = std::make_unique<MaxInterpolatorSymbol>();
+                } else {
+                    error("invalid type specification");
+                }
             } else {
-                error("invalid type specification");
+                error("type specification must be a symbol (i/f/s)");
+            }
+
+            if (args.size() > 1) {
+                // TODO: Not sure if this->classname() is defined at this point!!!
+                cwarn << "extra argument for message \"" << this->classname() << "\"" << endl;
             }
         } else {
-            error("type specification must be a symbol (i/f/s)");
-        }
-
-        if (args.size() > 1) {
-            // TODO: Not sure if this->classname() is defined at this point!!!
-            cwarn << "extra argument for message \"" << this->classname() << "\"" << endl;
+            c74::min::error("missing type specification (i/f/s)");
         }
     }
 
@@ -161,6 +233,10 @@ public:
                                          , title{"Set interpolation strategy"}
                                          , description{""}
                                          , setter{MIN_FUNCTION {
+                if (!m_interpolator) {
+                    return args; // max ctor hasn't been called yet
+                }
+
                 if (auto result = m_interpolator->set_strategy_type(args)) {
                     return args;
                 } else {
@@ -175,6 +251,10 @@ public:
                             , true
                             , title{"Set enabled"}
                             , setter{MIN_FUNCTION {
+                if (!m_interpolator) {
+                    return args; // max ctor hasn't been called yet
+                }
+
                 if (auto result = m_interpolator->set_enabled(args)) {
                     return args;
                 } else {
@@ -189,6 +269,10 @@ public:
                           , 0
                           , title{"Set number of voices"}
                           , setter{MIN_FUNCTION {
+                if (!m_interpolator) {
+                    return args; // max ctor hasn't been called yet
+                }
+
                 if (auto result = m_interpolator->set_num_voices(args)) {
                     return args;
                 } else {
@@ -200,8 +284,12 @@ public:
 
     attribute<bool> autotrigger{this, "autotrigger"
                                 , false
-                                , title{"Trigger output on cursor inpu"}
+                                , title{"Trigger output on cursor input"}
                                 , setter{MIN_FUNCTION {
+                if (!m_interpolator) {
+                    return args; // max ctor hasn't been called yet
+                }
+
                 if (auto result = m_interpolator->set_auto_trigger(args)) {
                     return args;
                 } else {
@@ -227,61 +315,65 @@ public:
     }}};
 
 
-    message<> list{this, "list", "Function depends on inlet", setter{MIN_FUNCTION {
-        handle_messages(args, inlet, false);
+    c74::min::function handle_input = MIN_FUNCTION {
+        if (inlet == 2) {
+            update_cursor(args);
+        } else if (inlet == 1) {
+            update_corpus(args);
+        } else {
+            update_triggers(args);
+        }
         return {};
-    }}};
+    };
 
 
-    message<> number{this, "number", "Function depends on inlet", setter{MIN_FUNCTION {
-        handle_messages(args, inlet, false);
-        return {};
-    }}};
+    message<> list{this, "list", "Function depends on inlet", handle_input};
+
+
+    message<> number{this, "number", "Function depends on inlet", handle_input};
 
 
     message<> listoflist{this, "[", "Function depends on inlet", setter{MIN_FUNCTION {
-        handle_messages(args, inlet, true);
+        auto formatted = AtomParser::prepend_leading_bracket(args);
+        handle_input(formatted, inlet);
         return {};
     }}};
 
 
     // needed for messages beginning with 'null'
-    message<> anything{this, "anything", "Function depends on inlet", setter{MIN_FUNCTION {
-        handle_messages(args, inlet, false);
-        return {};
-    }}};
+    message<> anything{this, "anything", "Function depends on inlet", handle_input};
+
 
 private:
 
-    void handle_messages(const atoms& args, int inlet, bool is_list_of_lists) {
-        if (inlet == 2) {
-            update_cursor(args, is_list_of_lists);
-        } else if (inlet == 1) {
-            update_corpus(args, is_list_of_lists);
+    void update_cursor(const atoms& args) {
+        if (auto output = m_interpolator->process_cursor(args)) {
+            // Empty unless autotrigger = true
+            if (!output->empty()) {
+                outlet_main.send(*output);
+            }
         } else {
-            update_triggers(args, is_list_of_lists);
+            cerr << *output.err() << endl;
         }
     }
 
 
-    void update_cursor(const atoms& args, bool is_list_of_lists) {
-        if (auto result = m_interpolator->set_auto_trigger(args)) {
-            return args;
-        } else {
-            cerr << result.err().message() << endl;
-            return autotrigger;
+    void update_corpus(const atoms& args) {
+        auto result = m_interpolator->set_corpus(args);
+        if (!result) {
+            cerr << *result.err() << endl;
         }
-    }}
     }
 
 
-    void update_corpus(const atoms& args, bool is_list_of_lists) {
-
-    }
-
-
-    void update_triggers(const atoms& args, bool is_list_of_lists) {
-
+    void update_triggers(const atoms& args) {
+        if (auto output = m_interpolator->process_trigger(args)) {
+            if (!output->empty()) {
+                outlet_main.send(*output);
+            }
+        } else {
+            cerr << *output.err() << endl;
+        }
     }
 
 

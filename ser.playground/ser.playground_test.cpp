@@ -4,7 +4,6 @@
 #include "parsing.h"
 
 
-
 TEST_CASE("object produces correct output") {
     ext_main(nullptr);
 
@@ -17,12 +16,18 @@ TEST_CASE("object produces correct output") {
 
 
     REQUIRE(playground.mymessage.name() == "mymessage");
-    REQUIRE(playground.mymessage(c74::min::atoms{1,2,3}, 0) == c74::min::atoms{1,2,3});
+    REQUIRE(playground.mymessage(c74::min::atoms{1, 2, 3}, 0) == c74::min::atoms{1, 2, 3});
 
 
 }
 
 
+// ==============================================================================================
+/**
+ * Unit tests for shared code.
+ * TODO Should ideally be moved to a separate file, but currently relies on a number of dependencies from c74::min
+ *      and is therefore dependent on the c74::min cmake scripts as well as its modified catch2 framework at the moment
+ */
 // ==============================================================================================
 
 TEST_CASE("Result class") {
@@ -63,7 +68,156 @@ TEST_CASE("Result class") {
 
 // ==============================================================================================
 
-TEST_CASE("Parsing Lists of lists") {
+enum class TestEnum {
+    v0 = 0
+    , v1 = 1
+    , v2 = 2
+    , v3 = 3
+};
+
+TEST_CASE("Parsing single atom") {
+    SECTION("bool") {
+        SECTION("parsing true") {
+            c74::min::atom v{true};
+            auto result = AtomParser::atom2value<bool>(v);
+            REQUIRE(result.is_ok());
+            REQUIRE(result.ok() == true);
+        }
+
+        SECTION("parsing false") {
+            c74::min::atom v{false};
+            auto result = AtomParser::atom2value<bool>(v);
+            REQUIRE(result.is_ok());
+            REQUIRE(result.ok() == false);
+        }
+
+        SECTION("bool from integral values") {
+            c74::min::atom v1{1};
+            auto result = AtomParser::atom2value<bool>(v1);
+            REQUIRE(result.is_ok());
+            REQUIRE(result.ok() == true);
+
+            c74::min::atom v2{0};
+            result = AtomParser::atom2value<bool>(v2);
+            REQUIRE(result.is_ok());
+            REQUIRE(result.ok() == false);
+
+            c74::min::atom v3{1000};
+            result = AtomParser::atom2value<bool>(v3);
+            REQUIRE(result.is_ok());
+            REQUIRE(result.ok() == true);
+
+            c74::min::atom v4{-1};
+            result = AtomParser::atom2value<bool>(v4);
+            REQUIRE(result.is_ok());
+            REQUIRE(result.ok() == false);
+        }
+
+    }
+
+    SECTION("integral") {
+        c74::min::atom i1{1};
+        auto result = AtomParser::atom2value<int>(i1);
+        REQUIRE(result.is_ok());
+        REQUIRE(result.ok() == 1);
+
+        c74::min::atom i2{2};
+        result = AtomParser::atom2value<int>(i2);
+        REQUIRE(result.is_ok());
+        REQUIRE(result.ok() == 2);
+    }
+
+    SECTION("floating") {
+        // TODO
+
+    }
+
+    SECTION("symbols") {
+        // TODO
+
+    }
+
+    SECTION("enums") {
+        // TODO
+    }
+}
+
+
+// ==============================================================================================
+
+TEST_CASE("Parsing lists (Vec)") {
+    SECTION("Simple list without brackets") {
+        c74::min::atoms atms{1, 2, 3};
+        auto result = AtomParser::atoms2vec<int>(atms);
+        REQUIRE(result.is_ok());
+        REQUIRE(result->size() == 3);
+        REQUIRE(result.ok()[0] == 1);
+        REQUIRE(result.ok()[1] == 2);
+        REQUIRE(result.ok()[2] == 3);
+    }
+
+    SECTION("Simple list with brackets") {
+        c74::min::atoms atms{"[", 1, 2, 3, "]"};
+        auto result = AtomParser::atoms2vec<int>(atms);
+        REQUIRE(result.is_ok());
+        REQUIRE(result->size() == 3);
+        REQUIRE(result.ok()[0] == 1);
+        REQUIRE(result.ok()[1] == 2);
+        REQUIRE(result.ok()[2] == 3);
+    }
+
+    SECTION("Empty list without brackets") {
+        c74::min::atoms atms{"[", "]"};
+        auto result = AtomParser::atoms2vec<int>(atms);
+        REQUIRE(result.is_ok());
+        REQUIRE(result->empty());
+    }
+
+    SECTION("Empty list with brackets") {
+        c74::min::atoms atms;
+        auto result = AtomParser::atoms2vec<int>(atms);
+        REQUIRE(result.is_ok());
+        REQUIRE(result->empty());
+    }
+
+    SECTION("Single-element list without brackets") {
+        c74::min::atoms atms{1};
+        auto result = AtomParser::atoms2vec<int>(atms);
+        REQUIRE(result.is_ok());
+        REQUIRE(result->size() == 1);
+        REQUIRE(result.ok()[0] == 1);
+
+    }
+
+    SECTION("Single-element list with brackets") {
+        c74::min::atoms atms{"[", 1, "]"};
+        auto result = AtomParser::atoms2vec<int>(atms);
+        REQUIRE(result.is_ok());
+        REQUIRE(result->size() == 1);
+        REQUIRE(result.ok()[0] == 1);
+    }
+
+    SECTION("List of lists") {
+        c74::min::atoms atms{"[", "[", 1, 2, 3, "]", "]"};
+        auto result = AtomParser::atoms2vec<int>(atms);
+        REQUIRE(!result.is_ok());
+    }
+}
+
+
+TEST_CASE("Parsing single trigger") {
+    // TODO
+}
+
+
+TEST_CASE("Parsing list of triggers (Vec<Trigger>)") {
+    // TODO
+}
+
+
+// ==============================================================================================
+
+TEST_CASE("Parsing Lists of lists (Voices)") {
     SECTION("Simple List") {
         c74::min::atoms atms{"[", 1, 2, 3, "]"};
         auto result = AtomParser::atoms2voices<int>(atms);
@@ -98,7 +252,7 @@ TEST_CASE("Parsing Lists of lists") {
         REQUIRE(result.ok()[0] == Voice<int>{Voice<int>{1, 2, 3}});
     }
 
-    SECTION("Multiple nested lists")    {
+    SECTION("Multiple nested lists") {
         c74::min::atoms atms{"[", "[", 1, 2, 3, "]", "[", 4, 5, 6, "]", "]"};
         auto result = AtomParser::atoms2voices<int>(atms);
         REQUIRE(result.is_ok());
@@ -168,13 +322,21 @@ TEST_CASE("Parsing Lists of lists") {
         }
 
         SECTION("Parsing with bracket re-prepended") {
-            AtomParser::prepend_leading_bracket(atms);
-            auto result = AtomParser::atoms2voices<int>(atms, false);
+            auto atms_formatted = AtomParser::prepend_leading_bracket(atms);
+            auto result = AtomParser::atoms2voices<int>(atms_formatted, false);
             REQUIRE(result.is_ok());
             REQUIRE(result->size() == 3);
             REQUIRE(result.ok()[0] == Voice<int>{1});
             REQUIRE(result.ok()[1] == Voice<int>{2});
             REQUIRE(result.ok()[2] == Voice<int>{3});
         }
+    }
+
+    SECTION("Simple list without outer brackets") {
+        c74::min::atoms atms{1, 2, 3};
+    }
+
+    SECTION("Nested list without outer brackets") {
+        c74::min::atoms atms{1, "[", 2, 3, "]", 4};
     }
 }

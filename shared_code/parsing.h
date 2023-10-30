@@ -28,7 +28,7 @@ struct is_atom_convertible
 
 // ==============================================================================================
 
-bool is_empty_like(const c74::min::atom& atm) {
+bool is_empty_like(const c74::min::atom& atm) noexcept {
     return (atm.type() == c74::min::message_type::no_argument
             || atm.type() == c74::min::message_type::symbol_argument && static_cast<std::string>(atm).empty())
            || (atm.type() == c74::min::message_type::int_argument && static_cast<int>(atm) == 0)
@@ -36,7 +36,7 @@ bool is_empty_like(const c74::min::atom& atm) {
 }
 
 
-bool is_empty_like(const c74::min::atoms& atms) {
+bool is_empty_like(const c74::min::atoms& atms) noexcept {
     if (atms.empty()) {
         return true;
     } else if (atms.size() == 1) {
@@ -184,7 +184,7 @@ public:
 
 
     template<typename T, typename = std::enable_if_t<parsing::is_atom_convertible<T>::value>>
-    static Result<T> atom2value(const c74::min::atom& atm) {
+    static Result<T> atom2value(const c74::min::atom& atm) noexcept {
         if constexpr (std::is_same_v<T, bool>) {
             if (atm.type() == c74::min::message_type::int_argument
                 || atm.type() == c74::min::message_type::float_argument) {
@@ -210,29 +210,37 @@ public:
 
 
     template<typename T, typename = std::enable_if_t<parsing::is_atom_convertible<T>::value>>
-    static Result<T> atoms2value(const c74::min::atoms& atms) {
-        if (atms.empty()) {
+    static Result<T> atoms2value(const c74::min::atoms& atms) noexcept {
+        auto [begin, end, size] = get_content_edges(atms);
+        (void) size;
+
+        if (begin == end) {
             return Error("Missing value");
         }
-        return atom2value<T>(atms.at(0));
+
+        return atom2value<T>(*begin);
     }
 
 
     template<typename T, typename = std::enable_if_t<parsing::is_atom_convertible<T>::value>>
-    static Result<Vec<T>> atoms2vec(const c74::min::atoms& atms) {
-        Vec<T> result = Vec<T>::allocated(atms.size());
-        for (auto& atm: atms) {
-            if (auto val = atom2value<T>(atm)) {
+    static Result<Vec<T>> atoms2vec(const c74::min::atoms& atms) noexcept {
+        auto [begin, end, size] = get_content_edges(atms);
+
+        Vec<T> result = Vec<T>::allocated(size);
+
+        for (auto it = begin; it != end; ++it) {
+            if (auto val = atom2value<T>(*it)) {
                 result.append(val.ok());
             } else {
                 return Error("Could not convert atom to type " + std::string(typeid(T).name()));
             }
         }
+
         return result;
     }
 
 
-    static Result<std::optional<Trigger>> atom2trigger(const c74::min::atom& atm) {
+    static Result<std::optional<Trigger>> atom2trigger(const c74::min::atom& atm) noexcept {
         if (atm.type() == c74::min::message_type::int_argument) {
             auto trigger_type_index = static_cast<int>(atm);
             auto trigger_type = magic_enum::enum_cast<Trigger>(trigger_type_index);
@@ -250,20 +258,21 @@ public:
     }
 
 
-    static Result<Voices<Trigger>> atoms2triggers(const c74::min::atoms& atms) {
-        Voices<Trigger> result = Voices<Trigger>::zeros(atms.size());
-        for (std::size_t i = 0; i < atms.size(); ++i) {
-            auto trigger = atom2trigger(atms[i]);
-            if (trigger.is_ok()) {
+    static Result<Voices<Trigger>> atoms2triggers(const c74::min::atoms& atms) noexcept {
+        auto [begin, end, size] = get_content_edges(atms);
+
+        Voices<Trigger> result = Voices<Trigger>::zeros(size);
+
+        auto it = begin;
+        for (std::size_t i = 0; i < size; ++i) {
+            if (auto trigger = atom2trigger(*it); trigger.is_ok()) {
                 if (trigger.ok().has_value()) {
                     result[i] = Vec<Trigger>::singular(*trigger.ok()); // valid trigger
-                } else {
-                    continue; // null trigger
-                }
+                } // else: null trigger, continue
             } else {
-                // invalid trigger: recast error message
                 return trigger.err();
             }
+            ++it;
         }
         return result;
     }
@@ -273,7 +282,8 @@ public:
      * @note: Given that the list is parsed with message<>{.., "["}, the initial "[" will always be stripped
      */
     template<typename T, typename = std::enable_if_t<parsing::is_atom_convertible<T>::value>>
-    static Result<Voices<T>> atoms2voices(const c74::min::atoms& atms, bool leading_bracket_stripped = false) {
+    static Result<Voices<T>>
+    atoms2voices_old(const c74::min::atoms& atms, bool leading_bracket_stripped = false) noexcept {
         auto it = atms.begin();
 
         if (!leading_bracket_stripped) {
@@ -317,27 +327,82 @@ public:
     }
 
 
-    static  void prepend_leading_bracket(c74::min::atoms& atms) {
-        atms.insert(atms.begin(), "[");
+    template<typename T, typename = std::enable_if_t<parsing::is_atom_convertible<T>::value>>
+    static Result<Voices<T>> atoms2voices(const c74::min::atoms& atms, bool leading_bracket_stripped = false) noexcept {
+        auto [start, end, size] = get_content_edges(atms, leading_bracket_stripped);
+        (void) size;
+
+        Vec<Voice<T>> output = {};
+
+        auto it = start;
+        while (it != end) {
+            if (*it == "[") {
+                ++it;
+                if (auto inner = parse_inner<T>(it, atms)) {
+                    output.append(std::move(*inner));
+                } else {
+                    return inner.err();
+                }
+
+            } else if (*it == "]") {
+                return Error("Ill-formatted list: ']' before end");
+            } else {
+                output.append(Voice<T>{*it});
+                ++it;
+            }
+        }
+
+        if (output.empty()) {
+            return Voices<T>::empty_like();
+        }
+        return Voices<T>(output);
+    }
+
+
+    static c74::min::atoms prepend_leading_bracket(const c74::min::atoms& atms) noexcept {
+        c74::min::atoms output;
+        output.reserve(atms.size() + 1);
+
+        output.emplace_back("[");
+        output.insert(output.end(), atms.begin(), atms.end());
+        return output;
+    }
+
+
+    static bool is_list_of_lists(const c74::min::atoms& atms, bool leading_bracket_stripped = false) noexcept {
+        if (leading_bracket_stripped) {
+            return (!atms.empty() && atms.back() == "]");
+        } else {
+            return (atms.size() >= 2 && atms.front() == "[" && atms.back() == "]");
+        }
     }
 
 
 private:
+    static std::tuple<c74::min::atoms::const_iterator, c74::min::atoms::const_iterator, std::size_t>
+    get_content_edges(const c74::min::atoms& atms, bool leading_bracket_stripped = false) noexcept {
+        if (is_list_of_lists(atms, leading_bracket_stripped)) {
+            return {atms.begin() + 1 - static_cast<long>(leading_bracket_stripped), atms.end() - 1, atms.size() - 2};
+        } else {
+            return {atms.begin(), atms.end(), atms.size()};
+        }
+    }
+
 
     template<typename T, typename = std::enable_if_t<parsing::is_atom_convertible<T>::value>>
-    static Result<Voice<T>> parse_inner(c74::min::atoms::const_iterator& it, const c74::min::atoms& input) {
+    static Result<Voice<T>> parse_inner(c74::min::atoms::const_iterator& it, const c74::min::atoms& input) noexcept {
         Voice<T> output;
         while (it != input.end()) {
             if (*it == "[") {
                 return Error("Cannot parse nested lists");
             } else if (*it == "]") {
+                ++it;
                 return {output};
             } else {
                 output.append(*it);
+                ++it;
             }
-            ++it;
         }
-
         return Error("Reached end while parsing inner list");
     }
 

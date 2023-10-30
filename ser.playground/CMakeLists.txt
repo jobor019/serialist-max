@@ -3,10 +3,10 @@ include(${C74_MIN_API_DIR}/script/min-pretarget.cmake)
 
 include_directories("${C74_INCLUDES}")
 
-# ${PROJECT_NAME} will here be name of current directory (thanks to min-pretarget.cmake)
-
 # SOURCE_FILES must be defined for min-object-unittest.cmake
 set(SOURCE_FILES ser.playground.cpp)
+
+# ${PROJECT_NAME} will here be name of current directory (thanks to min-pretarget.cmake)
 add_library(${PROJECT_NAME} MODULE ${SOURCE_FILES})
 
 
