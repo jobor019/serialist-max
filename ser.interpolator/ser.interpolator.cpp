@@ -102,6 +102,10 @@ public:
         }
     }
 
+    bool get_auto_trigger() const {
+        return m_auto_trigger;
+    }
+
 
 protected:
     virtual c74::min::atoms process_internal() = 0;
@@ -192,8 +196,8 @@ public:
     MIN_RELATED{"ser.pulsator"};
 
     inlet<> inlet_main{this, "(any) control messages"};
-    inlet<> inlet_corpus{this, "(list/listoflists) corpus"};
-    inlet<> inlet_cursor{this, "(float/list) cursor"};
+    inlet<> inlet_corpus{this, "(list/listoflists) corpus", "", false};
+    inlet<> inlet_cursor{this, "(float/list) cursor", "", [this](){return cursor_inlet_is_hot(); }};
 
     outlet<> outlet_main{this, "(float/list) pulse output"};
     outlet<> dumpout{this, "(any) dumpout"};
@@ -220,7 +224,7 @@ public:
 
             if (args.size() > 1) {
                 // TODO: Not sure if this->classname() is defined at this point!!!
-                cwarn << "extra argument for message \"" << this->classname() << "\"" << endl;
+                cwarn << "extra argument for message \"ser.interpolator\"" << endl;
             }
         } else {
             c74::min::error("missing type specification (i/f/s)");
@@ -374,6 +378,13 @@ private:
         } else {
             cerr << *output.err() << endl;
         }
+    }
+
+    bool cursor_inlet_is_hot() {
+        if (m_interpolator) {
+            return m_interpolator->get_auto_trigger();
+        }
+        return false;
     }
 
 
