@@ -1,6 +1,6 @@
 
-#ifndef SERIALIST_MAX_UTILS_H
-#define SERIALIST_MAX_UTILS_H
+#ifndef SERIALIST_PARSING_H
+#define SERIALIST_PARSING_H
 
 #include "c74_min_api.h"
 #include "result.h"
@@ -205,7 +205,7 @@ public:
                 return {static_cast<T>(atm)};
             }
         }
-        return Error("Could not convert atom to type " + std::string(typeid(T).name()));
+        return Error("Invalid type for atom (" + static_cast<std::string>(atm) + ")");
     }
 
 
@@ -232,7 +232,7 @@ public:
             if (auto val = atom2value<T>(*it)) {
                 result.append(val.ok());
             } else {
-                return Error("Could not convert atom to type " + std::string(typeid(T).name()));
+                return Error("Invalid type for atom (" + static_cast<std::string>(*it) + ")");
             }
         }
 
@@ -409,4 +409,4 @@ private:
 };
 
 
-#endif //SERIALIST_MAX_UTILS_H
+#endif //SERIALIST_PARSING_H

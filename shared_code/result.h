@@ -1,7 +1,15 @@
+#ifndef SERIALIST_RESULT_H
+#define SERIALIST_RESULT_H
+
 #include <iostream>
 #include <utility>
 #include <variant>
 #include <string>
+
+class ResultError : public std::runtime_error {
+public:
+    explicit ResultError(const std::string& msg) : std::runtime_error(msg) {}
+};
 
 
 class Error {
@@ -50,7 +58,7 @@ public:
 
     const Error& err() const {
         if (!m_error)
-            throw std::logic_error("Result is not an error");
+            throw ResultError("Result is not an error");
         return *m_error;
     }
 
@@ -79,7 +87,7 @@ public:
 
     decltype(auto) operator->() {
         if (!m_value) {
-            throw std::logic_error("Result is an error");
+            throw ResultError(m_error->message());
         }
         return m_value.operator->();
     }
@@ -91,22 +99,22 @@ public:
 
 
     /**
-     * @throws std::runtime_error
+     * @throws ResultError
      */
     const Error& err() const {
         if (!m_error)
-            throw std::logic_error("Result is not an error");
+            throw ResultError("Result is not an error");
 
         return *m_error;
     }
 
 
     /**
-     * @throws std::runtime_error
+     * @throws ResultError
      */
     const T& ok() const {
         if (!m_value)
-            throw std::logic_error("Result is an error");
+            throw ResultError(m_error->message());
         return *m_value;
     }
 
@@ -115,3 +123,5 @@ private:
     std::optional<T> m_value;
     std::optional<Error> m_error;
 };
+
+#endif // SERIALIST_RESULT_H

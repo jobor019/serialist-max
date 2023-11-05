@@ -18,6 +18,7 @@ add_subdirectory(ser.randpulse)
 add_subdirectory(ser.allocator)
 add_subdirectory(ser.interpolator)
 add_subdirectory(ser.playground)
+add_subdirectory(ser.selector)
 
 
 # Override settings from min-api for C++17 support

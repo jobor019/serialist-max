@@ -2,6 +2,7 @@
 #include "core/generatives/oscillator.h"
 #include "parsing.h"
 #include "max_timepoint.h"
+#include "max_stereotypes.h"
 
 
 using namespace c74::min;
@@ -204,7 +205,7 @@ private:
             // bang received: trigger all voices
             m_oscillator.trigger.set_values(Voices<Trigger>::singular(Trigger::pulse_on));
 
-        } else if (auto triggers = parsing::atoms2triggers(args)) {
+        } else if (auto triggers = AtomParser::atoms2triggers(args)) {
             // trigger message received, trigger specific voices
             m_oscillator.trigger.set_values(*triggers);
 
@@ -224,186 +225,75 @@ private:
         m_oscillator.oscillator.update_time(time_point);
 
         auto output = m_oscillator.oscillator.process();
-//        cout << voices.size() << endl;
 
-
-//        if (auto front = voices.front()) {
-//            cout << static_cast<double>(*front) << endl;
-//        } else {
-//            cout << "NO ITEM IN VOICE" << endl;
-//        }
-
-
-        auto formatted_atoms = parsing::voices2atoms<float>(output);
-        if (formatted_atoms.is_ok()) {
-            outlet_main.send(formatted_atoms.ok());
-        } else {
-            cerr << "failed to parse output" << endl;
-        }
+        auto formatted_atoms = AtomFormatter::voices2atoms<float>(output);
+        outlet_main.send(formatted_atoms);
     }
 
 
     bool set_type(const atoms& args) {
-        cout << "setting type" << endl;
-        if (auto v = parsing::atoms2vec<Oscillator::Type>(args)) {
-            auto t = Voices<Oscillator::Type>::transposed(*v);
-            m_oscillator.type.set_values(t);
-            return true;
-        } else {
-            cerr << v.err() << endl;
-            return false;
-        }
+        return Setters::set_vector(args, m_oscillator.type, cerr);
     }
 
 
     bool set_freq(const atoms& args) {
-        cout << "setting freq" << endl;
-        if (auto v = parsing::atoms2vec<double>(args)) {
-            auto f = Voices<double>::transposed(*v);
-            m_oscillator.freq.set_values(f);
-            return true;
-        } else {
-            cerr << v.err() << endl;
-            return false;
-        }
+        return Setters::set_vector<double>(args, m_oscillator.freq, cerr);
     }
 
 
     bool set_period(const atoms& args) {
-        cout << "setting period" << endl;
-        if (auto v = parsing::atoms2vec<double>(args)) {
-            auto f = Voices<double>::transposed(v.ok().map([](auto x) {
-                return std::abs(x) < 1e-6 ? 0.0 : 1.0 / x;
-            }));
-            m_oscillator.freq.set_values(f);
-            return true;
-
-        } else {
-            cerr << v.err() << endl;
-            return false;
-        }
-
-
+        return Setters::set_vector<double, double>(args, m_oscillator.freq, cerr, [](const double& d) {
+            return std::abs(d) < 1e-6 ? 0.0 : 1.0 / d;
+        });
     }
 
 
     bool set_mul(const atoms& args) {
-        cout << "setting mul" << endl;
-        if (auto v = parsing::atoms2vec<double>(args)) {
-            auto f = Voices<double>::transposed(*v);
-            m_oscillator.mul.set_values(f);
-            return true;
-        } else {
-            cerr << v.err() << endl;
-            return false;
-        }
+        return Setters::set_vector<double>(args, m_oscillator.mul, cerr);
     }
 
 
     bool set_add(const atoms& args) {
-        cout << "setting add" << endl;
-        if (auto v = parsing::atoms2vec<double>(args)) {
-            auto f = Voices<double>::transposed(*v);
-            m_oscillator.add.set_values(f);
-            return true;
-        } else {
-            cerr << v.err() << endl;
-            return false;
-        }
+        return Setters::set_vector<double>(args, m_oscillator.add, cerr);
     }
 
 
     bool set_duty(const atoms& args) {
-        cout << "setting duty" << endl;
-        if (auto v = parsing::atoms2vec<double>(args)) {
-            auto f = Voices<double>::transposed(*v);
-            m_oscillator.duty.set_values(f);
-            return true;
-        } else {
-            cerr << v.err() << endl;
-            return false;
-        }
+        return Setters::set_vector<double>(args, m_oscillator.duty, cerr);
     }
 
 
     bool set_curve(const atoms& args) {
-        cout << "setting curve" << endl;
-        if (auto v = parsing::atoms2vec<double>(args)) {
-            auto f = Voices<double>::transposed(*v);
-            m_oscillator.curve.set_values(f);
-            return true;
-        } else {
-            cerr << v.err() << endl;
-            return false;
-        }
+        return Setters::set_vector<double>(args, m_oscillator.curve, cerr);
     }
 
 
     bool set_stepped(const atoms& args) {
-        cout << "setting stepped" << endl;
-        if (auto v = parsing::atoms2value<bool>(args)) {
-            m_oscillator.stepped.set_value(*v);
-            return true;
-        } else {
-            cerr << v.err() << endl;
-            return false;
-        }
+        return Setters::set_value<bool>(args, m_oscillator.stepped, cerr);
     }
 
 
     bool set_tau(const atoms& args) {
-        cout << "setting tau" << endl;
-        if (auto v = parsing::atoms2vec<double>(args)) {
-            auto f = Voices<double>::transposed(*v);
-            m_oscillator.tau.set_values(f);
-            return true;
-        } else {
-            cerr << v.err() << endl;
-            return false;
-        }
+        return Setters::set_vector<double>(args, m_oscillator.tau, cerr);
     }
 
 
     bool set_phase(const atoms& args) {
-        cout << "setting phase" << endl;
-        if (auto v = parsing::atoms2vec<double>(args)) {
-            auto f = Voices<double>::transposed(*v);
-            m_oscillator.phase.set_values(f);
-            return true;
-        } else {
-            cerr << v.err() << endl;
-            return false;
-        }
+        return Setters::set_vector<double>(args, m_oscillator.phase, cerr);
     }
 
 
     bool set_enabled(const atoms& args) {
-        cout << "setting enabled" << endl;
-        if (auto v = parsing::atoms2vec<bool>(args)) {
-            auto e = Voices<bool>::transposed(*v);
-            m_oscillator.enabled.set_values(e);
-            return true;
-
-        } else {
-            cerr << v.err().message() << endl;
-            return false;
-        }
+        return Setters::set_vector<bool>(args, m_oscillator.enabled, cerr);
     }
 
 
     bool set_num_voices(const atoms& args) {
-        if (auto v = parsing::atoms2value<int>(args)) {
-            m_oscillator.num_voices.set_value(static_cast<std::size_t >(*v));
-            return true;
-
-        } else {
-            cerr << v.err().message() << endl;
-            return false;
-        }
+        return Setters::set_value<std::size_t, int>(args, m_oscillator.num_voices, cerr);
     }
 
 
 };
 
 
-MIN_EXTERNAL(oscillator);
+MIN_EXTERNAL(oscillator)
