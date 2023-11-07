@@ -232,64 +232,64 @@ private:
 
 
     bool set_type(const atoms& args) {
-        return Setters::set_vector(args, m_oscillator.type, cerr);
+        return AttributeSetters::try_set_vector(args, m_oscillator.type, cerr);
     }
 
 
     bool set_freq(const atoms& args) {
-        return Setters::set_vector<double>(args, m_oscillator.freq, cerr);
+        return AttributeSetters::try_set_vector<double>(args, m_oscillator.freq, cerr);
     }
 
 
     bool set_period(const atoms& args) {
-        return Setters::set_vector<double, double>(args, m_oscillator.freq, cerr, [](const double& d) {
+        return AttributeSetters::try_set_vector<double, double>(args, m_oscillator.freq, cerr, [](const double& d) {
             return std::abs(d) < 1e-6 ? 0.0 : 1.0 / d;
         });
     }
 
 
     bool set_mul(const atoms& args) {
-        return Setters::set_vector<double>(args, m_oscillator.mul, cerr);
+        return AttributeSetters::try_set_vector<double>(args, m_oscillator.mul, cerr);
     }
 
 
     bool set_add(const atoms& args) {
-        return Setters::set_vector<double>(args, m_oscillator.add, cerr);
+        return AttributeSetters::try_set_vector<double>(args, m_oscillator.add, cerr);
     }
 
 
     bool set_duty(const atoms& args) {
-        return Setters::set_vector<double>(args, m_oscillator.duty, cerr);
+        return AttributeSetters::try_set_vector<double>(args, m_oscillator.duty, cerr);
     }
 
 
     bool set_curve(const atoms& args) {
-        return Setters::set_vector<double>(args, m_oscillator.curve, cerr);
+        return AttributeSetters::try_set_vector<double>(args, m_oscillator.curve, cerr);
     }
 
 
     bool set_stepped(const atoms& args) {
-        return Setters::set_value<bool>(args, m_oscillator.stepped, cerr);
+        return AttributeSetters::try_set_value<bool>(args, m_oscillator.stepped, cerr);
     }
 
 
     bool set_tau(const atoms& args) {
-        return Setters::set_vector<double>(args, m_oscillator.tau, cerr);
+        return AttributeSetters::try_set_vector<double>(args, m_oscillator.tau, cerr);
     }
 
 
     bool set_phase(const atoms& args) {
-        return Setters::set_vector<double>(args, m_oscillator.phase, cerr);
+        return AttributeSetters::try_set_vector<double>(args, m_oscillator.phase, cerr);
     }
 
 
     bool set_enabled(const atoms& args) {
-        return Setters::set_vector<bool>(args, m_oscillator.enabled, cerr);
+        return AttributeSetters::try_set_vector<bool>(args, m_oscillator.enabled, cerr);
     }
 
 
     bool set_num_voices(const atoms& args) {
-        return Setters::set_value<std::size_t, int>(args, m_oscillator.num_voices, cerr);
+        return AttributeSetters::try_set_value<std::size_t, int>(args, m_oscillator.num_voices, cerr);
     }
 
 
