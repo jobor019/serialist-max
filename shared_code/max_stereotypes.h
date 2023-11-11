@@ -128,6 +128,7 @@ public:
                            , Sequence<OutputType, StoredType>& seq
                            , bool leading_bracket_stripped = false) {
         auto voices = AtomParser::atoms2voices<StoredType>(args, leading_bracket_stripped).ok();
+        voices.print();
         seq.set_values(voices);
     }
 

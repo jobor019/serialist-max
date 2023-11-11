@@ -180,7 +180,7 @@ public:
     inlet<> inlet_corpus{this, "(list/listoflists) corpus", "", false};
     inlet<> inlet_cursor{this, "(float/list) cursor", "", [this]() { return cursor_inlet_is_hot(); }};
 
-    outlet<> outlet_main{this, "(float/list) pulse output"};
+    outlet<> outlet_main{this, "(float/list) interpolated output"};
     outlet<> dumpout{this, "(any) dumpout"};
 
     static const inline std::string CLASS_NAME = "interpolator";
@@ -220,7 +220,7 @@ public:
                                          , title{"Interpolation strategy"}
                                          , description{""}
                                          , setter{MIN_FUNCTION {
-                return generic_setter(args, &MaxInterpolatorBase::set_strategy_type, static_cast<atoms>(strategy));
+                return generic_setter(args, &MaxInterpolatorBase::set_strategy_type, strategy);
             }}
     };
 
@@ -230,7 +230,7 @@ public:
                             , title{Titles::ENABLED}
                             , description{Descriptions::ENABLED}
                             , setter{MIN_FUNCTION {
-                return generic_setter(args, &MaxInterpolatorBase::set_enabled, static_cast<atoms>(enabled));
+                return generic_setter(args, &MaxInterpolatorBase::set_enabled, enabled);
             }}
     };
 
@@ -239,7 +239,7 @@ public:
                           , 0
                           , title{"Number of voices"}
                           , setter{MIN_FUNCTION {
-                return generic_setter(args, &MaxInterpolatorBase::set_num_voices, static_cast<atoms>(voices));
+                return generic_setter(args, &MaxInterpolatorBase::set_num_voices, voices);
             }}
     };
 
@@ -248,7 +248,7 @@ public:
                                 , false
                                 , title{"Triggers"}
                                 , setter{MIN_FUNCTION {
-                return generic_setter(args, &MaxInterpolatorBase::set_auto_trigger, static_cast<atoms>(autotrigger));
+                return generic_setter(args, &MaxInterpolatorBase::set_auto_trigger, autotrigger);
             }}
     };
 

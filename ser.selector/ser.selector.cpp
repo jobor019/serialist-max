@@ -1,6 +1,7 @@
 #include "c74_min.h"
 #include "core/generatives/selector.h"
 #include "parsing.h"
+#include "max_stereotypes.h"
 
 
 using namespace c74::min;
@@ -17,36 +18,41 @@ public:
 
     virtual Result<c74::min::atoms> process_trigger(const atoms& args) = 0;
 
-    virtual Result<c74::min::atoms> update_material(const atoms& args, bool trigger_output) = 0;
+    virtual void update_material(const atoms& args) = 0;
 
 
-    Result<void> set_strategy_type(const atoms& args) {
-        (void) args;
-        return {};
+    void set_strategy_type(const atoms& args) {
+        // SelectorAdapter requires a Facet which it treats in the same manner as enums
+        // (values mapped to range(0.0, 1.0), hence the type acrobatics here
+        auto strategy_as_doubles = AtomParser::atoms2vec<int>(args)
+                .ok()
+                .cloned()
+                .as_type<double>([](const int index) {
+                    return utils::index2double(static_cast<std::size_t>(index), SelectionStrategy::count());
+                });
+        std::cout << "STRATEL: ";
+        strategy_as_doubles.print();
+        m_strategy_type.set_values(Voices<double>::transposed(strategy_as_doubles));
     }
 
 
-    Result<void> set_nth_indices(const atoms& args) {
-        (void) args;
-        return {};
+    void set_nth_indices(const atoms& args) {
+        AttributeSetters::set_vector(args, m_nth_indices);
     }
 
 
-    Result<void> set_num_random(const atoms& args) {
-        (void) args;
-        return {};
+    void set_num_random(const atoms& args) {
+        AttributeSetters::set_vector(args, m_num_random);
     }
 
 
-    Result<void> set_enabled(const atoms& args) {
-        (void) args;
-        return {};
+    void set_enabled(const atoms& args) {
+        AttributeSetters::set_value<bool>(args, m_enabled);
     }
 
 
-    Result<void> set_num_voices(const atoms& args) {
-        (void) args;
-        return {};
+    void set_num_voices(const atoms& args) {
+        AttributeSetters::set_value<std::size_t, int>(args, m_num_voices);
     }
 
 
@@ -70,15 +76,24 @@ protected:
 template<typename OutputType, typename StoredType = OutputType>
 class MaxSelectorGeneric : public MaxSelectorBase {
 public:
-    Result<c74::min::atoms> process_trigger(const atoms& args) {
-        (void) args;
-        return Error("Not implemented"); // TODO
+    Result<c74::min::atoms> process_trigger(const atoms& args) override {
+        if (auto triggers = AtomParser::atoms2triggers(args)) {
+            m_trigger.set_values(*triggers);
+            m_last_update_time += 1.0;
+
+            // Actual time irrelevant, just need a new value for time gating
+            m_selector.update_time(TimePoint(m_last_update_time));
+            auto voices = m_selector.process();
+            return AtomFormatter::voices2atoms<StoredType>(voices);
+
+        } else {
+            return triggers.err();
+        }
     }
 
 
-    Result<c74::min::atoms> update_material(const atoms& args, bool trigger_output = false) {
-        (void) args, (void) trigger_output;
-        return Error("Not implemented"); // TODO
+    void update_material(const atoms& args) override {
+        AttributeSetters::set_voices<StoredType>(args, m_material);
     }
 
 
@@ -87,6 +102,8 @@ private:
 
     SelectorNode<OutputType> m_selector{SelectorKeys::CLASS_NAME, m_parameter_handler, &m_trigger, &m_material
                                         , &m_strategy, &m_enabled, &m_num_voices};
+
+    double m_last_update_time = 0.0;
 
 };
 
@@ -108,9 +125,10 @@ public:
     MIN_AUTHOR{"Borg"};
     MIN_RELATED{""};
 
-    inlet<> inlet_main{this, "(anything) an inlet"};
+    inlet<> inlet_main{this, "(anything) control messages"};
+    inlet<> inlet_material{this, "(list) material"};
 
-    outlet<> outlet_main{this, "(anything) an outlet"};
+    outlet<> outlet_main{this, "(anything) selection"};
     outlet<> dumpout{this, "(anything) dumpout"};
 
 
@@ -139,50 +157,94 @@ public:
     }
 
 
+    attribute<std::vector<int>> strategy{this, "strategy"
+                                         , {0}
+                                         , title{"Selection strategy"}
+                                         , setter{MIN_FUNCTION {
+                return generic_setter(args, &MaxSelectorBase::set_strategy_type, strategy);
+            }}
+    };
+
+
+    attribute<std::vector<int>> nths{this, "nths"
+                                     , {0}
+                                     , title{"Indices (nth strategy)"}
+                                     , setter{MIN_FUNCTION {
+                return generic_setter(args, &MaxSelectorBase::set_nth_indices, nths);
+            }}};
+
+
+    attribute<std::vector<int>> nrand{this, "nrand"
+                                      , {1}
+                                      , title{"Number of selections (random strategy)"}
+                                      , setter{MIN_FUNCTION {
+                return generic_setter(args, &MaxSelectorBase::set_num_random, nrand);
+            }}
+    };
+
+
     attribute<bool> enabled{this, "enabled"
                             , true
                             , title{"Set enabled"}
                             , setter{MIN_FUNCTION {
-                return generic_setter(&MaxSelectorBase::set_enabled, args, enabled);
-            }}};
+                return generic_setter(args, &MaxSelectorBase::set_enabled, enabled);
+            }}
+    };
+
 
     attribute<int> voices{this, "voices"
                           , 0
                           , title{"Set number of voices"}
                           , setter{MIN_FUNCTION {
-                return generic_setter(&MaxSelectorBase::set_num_voices, args, voices);
+                return generic_setter(args, &MaxSelectorBase::set_num_voices, voices);
             }}
     };
 
-    //    attribute<std::vector<int>> triggers{};
-//    attribute<std::vector<
+
+    message<> material{this, "material", "Selection material", setter{MIN_FUNCTION {
+        update_material(args);
+        return {};
+    }}};
+
+
+    c74::min::function handle_input = MIN_FUNCTION {
+        if (inlet == 1) {
+            update_material(args);
+        } else {
+            update_triggers(args);
+        }
+        return {};
+    };
+
+
+    message<> list = Messages::list_message(this, handle_input);
+    message<> number = Messages::number_message(this, handle_input);
+    message<> list_of_list = Messages::list_of_list_message(this, handle_input);
+    message<> anything = Messages::anything_message(this, handle_input);
 
 private:
 
-    // TODO
-    class ResultError;
+    template<typename SetterFunc, typename = std::enable_if_t<std::is_member_function_pointer_v<SetterFunc>>>
+    const atoms& generic_setter(const atoms& new_value
+                                , SetterFunc setter_func
+                                , const atoms& current_value) noexcept {
+        return AttributeSetters::try_call_external_setter(m_selector, setter_func, new_value, current_value, cerr);
+    }
 
-    template<typename SetterPtr>
-    c74::min::atoms generic_setter(SetterPtr setter_ptr
-                                   , const c74::min::atoms& args
-                                   , const c74::min::atoms& current_value) {
-        if (!m_selector)
-            return args;
 
-        try {
-            ((*m_selector).*setter_ptr)(args);
-            return args;
-        } catch (const ResultError& e) {
-            cerr << e.message() << endl;
-            return current_value;
+    void update_material(const atoms& args) {
+        generic_setter(args, &MaxSelectorBase::update_material, {});
+    }
+
+
+    void update_triggers(const atoms& args) {
+        if (auto output = m_selector->process_trigger(args)) {
+            if (!output->empty()) {
+                outlet_main.send(*output);
+            }
+        } else {
+            cerr << *output.err() << endl;
         }
-
-//        if (auto result = ((*m_selector).*setter_ptr)(args)) {
-//            return args;
-//        } else {
-//            cerr << result.err().message() << endl;
-//            return current_value;
-//        }
     }
 
 
