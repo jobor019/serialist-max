@@ -51,7 +51,7 @@ public:
     ErrorMessages() = delete;
 
     static std::string extra_argument(const std::string& class_name) {
-        return "extra argument for message \"ser." + class_name + "\"";
+        return "extra argument for message \"" + class_name + "\"";
     }
 
     static std::string missing_argument(const std::string& class_name, const std::string& usage_descriptor = "") {

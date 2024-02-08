@@ -73,13 +73,13 @@ public:
 
     c74::min::function handle_input = MIN_FUNCTION {
         if (inlet == 0) {
-            if (AttributeSetters::try_set_vector<double>(args, m_op.lhs, cerr)) {
+            if (AttributeSetters::try_set_voices<double>(args, m_op.lhs, cerr)) {
                 if (lhs_is_hot()) {
                     process();
                 }
             }
         } else if (inlet == 1) {
-            if (AttributeSetters::try_set_vector<double>(args, m_op.rhs, cerr)) {
+            if (AttributeSetters::try_set_voices<double>(args, m_op.rhs, cerr)) {
                 if (rhs_is_hot()) {
                     process();
                 }
