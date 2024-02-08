@@ -53,6 +53,16 @@ public:
     static std::string extra_argument(const std::string& class_name) {
         return "extra argument for message \"ser." + class_name + "\"";
     }
+
+    static std::string missing_argument(const std::string& class_name, const std::string& usage_descriptor = "") {
+        auto str = class_name + ": missing argument";
+
+        if (!usage_descriptor.empty()) {
+            str += " (usage:  " + class_name + " " + usage_descriptor + ")";
+        }
+
+        return str;
+    }
 };
 
 
