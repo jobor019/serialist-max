@@ -5,6 +5,7 @@
 #include "c74_min_api.h"
 #include "parsing.h"
 #include "core/algo/time/transport.h"
+#include "max_stereotypes.h"
 
 class MaxTimePoint {
 public:
@@ -48,6 +49,14 @@ public:
     }
 
 
+    static Result<TimePoint> get_time_point_of(const c74::min::atom& clock_name) {
+        if (auto tp = get_time_of(clock_name)) {
+            return tp->as_time_point();
+        } else {
+            return Error(ErrorMessages::CLOCK_SOURCE_UNKNOWN);
+        }
+    }
+
     TimePoint as_time_point() const {
         return TimePoint(m_ticks / 480.0, m_tempo
                          , static_cast<double>(m_beats)
@@ -55,12 +64,28 @@ public:
     }
 
 
+    std::string to_string() const {
+        return "tempo: " + std::to_string(m_tempo) +
+               " ticks: " + std::to_string(m_ticks) +
+               " bars: " + std::to_string(m_bars) +
+               " beats: " + std::to_string(m_beats) +
+               " units: " + std::to_string(m_units) +
+               " meter: " + std::to_string(m_meter_num) + "/" + std::to_string(m_meter_denom);
+    }
+
+
     double get_tempo() const { return m_tempo; }
+
     double get_ticks() const { return m_ticks; }
+
     long get_bars() const { return m_bars; }
+
     long get_beats() const { return m_beats; }
+
     double get_units() const { return m_units; }
+
     long get_meter_num() const { return m_meter_num; }
+
     long get_meter_denom() const { return m_meter_denom; }
 
 

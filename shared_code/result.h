@@ -70,10 +70,10 @@ private:
 template<typename T>
 class Result {
 public:
-    Result(const T& value) : m_value(value), m_error(std::nullopt) {}
+    Result(const T& value) : m_value(value), m_error(std::nullopt) {} // NOLINT(*-explicit-constructor)
 
 
-    Result(const Error& error) : m_value(std::nullopt), m_error(error) {}
+    Result(const Error& error) : m_value(std::nullopt), m_error(error) {} // NOLINT(*-explicit-constructor)
 
 
     explicit operator bool() const noexcept {

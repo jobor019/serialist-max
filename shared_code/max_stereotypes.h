@@ -16,6 +16,9 @@ public:
     static inline const std::string NUM_VOICES = "voices";
     static inline const std::string TRIGGERS = "triggers";
 
+    static inline const std::string CLOCK = "clock";
+    static inline const std::string FLUSH = "flush";
+
 };
 
 
@@ -26,6 +29,9 @@ public:
     static inline const c74::min::title ENABLED = "Enabled";
     static inline const c74::min::title NUM_VOICES = "Number of voices";
     static inline const c74::min::title TRIGGERS = "Triggers";
+
+    static inline const c74::min::title CLOCK = "Clock Source";
+    static inline const c74::min::title FLUSH = "Flush";
 };
 
 
@@ -41,6 +47,11 @@ public:
     static inline const c74::min::description ENABLED = "Toggles the object's active mode. "
                                                         "When the active attribute is set to 0, "
                                                         "the object will not output anything when triggered";
+
+    static inline const c74::min::description NUM_VOICES = "Num Voices: TODO"; // TODO
+
+    static inline const c74::min::description CLOCK = "Set clock source";
+    static inline const c74::min::description FLUSH = "Flush: TODO";
 };
 
 // ==============================================================================================
@@ -49,6 +60,8 @@ public:
 class ErrorMessages {
 public:
     ErrorMessages() = delete;
+
+    static inline const std::string CLOCK_SOURCE_UNKNOWN = "unknown clock source";
 
     static std::string extra_argument(const std::string& class_name) {
         return "extra argument for message \"" + class_name + "\"";
@@ -63,6 +76,7 @@ public:
 
         return str;
     }
+
 };
 
 
@@ -289,6 +303,50 @@ public:
             , const c74::min::description& description = Descriptions::DEPENDS_ON_INLET
     ) noexcept {
         return c74::min::message<>{obj, "anything", description, handle_input};
+    }
+
+};
+
+
+// ==============================================================================================
+
+class TriggerStereotypes {
+public:
+    TriggerStereotypes() = delete;
+
+    static void output_triggers_sorted(const Voices<Trigger>& triggers
+                                       , c74::min::outlet<>& outlet
+                                       , c74::min::logger& cerr) {
+        return output_triggers_sorted(triggers, outlet, outlet, cerr);
+    }
+
+    static void output_triggers_sorted(const Voices<Trigger>& triggers
+                                       , c74::min::outlet<>& pulse_on_outlet
+                                       , c74::min::outlet<>& pulse_off_outlets
+                                       , c74::min::logger& cerr) {
+        if (triggers.is_empty_like()) {
+            return;
+        }
+
+        auto [pulse_ons, pulse_offs] = triggers.partition([](const auto& trigger) {
+            return trigger.is(Trigger::Type::pulse_on);
+        });
+
+        if (!pulse_offs.is_empty_like()) {
+            if (auto parsed = AtomFormatter::triggers2atoms(pulse_offs)) {
+                pulse_off_outlets.send(*parsed);
+            } else {
+                cerr << parsed.err().message() << c74::min::endl;
+            }
+        }
+
+        if (!pulse_ons.is_empty_like()) {
+            if (auto parsed = AtomFormatter::triggers2atoms(pulse_ons)) {
+                pulse_on_outlet.send(*parsed);
+            } else {
+                cerr << parsed.err().message() << c74::min::endl;
+            }
+        }
     }
 
 };

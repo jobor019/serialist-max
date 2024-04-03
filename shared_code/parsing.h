@@ -45,6 +45,14 @@ bool is_empty_like(const c74::min::atoms& atms) noexcept {
     return false;
 }
 
+std::size_t to_zero_index(std::size_t i) noexcept {
+    return utils::decrement(i);
+}
+
+std::size_t to_one_index(std::size_t i) noexcept {
+    return utils::increment(i);
+}
+
 } // namespace parsing
 
 
@@ -101,9 +109,19 @@ public:
     static Result<c74::min::atom> trigger2atom(const Vec<Trigger>& trigger) {
         if (trigger.empty()) {
             return {parsing::NULL_STRING};
+
         } else if (trigger.size() == 1) {
-            return {static_cast<int>(trigger[0])};
+            if (trigger[0].is(Trigger::Type::pulse_on)) {
+                // Pulse on: positive number (one-indexed)
+                return {static_cast<long>(parsing::to_one_index(trigger[0].get_id()))};
+            } else if (trigger[0].is(Trigger::Type::pulse_off)) {
+                // Pulse off: negative number (one-indexed)
+                return {-static_cast<long>(parsing::to_one_index(trigger[0].get_id()))};
+            } else {
+                return Error("Invalid trigger type");
+            }
         }
+
         return Error("Invalid trigger: cannot parse multiple triggers in a single voice");
     }
 
@@ -242,18 +260,25 @@ public:
 
     static Result<std::optional<Trigger>> atom2trigger(const c74::min::atom& atm) noexcept {
         if (atm.type() == c74::min::message_type::int_argument) {
-            auto trigger_type_index = static_cast<int>(atm);
-            auto trigger_type = magic_enum::enum_cast<Trigger>(trigger_type_index);
-            if (trigger_type.has_value()) {
-                return trigger_type;
-            } else {
-                return Error("Invalid trigger type: " + std::to_string(trigger_type_index));
+            auto trigger_type_id = static_cast<long>(atm);
+
+            if (trigger_type_id == 0) {
+                return Error("Invalid trigger: 0 is neither a pulse on nor a pulse off");
             }
+
+            if (trigger_type_id < 0) {
+                return {Trigger(Trigger::Type::pulse_off, parsing::to_zero_index(-trigger_type_id))};
+
+            } else {
+                return {Trigger(Trigger::Type::pulse_on, parsing::to_zero_index(trigger_type_id))};
+            }
+
         } else if (atm.type() == c74::min::message_type::symbol_argument
                    && static_cast<std::string>(atm) == parsing::NULL_STRING) {
             return {std::nullopt}; // "null" is a valid trigger without a value
+
         } else {
-            return Error("Invalid trigger type: triggers should only be integer values or 'null'");
+            return Error("Invalid trigger type: triggers should only be non-zero integral values or 'null'");
         }
     }
 

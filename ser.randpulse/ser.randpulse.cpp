@@ -106,7 +106,7 @@ public:
     };
 
 
-    attribute<symbol> clock{this, "clock", "", description{"Set clock source"}};
+    attribute<symbol> clock{this, Keywords::CLOCK, "", title{Titles::CLOCK},description{Descriptions::CLOCK}};
 
 
     message<> flush{this, "flush", "(bang) flush held notes", MIN_FUNCTION {
