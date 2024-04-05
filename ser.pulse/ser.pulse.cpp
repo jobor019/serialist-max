@@ -113,6 +113,7 @@ public:
                         return mode;
                     }
 
+                    cout << "mode:" << static_cast<int>(m_pulse.pulsator_node.get_mode()) << endl;
                     return args;
                 } else {
                     return mode;

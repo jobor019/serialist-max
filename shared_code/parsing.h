@@ -267,10 +267,10 @@ public:
             }
 
             if (trigger_type_id < 0) {
-                return {Trigger(Trigger::Type::pulse_off, parsing::to_zero_index(-trigger_type_id))};
+                return {Trigger::with_manual_id(Trigger::Type::pulse_off, parsing::to_zero_index(-trigger_type_id))};
 
             } else {
-                return {Trigger(Trigger::Type::pulse_on, parsing::to_zero_index(trigger_type_id))};
+                return {Trigger::with_manual_id(Trigger::Type::pulse_on, parsing::to_zero_index(trigger_type_id))};
             }
 
         } else if (atm.type() == c74::min::message_type::symbol_argument
