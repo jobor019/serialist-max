@@ -18,6 +18,7 @@ public:
 
     static inline const std::string CLOCK = "clock";
     static inline const std::string FLUSH = "flush";
+    static inline const std::string BANG = "bang";
 
 };
 
@@ -262,6 +263,14 @@ public:
 class Messages {
 public:
     Messages() = delete;
+
+    static c74::min::message<> bang_message(
+            c74::min::object_base* obj
+            , const c74::min::function& handle_input
+            , const c74::min::description& description = Descriptions::DEPENDS_ON_INLET
+    ) noexcept {
+        return c74::min::message<>{obj, "bang", description, handle_input};
+    }
 
 
     static c74::min::message<> list_message(

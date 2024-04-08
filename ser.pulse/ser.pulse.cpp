@@ -3,6 +3,7 @@
 #include "max_stereotypes.h"
 #include "core/generatives/variable_state_pulsator.h"
 #include "max_timepoint.h"
+#include "utils.h"
 
 
 using namespace c74::min;
@@ -128,26 +129,40 @@ public:
         } else if (inlet == 1) {
             set_duration(args);
         } else {
-            // TODO
-//            process(args);
+            process_incoming_triggers(args);
         }
 
         return {};
     };
 
-    message<> bang{this, "bang", MIN_FUNCTION {
-        // TODO
+    message<> bang{this, Keywords::BANG
+    , description{"Function depends on mode"}
+    , MIN_FUNCTION {
+        if (inlet != 0) {
+            return {};
+        }
+        cout << "BANG (size: " << args.size() << ")" << endl;
+
+        // TODO: THIS SHOULD MATCH NUMBER OF VOICES / UTILIZE AUTO! IF SINGLE ARGUMENT, ALL SHOULD BE TRIGGERED (I think?)
+        process_incoming_triggers({"bang"});
+
         return {};
+
     }};
 
     message<> flush{this, Keywords::FLUSH
                     , description{Descriptions::FLUSH}
                     , MIN_FUNCTION {
+                if (inlet != 0) {
+                    return {};
+                }
+
                 std::lock_guard lock{m_mutex};
                 cwarn << "flush not implemented yet" << endl;
                 return {};
             }};
 
+//    message<> bang = Messages::bang_message(this, handle_input);
     message<> list = Messages::list_message(this, handle_input);
     message<> number = Messages::number_message(this, handle_input);
     message<> list_of_list = Messages::list_of_list_message(this, handle_input);
@@ -164,7 +179,7 @@ private:
 
         // CRITICAL SECTION: BEGIN //
 
-        std::unique_lock lock(m_mutex, std::try_to_lock);
+        std::unique_lock lock(m_mutex, std::try_to_lock); // try_to_lock: we can ignore this iteration if busy
         if (!lock.owns_lock()) {
             return;
         }
@@ -178,9 +193,39 @@ private:
         TriggerStereotypes::output_triggers_sorted(triggers, outlet_main, cerr);
     }
 
+    void process_incoming_triggers(const atoms& atms) {
+        if (auto incoming_triggers = AtomParser::atoms2triggers(atms, true)) {
+
+            auto time = MaxTimePoint::get_time_point_of(clock.get());
+            if (!time) {
+                cerr << time.err() << endl;
+                return;
+            }
+
+            // CRITICAL SECTION: BEGIN //
+
+            std::unique_lock lock{m_mutex}; // should not try_to_lock, important to get output in same scheduler cycle
+
+            m_pulse.trigger.set_values(*incoming_triggers);
+            auto outgoing_triggers = process_unsafe(*time);
+
+            lock.unlock();
+
+            // CRITICAL SECTION: END //
+
+            TriggerStereotypes::output_triggers_sorted(outgoing_triggers, outlet_main, cerr);
+        } else {
+            cerr << incoming_triggers.err() << endl;
+        }
+    }
+
+
     Voices<Trigger> process_unsafe(const TimePoint& t) {
         m_pulse.pulsator_node.update_time(t);
-        return m_pulse.pulsator_node.process();
+        auto output = m_pulse.pulsator_node.process();
+
+        m_pulse.trigger.set_values(Voices<Trigger>::empty_like()); // remove any processed incoming trigger
+        return output;
     }
 
 
@@ -188,9 +233,11 @@ private:
         return AttributeSetters::try_set_vector(args, m_pulse.duration, cerr);
     }
 
+
     bool set_legato(const atoms& args) {
         return AttributeSetters::try_set_vector(args, m_pulse.legato_amount, cerr);
     }
+
 
     bool set_sample_and_hold(const atoms& args) {
         return AttributeSetters::try_set_vector(args, m_pulse.sample_and_hold, cerr);
@@ -200,6 +247,7 @@ private:
     bool set_enabled(const atoms& args) {
         return AttributeSetters::try_set_value(args, m_pulse.enabled, cerr);
     }
+
 
     bool set_num_voices(const atoms& args) {
         return AttributeSetters::try_set_value(args, m_pulse.num_voices, cerr);
