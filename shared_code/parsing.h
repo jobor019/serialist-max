@@ -9,6 +9,7 @@
 #include "core/collections/voices.h"
 #include "core/algo/facet.h"
 #include "core/algo/time/trigger.h"
+#include "core/event.h"
 
 namespace parsing {
 
@@ -138,6 +139,37 @@ public:
         }
         return result.vector();
     }
+
+
+    static Result<c74::min::atoms> event2atoms(const Event& event) {
+        if (event.is<MidiNoteEvent>()) {
+            auto atms  =Vec<c74::min::atom>::allocated(3);
+
+            const auto& e = event.as<MidiNoteEvent>();
+            atms.append(static_cast<long>(e.note_number));
+            atms.append(static_cast<long>(e.velocity));
+            atms.append(static_cast<long>(e.channel));
+
+            return atms.vector();
+        } else {
+            return Error("Unknown event type");
+        }
+    }
+
+    static Result<Vec<c74::min::atoms>> events2atoms(const Vec<Event>& events) {
+        Vec<c74::min::atoms> result = Vec<c74::min::atoms>::allocated(events.size());
+        for (const auto& event: events) {
+            if (auto atms = event2atoms(event)) {
+                result.append(*atms);
+            } else {
+                return atms.err();
+            }
+        }
+        return result;
+    }
+
+    // Note: There's no Voices<Event> to atom, as this would return a list of lists of atoms. For outputting,
+    //       use events2atoms on each element in the Voices<Event> or EventStereotypes::output_as_events
 
 
 private:

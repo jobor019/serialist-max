@@ -323,16 +323,16 @@ class TriggerStereotypes {
 public:
     TriggerStereotypes() = delete;
 
-    static void output_triggers_sorted(const Voices<Trigger>& triggers
-                                       , c74::min::outlet<>& outlet
-                                       , c74::min::logger& cerr) {
-        return output_triggers_sorted(triggers, outlet, outlet, cerr);
+    static void output_as_triggers_sorted(const Voices<Trigger>& triggers
+                                          , c74::min::outlet<>& outlet
+                                          , c74::min::logger& cerr) {
+        return output_as_triggers_sorted(triggers, outlet, outlet, cerr);
     }
 
-    static void output_triggers_sorted(const Voices<Trigger>& triggers
-                                       , c74::min::outlet<>& pulse_on_outlet
-                                       , c74::min::outlet<>& pulse_off_outlets
-                                       , c74::min::logger& cerr) {
+    static void output_as_triggers_sorted(const Voices<Trigger>& triggers
+                                          , c74::min::outlet<>& pulse_on_outlet
+                                          , c74::min::outlet<>& pulse_off_outlets
+                                          , c74::min::logger& cerr) {
         if (triggers.is_empty_like()) {
             return;
         }
@@ -358,6 +358,37 @@ public:
         }
     }
 
+};
+
+
+// ==============================================================================================
+
+class EventStereotypes {
+public:
+    EventStereotypes() = delete;
+
+    static void output_as_events(const Voices<Event>& events
+                                 , c74::min::outlet<>& outlet
+                                 , std::optional<c74::min::outlet<>> done_outlet
+                                 , c74::min::logger& cerr) {
+        if (events.is_empty_like()) {
+            return;
+        }
+
+        for (const auto& event : events) {
+            if (auto parsed_events = AtomFormatter::events2atoms(event)) {
+                for (const auto& parsed : *parsed_events) {
+                    outlet.send(parsed);
+                }
+            } else {
+                cerr << parsed_events.err().message() << c74::min::endl;
+            }
+        }
+
+        if (done_outlet) {
+            done_outlet->send(Keywords::BANG);
+        }
+    }
 };
 
 

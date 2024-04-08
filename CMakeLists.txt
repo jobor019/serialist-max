@@ -21,6 +21,7 @@ add_subdirectory(ser.playground)
 add_subdirectory(ser.selector)
 add_subdirectory(ser.op)
 add_subdirectory(ser.pulse)
+add_subdirectory(ser.makenote)
 
 
 # Override settings from min-api for C++17 support

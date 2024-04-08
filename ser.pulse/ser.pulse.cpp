@@ -190,7 +190,7 @@ private:
 
         // CRITICAL SECTION: END //
 
-        TriggerStereotypes::output_triggers_sorted(triggers, outlet_main, cerr);
+        TriggerStereotypes::output_as_triggers_sorted(triggers, outlet_main, cerr);
     }
 
     void process_incoming_triggers(const atoms& atms) {
@@ -213,7 +213,7 @@ private:
 
             // CRITICAL SECTION: END //
 
-            TriggerStereotypes::output_triggers_sorted(outgoing_triggers, outlet_main, cerr);
+            TriggerStereotypes::output_as_triggers_sorted(outgoing_triggers, outlet_main, cerr);
         } else {
             cerr << incoming_triggers.err() << endl;
         }
