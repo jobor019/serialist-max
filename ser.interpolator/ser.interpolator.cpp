@@ -30,7 +30,7 @@ public:
 
 
     Result<c74::min::atoms> process_trigger(const atoms& args) noexcept {
-        if (auto triggers = AtomParser::atoms2triggers(args)) {
+        if (auto triggers = AtomParser::atoms2triggers(args, true)) {
             if (Trigger::contains_pulse_on(*triggers)) {
                 m_trigger.set_values(*triggers);
                 return process_internal();
@@ -274,7 +274,7 @@ public:
         return {};
     };
 
-
+    message<> bang = Messages::bang_message(this, handle_input);
     message<> list = Messages::list_message(this, handle_input);
     message<> number = Messages::number_message(this, handle_input);
     message<> list_of_list = Messages::list_of_list_message(this, handle_input);

@@ -135,20 +135,6 @@ public:
         return {};
     };
 
-    message<> bang{this, Keywords::BANG
-    , description{"Function depends on mode"}
-    , MIN_FUNCTION {
-        if (inlet != 0) {
-            return {};
-        }
-        cout << "BANG (size: " << args.size() << ")" << endl;
-
-        // TODO: THIS SHOULD MATCH NUMBER OF VOICES / UTILIZE AUTO! IF SINGLE ARGUMENT, ALL SHOULD BE TRIGGERED (I think?)
-        process_incoming_triggers({"bang"});
-
-        return {};
-
-    }};
 
     message<> flush{this, Keywords::FLUSH
                     , description{Descriptions::FLUSH}
@@ -162,7 +148,7 @@ public:
                 return {};
             }};
 
-//    message<> bang = Messages::bang_message(this, handle_input);
+    message<> bang = Messages::bang_message(this, handle_input);
     message<> list = Messages::list_message(this, handle_input);
     message<> number = Messages::number_message(this, handle_input);
     message<> list_of_list = Messages::list_of_list_message(this, handle_input);

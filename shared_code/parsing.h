@@ -303,8 +303,7 @@ public:
     }
 
 
-    static Result<std::optional<Trigger>> atom2trigger(const c74::min::atom& atm
-                                                       , bool bang_creates_new = false) noexcept {
+    static Result<std::optional<Trigger>> atom2trigger(const c74::min::atom& atm) noexcept {
         if (atm.type() == c74::min::message_type::int_argument) {
             auto trigger_type_id = static_cast<long>(atm);
 
@@ -319,9 +318,6 @@ public:
                 return {Trigger::with_manual_id(Trigger::Type::pulse_on, parsing::to_zero_index(trigger_type_id))};
             }
 
-        } else if (bang_creates_new && parsing::is_bang(atm)) {
-            return {Trigger::pulse_on()};
-
         } else if (parsing::is_null(atm)) { // "null" is a valid trigger without a value
             return {std::nullopt};
 
@@ -331,14 +327,21 @@ public:
     }
 
 
-    static Result<Voices<Trigger>> atoms2triggers(const c74::min::atoms& atms, bool bang_creates_new = false) noexcept {
+    static Result<Voices<Trigger>> atoms2triggers(const c74::min::atoms& atms
+                                                  , bool empty_creates_new = false) noexcept {
+        // if atms.empty(), this is typically the result of processing a singular "bang".
+        //    note that null or [] will not create any trigger here
+        if (empty_creates_new && atms.empty()) {
+            return Voices<Trigger>::singular(Trigger::pulse_on());
+        }
+
         auto [begin, end, size] = get_content_edges(atms);
 
         Voices<Trigger> result = Voices<Trigger>::zeros(size);
 
         auto it = begin;
         for (std::size_t i = 0; i < size; ++i) {
-            if (auto trigger = atom2trigger(*it, bang_creates_new); trigger.is_ok()) {
+            if (auto trigger = atom2trigger(*it); trigger.is_ok()) {
                 if (trigger.ok().has_value()) {
                     result[i] = Vec<Trigger>::singular(*trigger.ok()); // valid trigger
                 } // else: null trigger, continue
