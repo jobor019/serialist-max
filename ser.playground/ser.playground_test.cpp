@@ -127,6 +127,11 @@ TEST_CASE("Parsing single atom") {
         REQUIRE(result.ok() == 2);
     }
 
+    SECTION("null") {
+        c74::min::atom v{"null"};
+        auto result = AtomParser::atom2value<int>(v);
+    }
+
     SECTION("floating") {
         // TODO
 
@@ -276,6 +281,56 @@ TEST_CASE("Parsing Lists of lists (Voices)") {
         REQUIRE(result.is_ok());
         REQUIRE(result->size() == 1);
         REQUIRE(result.ok()[0].empty());
+    }
+
+    SECTION("Single null") {
+        c74::min::atoms atms{"null"};
+        auto result = AtomParser::atoms2voices<int>(atms);
+        REQUIRE(result.is_ok());
+        REQUIRE(result->is_empty_like());
+    }
+
+    SECTION("Multiple null") {
+        c74::min::atoms atms{"null", "null", "null"};
+        auto result = AtomParser::atoms2voices<int>(atms);
+        REQUIRE(result.is_ok());
+        REQUIRE(result->size() == 3);
+        REQUIRE(result.ok()[0].empty());
+        REQUIRE(result.ok()[1].empty());
+        REQUIRE(result.ok()[2].empty());
+    }
+
+    SECTION("Null/value mix") {
+        c74::min::atoms atms{"null", 1, "null"};
+        auto result = AtomParser::atoms2voices<int>(atms);
+        REQUIRE(result.is_ok());
+        REQUIRE(result->size() == 3);
+        REQUIRE(result.ok()[0].empty());
+        REQUIRE(result.ok()[1] == Voice<int>{1});
+        REQUIRE(result.ok()[2].empty());
+    }
+
+    SECTION("Nested null") {
+        c74::min::atoms atms{"[", "null", "]"};
+        auto result = AtomParser::atoms2voices<int>(atms);
+        REQUIRE(result.is_ok());
+        REQUIRE(result->is_empty_like());
+    }
+
+    SECTION("Nested multiple null") {
+        c74::min::atoms atms{"[", "null", "null", "null", "]"};
+        auto result = AtomParser::atoms2voices<int>(atms);
+        REQUIRE(result.is_ok());
+        REQUIRE(result->size() == 3);
+        REQUIRE(result.ok()[0].empty());
+        REQUIRE(result.ok()[1].empty());
+        REQUIRE(result.ok()[2].empty());
+    }
+
+    SECTION("Invalid null usage") {
+        c74::min::atoms atms{"[", "[", "null", "]", "]"};
+        auto result = AtomParser::atoms2voices<int>(atms);
+        REQUIRE(!result.is_ok());
     }
 
     SECTION("Missing ending bracket") {

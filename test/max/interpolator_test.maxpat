@@ -3,8 +3,8 @@
 		"fileversion" : 1,
 		"appversion" : 		{
 			"major" : 8,
-			"minor" : 5,
-			"revision" : 5,
+			"minor" : 6,
+			"revision" : 2,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
@@ -40,6 +40,28 @@
 		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-38",
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 0,
+					"patching_rect" : [ 81.0, 222.0, 104.0, 22.0 ],
+					"text" : "ser.interpolator 11"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-34",
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 0,
+					"patching_rect" : [ 81.0, 193.0, 114.0, 22.0 ],
+					"text" : "ser.interpolator asdf"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-28",
 					"maxclass" : "newobj",
 					"numinlets" : 2,
@@ -69,7 +91,7 @@
 					"numinlets" : 3,
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
-					"patching_rect" : [ 725.0, 384.0, 148.0, 22.0 ],
+					"patching_rect" : [ 81.0, 252.0, 148.0, 22.0 ],
 					"text" : "ser.interpolator i extra_arg"
 				}
 
@@ -123,6 +145,7 @@
 						"valueof" : 						{
 							"parameter_longname" : "live.dial[3]",
 							"parameter_mmax" : 4.0,
+							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.dial",
 							"parameter_type" : 0,
 							"parameter_unitstyle" : 1
@@ -184,6 +207,7 @@
 							"parameter_enum" : [ "continue", "modulo", "clip", "pass" ],
 							"parameter_longname" : "live.menu[1]",
 							"parameter_mmax" : 3,
+							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.menu",
 							"parameter_type" : 2
 						}
@@ -207,6 +231,7 @@
 						"valueof" : 						{
 							"parameter_longname" : "live.dial[2]",
 							"parameter_mmax" : 4.0,
+							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.dial",
 							"parameter_type" : 0,
 							"parameter_unitstyle" : 1
@@ -364,6 +389,7 @@
 						"valueof" : 						{
 							"parameter_longname" : "live.dial[1]",
 							"parameter_mmax" : 4.0,
+							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.dial",
 							"parameter_type" : 0,
 							"parameter_unitstyle" : 1
@@ -411,6 +437,7 @@
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
 							"parameter_longname" : "live.numbox[1]",
+							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.numbox[1]",
 							"parameter_type" : 0,
 							"parameter_unitstyle" : 0
@@ -485,6 +512,7 @@
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
 							"parameter_longname" : "live.numbox",
+							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.numbox",
 							"parameter_type" : 0,
 							"parameter_unitstyle" : 0
@@ -546,6 +574,7 @@
 							"parameter_enum" : [ "continue", "modulo", "clip", "pass" ],
 							"parameter_longname" : "live.menu",
 							"parameter_mmax" : 3,
+							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.menu",
 							"parameter_type" : 2
 						}
@@ -629,6 +658,7 @@
 						"valueof" : 						{
 							"parameter_longname" : "live.dial",
 							"parameter_mmax" : 4.0,
+							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.dial",
 							"parameter_type" : 0,
 							"parameter_unitstyle" : 1
@@ -694,7 +724,7 @@
 					"maxclass" : "newobj",
 					"numinlets" : 0,
 					"numoutlets" : 0,
-					"patching_rect" : [ 776.0, 495.0, 88.0, 22.0 ],
+					"patching_rect" : [ 81.0, 162.0, 88.0, 22.0 ],
 					"text" : "ser.interpolator"
 				}
 

@@ -20,6 +20,8 @@ public:
     static inline const std::string FLUSH = "flush";
     static inline const std::string BANG = "bang";
 
+    static inline const std::string TYPE_SPEC = "type";
+
 };
 
 
@@ -33,6 +35,8 @@ public:
 
     static inline const c74::min::title CLOCK = "Clock Source";
     static inline const c74::min::title FLUSH = "Flush";
+
+    static inline const c74::min::title TYPE_SPEC = "Type Specification";
 };
 
 
@@ -53,6 +57,8 @@ public:
 
     static inline const c74::min::description CLOCK = "Set clock source";
     static inline const c74::min::description FLUSH = "Flush: TODO";
+
+    static inline const c74::min::description TYPE_SPEC = "Type Specification (i/f/s)";
 };
 
 // ==============================================================================================
@@ -63,6 +69,10 @@ public:
     ErrorMessages() = delete;
 
     static inline const std::string CLOCK_SOURCE_UNKNOWN = "unknown clock source";
+
+    static inline const std::string TYPE_SPEC_INVALID = "invalid type specification (valid: i/f/s)";
+    static inline const std::string TYPE_SPEC_WRONG_TYPE = "type specification must be a symbol (i/f/s)";
+    static inline const std::string TYPE_SPEC_MISSING = "missing type specification (i/f/s)";
 
     static std::string extra_argument(const std::string& class_name) {
         return "extra argument for message \"" + class_name + "\"";
@@ -78,6 +88,9 @@ public:
         return str;
     }
 
+    static std::string format(const std::string& error_message, const std::string& class_name) {
+        return "ser." + class_name + ": " + error_message;
+    }
 };
 
 
@@ -375,9 +388,9 @@ public:
             return;
         }
 
-        for (const auto& event : events) {
+        for (const auto& event: events) {
             if (auto parsed_events = AtomFormatter::events2atoms(event)) {
-                for (const auto& parsed : *parsed_events) {
+                for (const auto& parsed: *parsed_events) {
                     outlet.send(parsed);
                 }
             } else {
@@ -389,6 +402,44 @@ public:
             done_outlet->send(Keywords::BANG);
         }
     }
+};
+
+
+// ==============================================================================================
+
+class TypeSpecificationStereotypes {
+public:
+    TypeSpecificationStereotypes() = delete;
+
+    static Result<c74::min::message_type> atoms2type_specification(const c74::min::atoms& args) {
+        if (args.empty()) {
+            return Error(ErrorMessages::TYPE_SPEC_MISSING);
+        } else {
+            return atom2type_specification(args[0]);
+        }
+    }
+
+    static Result<c74::min::message_type> atom2type_specification(const c74::min::atom& args) {
+        if (auto parsed = AtomParser::atom2value<std::string>(args)) {
+            return string2type_specification(*parsed);
+        } else {
+            return Error(ErrorMessages::TYPE_SPEC_WRONG_TYPE);
+        }
+    }
+
+    static Result<c74::min::message_type> string2type_specification(const std::string& str) {
+        if (str == "i" || str == "int") {
+            return c74::min::message_type::int_argument;
+        } else if (str == "f" || str == "float") {
+            return c74::min::message_type::float_argument;
+        } else if (str == "s" || str == "symbol") {
+            return c74::min::message_type::symbol_argument;
+        } else {
+            return Error(ErrorMessages::TYPE_SPEC_INVALID);
+        }
+    }
+
+
 };
 
 

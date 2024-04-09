@@ -13,20 +13,29 @@ using namespace c74::min;
 class MaxInterpolatorBase {
 public:
     MaxInterpolatorBase() = default;
+
     virtual ~MaxInterpolatorBase() = default;
+
     MaxInterpolatorBase(const MaxInterpolatorBase&) = delete;
+
     MaxInterpolatorBase& operator=(const MaxInterpolatorBase&) = delete;
+
     MaxInterpolatorBase(MaxInterpolatorBase&&) noexcept = delete;
+
     MaxInterpolatorBase& operator=(MaxInterpolatorBase&&) noexcept = delete;
 
     virtual void set_corpus(const atoms& args) = 0;
+
     virtual void set_strategy_pivot(const atoms& args) = 0;
 
 
     Result<c74::min::atoms> process_trigger(const atoms& args) noexcept {
         if (auto triggers = AtomParser::atoms2triggers(args)) {
-            m_trigger.set_values(*triggers);
-            return process_internal();
+            if (Trigger::contains_pulse_on(*triggers)) {
+                m_trigger.set_values(*triggers);
+                return process_internal();
+            }
+            return {c74::min::atoms()};
         } else {
             return triggers.err();
         }
@@ -42,7 +51,7 @@ public:
                 auto triggers = Voices<Trigger>::zeros(cursor_as_voices.size());
                 for (std::size_t i = 0; i < cursor_as_voices.size(); ++i) {
                     if (!cursor_as_voices[i].empty()) {
-                        triggers[i].append(Trigger::pulse_on);
+                        triggers[i].append(Trigger::pulse_on());
                     }
                 }
 
@@ -187,30 +196,20 @@ public:
 
 
     explicit interpolator(const atoms& args = {}) {
-        // Note: ctor is called twice by min api where error() will only fail on the second pass,
-        // hence the inverted logic here is necessary
-        if (!args.empty()) {
-            if (args[0].type() == c74::min::message_type::symbol_argument) {
-                auto type = static_cast<std::string>(args[0]);
-                if (type == "i" || type == "int") {
-                    m_interpolator = std::make_unique<MaxInterpolatorIntegral>();
-                } else if (type == "f" || type == "float") {
-                    m_interpolator = std::make_unique<MaxInterpolatorFloating>();
-                } else if (type == "s" || type == "symbol") {
-                    m_interpolator = std::make_unique<MaxInterpolatorSymbol>();
-                } else {
-                    error("invalid type specification");
-                }
-            } else {
-                error("type specification must be a symbol (i/f/s)");
-            }
+        if (args.size() > 1) {
+            cwarn << ErrorMessages::extra_argument(CLASS_NAME) << endl;
+        }
 
-            if (args.size() > 1) {
-                // TODO: Not sure if this->classname() is defined at this point!!!
-                cwarn << ErrorMessages::extra_argument(CLASS_NAME) << endl;
+        if (auto type_spec = TypeSpecificationStereotypes::atoms2type_specification(args)) {
+            if (*type_spec == c74::min::message_type::int_argument) {
+                m_interpolator = std::make_unique<MaxInterpolatorIntegral>();
+            } else if (*type_spec == c74::min::message_type::float_argument) {
+                m_interpolator = std::make_unique<MaxInterpolatorFloating>();
+            } else {
+                m_interpolator = std::make_unique<MaxInterpolatorSymbol>();
             }
         } else {
-            c74::min::error("missing type specification (i/f/s)");
+            error(ErrorMessages::format(*type_spec.err(), CLASS_NAME));
         }
     }
 
@@ -318,7 +317,7 @@ private:
     }
 
 
-    bool cursor_inlet_is_hot() {
+    bool cursor_inlet_is_hot() const {
         if (m_interpolator) {
             return m_interpolator->get_auto_trigger();
         }

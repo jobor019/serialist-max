@@ -15,6 +15,16 @@ namespace parsing {
 
 const inline std::string NULL_STRING = "null";
 
+inline bool is_null(const c74::min::atom& atm) noexcept {
+    return (atm.type() == c74::min::message_type::symbol_argument
+            && static_cast<std::string>(atm) == NULL_STRING);
+}
+
+inline bool is_bang(const c74::min::atom& atm) noexcept {
+    return (atm.type() == c74::min::message_type::symbol_argument
+            && static_cast<std::string>(atm) == "bang");
+}
+
 template<typename T>
 struct is_atom_convertible
         : std::disjunction<
@@ -25,6 +35,9 @@ struct is_atom_convertible
                 , std::is_same<T, c74::min::atom>
         > {
 };
+
+template<typename T>
+inline constexpr bool is_atom_convertible_v = is_atom_convertible<T>::value;
 
 
 // ==============================================================================================
@@ -143,7 +156,7 @@ public:
 
     static Result<c74::min::atoms> event2atoms(const Event& event) {
         if (event.is<MidiNoteEvent>()) {
-            auto atms  =Vec<c74::min::atom>::allocated(3);
+            auto atms = Vec<c74::min::atom>::allocated(3);
 
             const auto& e = event.as<MidiNoteEvent>();
             atms.append(static_cast<long>(e.note_number));
@@ -233,7 +246,7 @@ public:
     AtomParser() = delete;
 
 
-    template<typename T, typename = std::enable_if_t<parsing::is_atom_convertible<T>::value>>
+    template<typename T, typename = std::enable_if_t<parsing::is_atom_convertible_v<T>>>
     static Result<T> atom2value(const c74::min::atom& atm) noexcept {
         if constexpr (std::is_same_v<T, bool>) {
             if (atm.type() == c74::min::message_type::int_argument
@@ -259,7 +272,7 @@ public:
     }
 
 
-    template<typename T, typename = std::enable_if_t<parsing::is_atom_convertible<T>::value>>
+    template<typename T, typename = std::enable_if_t<parsing::is_atom_convertible_v<T>>>
     static Result<T> atoms2value(const c74::min::atoms& atms) noexcept {
         auto [begin, end, size] = get_content_edges(atms);
         (void) size;
@@ -272,7 +285,7 @@ public:
     }
 
 
-    template<typename T, typename = std::enable_if_t<parsing::is_atom_convertible<T>::value>>
+    template<typename T, typename = std::enable_if_t<parsing::is_atom_convertible_v<T>>>
     static Result<Vec<T>> atoms2vec(const c74::min::atoms& atms) noexcept {
         auto [begin, end, size] = get_content_edges(atms);
 
@@ -306,14 +319,11 @@ public:
                 return {Trigger::with_manual_id(Trigger::Type::pulse_on, parsing::to_zero_index(trigger_type_id))};
             }
 
-        } else if (bang_creates_new &&
-                   atm.type() == c74::min::message_type::symbol_argument &&
-                   static_cast<std::string>(atm) == "bang") {
+        } else if (bang_creates_new && parsing::is_bang(atm)) {
             return {Trigger::pulse_on()};
 
-        } else if (atm.type() == c74::min::message_type::symbol_argument
-                   && static_cast<std::string>(atm) == parsing::NULL_STRING) {
-            return {std::nullopt}; // "null" is a valid trigger without a value
+        } else if (parsing::is_null(atm)) { // "null" is a valid trigger without a value
+            return {std::nullopt};
 
         } else {
             return Error("Invalid trigger type: triggers should only be non-zero integral values or 'null'");
@@ -341,56 +351,7 @@ public:
     }
 
 
-    /**
-     * @note: Given that the list is parsed with message<>{.., "["}, the initial "[" will always be stripped
-     */
-    template<typename T, typename = std::enable_if_t<parsing::is_atom_convertible<T>::value>>
-    static Result<Voices<T>>
-    atoms2voices_old(const c74::min::atoms& atms, bool leading_bracket_stripped = false) noexcept {
-        auto it = atms.begin();
-
-        if (!leading_bracket_stripped) {
-            if (atms.empty()) {
-                return Error("Ill-formatted list: empty");
-            }
-
-            if (!(atms[0] == "[")) {
-                return Error("Ill-formatted list: missing '['");
-            }
-            ++it;
-        }
-
-        Vec<Voice<T>> output = {};
-
-        while (it != atms.end()) {
-            if (*it == "[") {
-                ++it;
-                if (auto inner = parse_inner<T>(it, atms)) {
-                    output.append(std::move(*inner));
-                } else {
-                    return inner.err();
-                }
-
-            } else if (*it == "]") {
-                if (it + 1 == atms.end()) {
-                    if (output.empty()) {
-                        return Voices<T>::empty_like();
-                    }
-                    return Voices<T>(output);
-                } else {
-                    return Error("Ill-formatted list: ']' before end");
-                }
-            } else {
-                output.append(Voice<T>{*it});
-            }
-            ++it;
-
-        }
-        return Error("Ill-formatted list: missing ']'");
-    }
-
-
-    template<typename T, typename = std::enable_if_t<parsing::is_atom_convertible<T>::value>>
+    template<typename T, typename = std::enable_if_t<parsing::is_atom_convertible_v<T>>>
     static Result<Voices<T>> atoms2voices(const c74::min::atoms& atms, bool leading_bracket_stripped = false) noexcept {
         auto [start, end, size] = get_content_edges(atms, leading_bracket_stripped);
         (void) size;
@@ -409,6 +370,9 @@ public:
 
             } else if (*it == "]") {
                 return Error("Ill-formatted list: ']' before end");
+            } else if (parsing::is_null(*it)) {
+                output.append(Voice<T>());
+                ++it;
             } else {
                 output.append(Voice<T>{*it});
                 ++it;
@@ -452,11 +416,11 @@ private:
     }
 
 
-    template<typename T, typename = std::enable_if_t<parsing::is_atom_convertible<T>::value>>
+    template<typename T, typename = std::enable_if_t<parsing::is_atom_convertible_v<T>>>
     static Result<Voice<T>> parse_inner(c74::min::atoms::const_iterator& it, const c74::min::atoms& input) noexcept {
         Voice<T> output;
         while (it != input.end()) {
-            if (*it == "[") {
+            if (*it == "[" || parsing::is_null(*it)) {
                 return Error("Cannot parse nested lists");
             } else if (*it == "]") {
                 ++it;

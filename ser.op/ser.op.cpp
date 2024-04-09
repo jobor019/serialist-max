@@ -12,6 +12,8 @@ private:
     bool m_lhs_is_hot = true;
     bool m_rhs_is_hot = false;
 
+    c74::min::message_type m_output_type = c74::min::message_type::float_argument;
+
 public:
     MIN_DESCRIPTION{"Multi-channel unary and binary operators"};
     MIN_TAGS{"utilities"};
@@ -27,12 +29,12 @@ public:
 
     explicit op(const atoms& args = {}) {
         if (args.empty()) {
-            error(ErrorMessages::missing_argument(CLASS_NAME /* , "<operator> [inital_value]" */));
+            error(ErrorMessages::missing_argument(CLASS_NAME, "<operator> [inital_value]"));
         } else {
-            if (auto type_str = AtomParser::atom2value<std::string>(args[0])) {
+            if (auto mode_str = AtomParser::atom2value<std::string>(args[0])) {
                 try {
-                    auto type = Operator::from_string(*type_str);
-                    m_op.type.set_values(type);
+                    auto mode = Operator::from_string(*mode_str);
+                    m_op.type.set_values(mode);
                 } catch (std::domain_error&) {
                     error(CLASS_NAME + ": invalid operator: " + static_cast<std::string>(args[0]));
                 }
@@ -100,6 +102,22 @@ public:
             }}
     };
 
+    attribute<symbol> type{this
+                           , Keywords::TYPE_SPEC
+                           , "float"
+                           , title{Titles::TYPE_SPEC}
+                           , description{Descriptions::TYPE_SPEC}
+                           , setter{MIN_FUNCTION {
+                if (auto type_spec = TypeSpecificationStereotypes::atoms2type_specification(args)) {
+                    m_output_type = *type_spec;
+                    return args;
+                } else {
+                    error(ErrorMessages::format(*type_spec.err(), CLASS_NAME));
+                }
+                return type;
+            }}
+    };
+
     message<> bang{this, "bang", MIN_FUNCTION {
         process();
         return {};
@@ -114,7 +132,17 @@ private:
     void process() {
         m_op.operator_node.update_time(TimePoint());
         auto output = m_op.operator_node.process();
-        auto formatted_atoms = AtomFormatter::voices2atoms<double>(output);
+        c74::min::atoms formatted_atoms;
+        if (m_output_type == c74::min::message_type::int_argument) {
+            formatted_atoms = AtomFormatter::voices2atoms<long>(output);
+        } else if (m_output_type == c74::min::message_type::float_argument) {
+            formatted_atoms = AtomFormatter::voices2atoms<double>(output);
+        } else {
+            formatted_atoms = AtomFormatter::voices2atoms<std::string>(
+                    output.as_type<std::string>([](const Facet& v) {
+                        return std::to_string(static_cast<long>(v));
+                    }));
+        }
         outlet_main.send(formatted_atoms);
     }
 
