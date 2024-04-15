@@ -3,7 +3,6 @@
 
 
 #include "parsing.h"
-#include "max_timepoint.h"
 
 #include "core/generatives/interpolator.h"
 #include "max_stereotypes.h"
@@ -187,7 +186,7 @@ public:
 
     inlet<> inlet_main{this, "(any) control messages"};
     inlet<> inlet_corpus{this, "(list/listoflists) corpus", "", false};
-    inlet<> inlet_cursor{this, "(float/list) cursor", "", [this]() { return cursor_inlet_is_hot(); }};
+    inlet<> inlet_cursor{this, "(float/list) cursor", "", [this]() { return this->cursor_inlet_is_hot(); }};
 
     outlet<> outlet_main{this, "(float/list) interpolated output"};
     outlet<> dumpout{this, "(any) dumpout"};
@@ -209,7 +208,7 @@ public:
                 m_interpolator = std::make_unique<MaxInterpolatorSymbol>();
             }
         } else {
-            error(ErrorMessages::format(*type_spec.err(), CLASS_NAME));
+            c74::min::error(ErrorMessages::format(*type_spec.err(), CLASS_NAME));
         }
     }
 
@@ -219,7 +218,7 @@ public:
                                          , title{"Interpolation strategy"}
                                          , description{""}
                                          , setter{MIN_FUNCTION {
-                return generic_setter(args, &MaxInterpolatorBase::set_strategy_type, strategy);
+                return this->generic_setter(args, &MaxInterpolatorBase::set_strategy_type, strategy);
             }}
     };
 
@@ -229,7 +228,7 @@ public:
                             , title{Titles::ENABLED}
                             , description{Descriptions::ENABLED}
                             , setter{MIN_FUNCTION {
-                return generic_setter(args, &MaxInterpolatorBase::set_enabled, enabled);
+                return this->generic_setter(args, &MaxInterpolatorBase::set_enabled, enabled);
             }}
     };
 
@@ -238,7 +237,7 @@ public:
                           , 0
                           , title{"Number of voices"}
                           , setter{MIN_FUNCTION {
-                return generic_setter(args, &MaxInterpolatorBase::set_num_voices, voices);
+                return this->generic_setter(args, &MaxInterpolatorBase::set_num_voices, voices);
             }}
     };
 
@@ -247,7 +246,7 @@ public:
                                 , false
                                 , title{"Triggers"}
                                 , setter{MIN_FUNCTION {
-                return generic_setter(args, &MaxInterpolatorBase::set_auto_trigger, autotrigger);
+                return this->generic_setter(args, &MaxInterpolatorBase::set_auto_trigger, autotrigger);
             }}
     };
 
@@ -258,18 +257,18 @@ public:
             cerr << "invalid message \"pivot\" for inlet " << inlet << endl;
         }
 
-        generic_setter(args, &MaxInterpolatorBase::set_strategy_pivot, {});
+        this->generic_setter(args, &MaxInterpolatorBase::set_strategy_pivot, {});
         return {};
     }}};
 
 
     c74::min::function handle_input = MIN_FUNCTION {
         if (inlet == 2) {
-            update_cursor(args);
+            this->update_cursor(args);
         } else if (inlet == 1) {
-            update_corpus(args);
+            this->update_corpus(args);
         } else {
-            update_triggers(args);
+            this->update_triggers(args);
         }
         return {};
     };

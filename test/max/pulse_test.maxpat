@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 34.0, 87.0, 2068.0, 1258.0 ],
+		"rect" : [ 34.0, 100.0, 1020.0, 788.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -39,6 +39,40 @@
 		"subpatcher_template" : "",
 		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
+				"box" : 				{
+					"id" : "obj-29",
+					"linecount" : 4,
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 1078.0, 192.0, 50.0, 62.0 ],
+					"text" : "-8423 null null null null null"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"bgmode" : 0,
+					"border" : 0,
+					"clickthrough" : 0,
+					"enablehscroll" : 0,
+					"enablevscroll" : 0,
+					"id" : "obj-13",
+					"lockeddragscroll" : 0,
+					"lockedsize" : 0,
+					"maxclass" : "bpatcher",
+					"name" : "ser.pulse.ui.maxpat",
+					"numinlets" : 3,
+					"numoutlets" : 2,
+					"offset" : [ 0.0, 0.0 ],
+					"outlettype" : [ "int/listoflists", "" ],
+					"patching_rect" : [ 1109.0, 69.25, 123.0, 99.75 ],
+					"viewvisibility" : 1
+				}
+
+			}
+, 			{
 				"box" : 				{
 					"id" : "obj-12",
 					"maxclass" : "button",
@@ -213,7 +247,7 @@
 					"parameter_enable" : 0,
 					"patching_rect" : [ 236.0, 209.0, 18.0, 34.0 ],
 					"size" : 2,
-					"value" : 1
+					"value" : 0
 				}
 
 			}
@@ -402,7 +436,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 34.0, 87.0, 2492.0, 1258.0 ],
+						"rect" : [ 34.0, 100.0, 1444.0, 788.0 ],
 						"bglocked" : 0,
 						"openinpresentation" : 0,
 						"default_fontsize" : 12.0,
@@ -1994,7 +2028,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 1015.0, 452.0, 50.0, 35.0 ],
-					"text" : "149.768361"
+					"text" : "340.79016"
 				}
 
 			}
@@ -2031,7 +2065,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 984.0, 404.0, 50.0, 22.0 ],
-					"text" : "18"
+					"text" : "96"
 				}
 
 			}
@@ -2084,13 +2118,12 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-8",
-					"linecount" : 2,
 					"maxclass" : "message",
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 362.0, 390.0, 50.0, 35.0 ],
-					"text" : "-20 -22 -20"
+					"patching_rect" : [ 362.0, 390.0, 50.0, 22.0 ],
+					"text" : "-8426"
 				}
 
 			}
@@ -2160,6 +2193,13 @@
 				"patchline" : 				{
 					"destination" : [ "obj-2", 0 ],
 					"source" : [ "obj-112", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-29", 1 ],
+					"source" : [ "obj-13", 0 ]
 				}
 
 			}
@@ -2600,6 +2640,12 @@
  ],
 		"parameters" : 		{
 			"obj-101" : [ "live.numbox[5]", "live.numbox", 0 ],
+			"obj-13::obj-2" : [ "live.menu[5]", "live.menu", 0 ],
+			"obj-13::obj-22" : [ "live.numbox[18]", "live.numbox", 0 ],
+			"obj-13::obj-27" : [ "live.text[11]", "live.text", 0 ],
+			"obj-13::obj-36" : [ "live.text[10]", "live.text", 0 ],
+			"obj-13::obj-5" : [ "live.numbox[19]", "live.numbox", 0 ],
+			"obj-13::obj-6" : [ "live.numbox[16]", "live.numbox", 0 ],
 			"obj-17" : [ "live.numbox", "live.numbox", 0 ],
 			"obj-3" : [ "live.toggle[1]", "live.toggle", 0 ],
 			"obj-31" : [ "live.numbox[1]", "live.numbox", 0 ],
@@ -2620,12 +2666,30 @@
 
 			}
 ,
+			"parameter_overrides" : 			{
+				"obj-13::obj-5" : 				{
+					"parameter_range" : [ 0.0, 20.0 ]
+				}
+,
+				"obj-13::obj-6" : 				{
+					"parameter_range" : [ 1.0, 200.0 ]
+				}
+
+			}
+,
 			"inherited_shortname" : 1
 		}
 ,
 		"dependency_cache" : [ 			{
 				"name" : "ser.pulse.mxo",
 				"type" : "iLaX"
+			}
+, 			{
+				"name" : "ser.pulse.ui.maxpat",
+				"bootpath" : "~/CLionProjects/serialist-max/patchers",
+				"patcherrelativepath" : "../../patchers",
+				"type" : "JSON",
+				"implicit" : 1
 			}
  ],
 		"autosave" : 0

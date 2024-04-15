@@ -28,61 +28,59 @@ public:
     outlet<> outlet_main{this, "(list) note_number velocity channel"};
     outlet<> dumpout{this, "(any) dumpout"};
 
-    attribute<symbol> clock{this, Keywords::CLOCK
-                            , ""
-                            , title{Titles::CLOCK}
-                            , description{Descriptions::CLOCK}};
+    attribute<symbol> clock{this, Keywords::CLOCK, "", title{Titles::CLOCK}, description{Descriptions::CLOCK}};
 
 
-    attribute<bool> enabled{this, Keywords::ENABLED
-                            , true
-                            , title{Titles::ENABLED}
-                            , description{Descriptions::ENABLED}
-                            , setter{MIN_FUNCTION {
-                if (set_enabled(args))
+    attribute<bool> enabled{
+        this, Keywords::ENABLED, true, title{Titles::ENABLED}, description{Descriptions::ENABLED}, setter{
+            MIN_FUNCTION {
+                if (this->set_enabled(args))
                     return args;
                 return enabled;
-            }}
+            }
+        }
     };
 
 
-    attribute<int> voices{this, Keywords::NUM_VOICES
-                          , 0
-                          , title{Titles::NUM_VOICES}
-                          , description{Descriptions::ENABLED}
-                          , setter{MIN_FUNCTION {
+    attribute<int> voices{
+        this, Keywords::NUM_VOICES, 0, title{Titles::NUM_VOICES}, description{Descriptions::ENABLED}, setter{
+            MIN_FUNCTION {
                 if (set_num_voices(args))
                     return args;
                 return voices;
-            }}
+            }
+        }
     };
 
-    attribute<std::vector<int>> note{this, "note"
-                                     , Vec<int>::singular(60).vector()
-                                     , title{"note"}
-                                     , setter{MIN_FUNCTION {
+    attribute<std::vector<int> > note{
+        this, "note", Vec<int>::singular(60).vector(), title{"note"}, setter{
+            MIN_FUNCTION {
                 if (set_note_number(args))
                     return args;
                 return note;
-            }}};
+            }
+        }
+    };
 
-    attribute<std::vector<int>> velocity{this, "velocity"
-                                         , Vec<int>::singular(100).vector()
-                                         , title{"velocity"}
-                                         , setter{MIN_FUNCTION {
+    attribute<std::vector<int> > velocity{
+        this, "velocity", Vec<int>::singular(100).vector(), title{"velocity"}, setter{
+            MIN_FUNCTION {
                 if (set_velocity(args))
                     return args;
                 return velocity;
-            }}};
+            }
+        }
+    };
 
-    attribute<std::vector<int>> channel{this, "channel"
-                                        , Vec<int>::singular(1).vector()
-                                        , title{"channel"}
-                                        , setter{MIN_FUNCTION {
+    attribute<std::vector<int> > channel{
+        this, "channel", Vec<int>::singular(1).vector(), title{"channel"}, setter{
+            MIN_FUNCTION {
                 if (set_channel(args))
                     return args;
                 return channel;
-            }}};
+            }
+        }
+    };
 
 
     c74::min::function handle_input = MIN_FUNCTION {
@@ -100,22 +98,21 @@ public:
     };
 
 
-    message<> flush{this, Keywords::FLUSH
-                    , description{Descriptions::FLUSH}
-                    , MIN_FUNCTION {
-                if (inlet != 0) {
-                    return {};
-                }
-
-                cwarn << "flush not implemented yet" << endl;
+    message<> flush{
+        this, Keywords::FLUSH, description{Descriptions::FLUSH}, MIN_FUNCTION {
+            if (inlet != 0) {
                 return {};
-            }};
+            }
+
+            cwarn << "flush not implemented yet" << endl;
+            return {};
+        }
+    };
 
     message<> list = Messages::list_message(this, handle_input);
     message<> number = Messages::number_message(this, handle_input);
     message<> list_of_list = Messages::list_of_list_message(this, handle_input);
     message<> anything = Messages::anything_message(this, handle_input);
-
 
 private:
     void process_trigger(const atoms& atms) {
@@ -127,7 +124,7 @@ private:
 
         auto time = MaxTimePoint::get_time_point_of(clock.get());
         if (!time) {
-            cerr << time.err() << endl;
+            cerr << *time.err() << endl;
             return;
         }
 
@@ -139,6 +136,7 @@ private:
 
         EventStereotypes::output_as_events(note_events, outlet_main, std::nullopt, cerr);
     }
+
 
     bool set_note_number(const atoms& args) {
         return AttributeSetters::try_set_vector(args, m_make_note.note_number, cerr);
@@ -163,8 +161,6 @@ private:
     bool set_num_voices(const atoms& args) {
         return AttributeSetters::try_set_value(args, m_make_note.num_voices, cerr);
     }
-
-
 };
 
 

@@ -159,7 +159,7 @@ private:
     void on_callback() {
         auto time = MaxTimePoint::get_time_point_of(clock.get());
         if (!time) {
-            cerr << time.err() << endl;
+            cerr << *time.err() << endl;
             return;
         }
 
@@ -184,7 +184,7 @@ private:
 
             auto time = MaxTimePoint::get_time_point_of(clock.get());
             if (!time) {
-                cerr << time.err() << endl;
+                cerr << *time.err() << endl;
                 return;
             }
 

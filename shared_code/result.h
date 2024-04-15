@@ -70,9 +70,10 @@ private:
 template<typename T>
 class Result {
 public:
+    // ReSharper disable once CppNonExplicitConvertingConstructor
     Result(const T& value) : m_value(value), m_error(std::nullopt) {} // NOLINT(*-explicit-constructor)
 
-
+    // ReSharper disable once CppNonExplicitConvertingConstructor
     Result(const Error& error) : m_value(std::nullopt), m_error(error) {} // NOLINT(*-explicit-constructor)
 
 
