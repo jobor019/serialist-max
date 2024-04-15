@@ -41,13 +41,12 @@
 		"boxes" : [ 			{
 				"box" : 				{
 					"id" : "obj-29",
-					"linecount" : 4,
 					"maxclass" : "message",
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 1078.0, 192.0, 50.0, 62.0 ],
-					"text" : "-8423 null null null null null"
+					"patching_rect" : [ 1075.0, 188.0, 53.0, 22.0 ],
+					"text" : "2928"
 				}
 
 			}
@@ -64,9 +63,9 @@
 					"maxclass" : "bpatcher",
 					"name" : "ser.pulse.ui.maxpat",
 					"numinlets" : 3,
-					"numoutlets" : 2,
+					"numoutlets" : 3,
 					"offset" : [ 0.0, 0.0 ],
-					"outlettype" : [ "int/listoflists", "" ],
+					"outlettype" : [ "int/listoflists", "", "" ],
 					"patching_rect" : [ 1109.0, 69.25, 123.0, 99.75 ],
 					"viewvisibility" : 1
 				}
@@ -2028,7 +2027,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 1015.0, 452.0, 50.0, 35.0 ],
-					"text" : "340.79016"
+					"text" : "451.497601"
 				}
 
 			}
@@ -2065,7 +2064,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 984.0, 404.0, 50.0, 22.0 ],
-					"text" : "96"
+					"text" : "394"
 				}
 
 			}
@@ -2123,7 +2122,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 362.0, 390.0, 50.0, 22.0 ],
-					"text" : "-8426"
+					"text" : "-2749"
 				}
 
 			}
@@ -2681,6 +2680,13 @@
 		}
 ,
 		"dependency_cache" : [ 			{
+				"name" : "bis.awaitpatcherargs.maxpat",
+				"bootpath" : "~/Mabstractions/abstraction",
+				"patcherrelativepath" : "../../../../Mabstractions/abstraction",
+				"type" : "JSON",
+				"implicit" : 1
+			}
+, 			{
 				"name" : "ser.pulse.mxo",
 				"type" : "iLaX"
 			}
@@ -2688,6 +2694,13 @@
 				"name" : "ser.pulse.ui.maxpat",
 				"bootpath" : "~/CLionProjects/serialist-max/patchers",
 				"patcherrelativepath" : "../../patchers",
+				"type" : "JSON",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "ser_.multimap.maxpat",
+				"bootpath" : "~/CLionProjects/serialist-max/patchers/private",
+				"patcherrelativepath" : "../../patchers/private",
 				"type" : "JSON",
 				"implicit" : 1
 			}

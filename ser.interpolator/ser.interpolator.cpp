@@ -25,6 +25,8 @@ public:
 
     virtual void set_corpus(const atoms& args) = 0;
 
+    virtual std::size_t get_corpus_size() = 0;
+
     virtual void set_strategy_pivot(const atoms& args) = 0;
 
 
@@ -101,6 +103,13 @@ public:
         return m_auto_trigger;
     }
 
+    Result<atoms> get_cursor() {
+        auto cursor_values  = m_cursor.get_values().firsts_or<double>(0.0);
+        return AtomFormatter::vec2atoms<double>(cursor_values);
+    }
+
+    virtual std::size_t get_last_num_voices() const = 0;
+
 
 protected:
     virtual c74::min::atoms process_internal() = 0;
@@ -136,6 +145,14 @@ public:
         AttributeSetters::set_vector<StoredType>(args, m_strategy_pivot);
     }
 
+    std::size_t get_corpus_size() override {
+        return m_corpus.get_values().size();
+    }
+
+    std::size_t get_last_num_voices() const override {
+        return m_last_num_voices;
+    }
+
 
 protected:
     c74::min::atoms process_internal() override {
@@ -143,6 +160,7 @@ protected:
         // Actual time irrelevant, just need a new value for time gating
         m_interpolator.update_time(TimePoint(m_last_update_time));
         auto voices = m_interpolator.process();
+        m_last_num_voices = voices.size();
         return AtomFormatter::voices2atoms<StoredType>(voices);
     }
 
@@ -157,6 +175,7 @@ private:
                                                 , &m_cursor, &m_corpus, &m_strategy, &m_enabled, &m_num_voices};
 
     double m_last_update_time = 0.0;
+    std::size_t m_last_num_voices = 0;
 };
 
 // ==============================================================================================
@@ -291,9 +310,13 @@ private:
     void update_cursor(const atoms& args) {
         if (auto output = m_interpolator->process_cursor(args)) {
             // Empty unless autotrigger = true
-            if (!output->empty()) {
+            bool has_output = !output->empty();
+            if (has_output) {
                 outlet_main.send(*output);
+                send_last_num_voices();
             }
+            send_cursor(has_output);
+
         } else {
             cerr << *output.err() << endl;
         }
@@ -302,6 +325,7 @@ private:
 
     void update_corpus(const atoms& args) {
         generic_setter(args, &MaxInterpolatorBase::set_corpus, {});
+        dumpout.send("size", m_interpolator->get_corpus_size());
     }
 
 
@@ -309,6 +333,8 @@ private:
         if (auto output = m_interpolator->process_trigger(args)) {
             if (!output->empty()) {
                 outlet_main.send(*output);
+                send_last_num_voices();
+                send_cursor(true);
             }
         } else {
             cerr << *output.err() << endl;
@@ -321,6 +347,22 @@ private:
             return m_interpolator->get_auto_trigger();
         }
         return false;
+    }
+
+    void send_cursor(bool output_triggered) {
+        if (auto cursor = m_interpolator->get_cursor()) {
+            if (output_triggered) {
+                cursor->insert(cursor->begin(), "cursor");
+            } else {
+                cursor->insert(cursor->begin(), "setcursor");
+            }
+
+            dumpout.send(*cursor);
+        }
+    }
+
+    void send_last_num_voices() {
+        dumpout.send("voices", m_interpolator->get_last_num_voices());
     }
 
 
