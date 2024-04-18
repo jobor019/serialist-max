@@ -32,7 +32,7 @@ public:
                                      , title{"Set oscillator type"}
                                      , description{""}
                                      , setter{MIN_FUNCTION {
-                if (set_type(args))
+                if (this->set_type(args))
                     return args;
                 return type;
             }}
@@ -44,7 +44,7 @@ public:
                                         , title{"Set frequency"}
                                         , description{""}
                                         , setter{MIN_FUNCTION {
-                if (set_freq(args))
+                if (this->set_freq(args))
                     return args;
                 return freq;
             }}
@@ -55,7 +55,7 @@ public:
                                        , title{"Set multiplier"}
                                        , description{""}
                                        , setter{MIN_FUNCTION {
-                if (set_mul(args))
+                if (this->set_mul(args))
                     return args;
                 return mul;
             }}
@@ -66,7 +66,7 @@ public:
                                        , title{"Set additive"}
                                        , description{""}
                                        , setter{MIN_FUNCTION {
-                if (set_add(args))
+                if (this->set_add(args))
                     return args;
                 return add;
             }}
@@ -77,7 +77,7 @@ public:
                                         , title{"Set duty"}
                                         , description{""}
                                         , setter{MIN_FUNCTION {
-                if (set_duty(args))
+                if (this->set_duty(args))
                     return args;
                 return duty;
             }}
@@ -88,7 +88,7 @@ public:
                                          , title{"Set curve"}
                                          , description{""}
                                          , setter{MIN_FUNCTION {
-                if (set_curve(args))
+                if (this->set_curve(args))
                     return args;
                 return curve;
             }}
@@ -99,7 +99,7 @@ public:
                                        , title{"Set tau"}
                                        , description{""}
                                        , setter{MIN_FUNCTION {
-                if (set_tau(args))
+                if (this->set_tau(args))
                     return args;
                 return tau;
             }}
@@ -111,7 +111,7 @@ public:
                                          , title{"Set phase"}
                                          , description{""}
                                          , setter{MIN_FUNCTION {
-                if (set_phase(args))
+                if (this->set_phase(args))
                     return args;
                 return phase;
             }}
@@ -121,7 +121,7 @@ public:
                             , true
                             , title{""}
                             , setter{MIN_FUNCTION {
-                if (set_stepped(args))
+                if (this->set_stepped(args))
                     return args;
                 return stepped;
             }}
@@ -131,7 +131,7 @@ public:
                             , true
                             , title{""}
                             , setter{MIN_FUNCTION {
-                if (set_enabled(args))
+                if (this->set_enabled(args))
                     return args;
                 return enabled;
             }}
@@ -142,7 +142,7 @@ public:
                           , 0
                           , title{""}
                           , setter{MIN_FUNCTION {
-                if (set_num_voices(args))
+                if (this->set_num_voices(args))
                     return args;
                 return voices;
             }}
@@ -153,13 +153,13 @@ public:
 
     c74::min::function handle_input = MIN_FUNCTION {
         if (inlet == 3) {
-            set_add(args);
+            this->set_add(args);
         } else if (inlet == 2) {
-            set_mul(args);
+            this->set_mul(args);
         } else if (inlet == 1) {
-            set_freq(args);
+            this->set_freq(args);
         } else {
-            process(args);
+            this->process(args);
         }
         return {};
     };
@@ -169,7 +169,7 @@ public:
             cerr << "invalid message \"period\" for inlet" << inlet << endl;
             return {};
         }
-        set_period(args);
+        this->set_period(args);
         return {};
     }}};
 
@@ -178,7 +178,7 @@ public:
             cerr << "invalid message \"stepsize\" for inlet" << inlet << endl;
             return {};
         }
-        set_freq(args);
+        this->set_freq(args);
         return {};
     }}};
 
@@ -187,7 +187,7 @@ public:
             cerr << "invalid message \"numsteps\" for inlet" << inlet << endl;
             return {};
         }
-        set_period(args);
+        this->set_period(args);
         return {};
     }}};
 
@@ -203,7 +203,7 @@ private:
     void process(const atoms& args) {
         if (args.empty()) {
             // bang received: trigger all voices
-            m_oscillator.trigger.set_values(Voices<Trigger>::singular(Trigger::pulse_on));
+            m_oscillator.trigger.set_values(Voices<Trigger>::singular(Trigger::pulse_on()));
 
         } else if (auto triggers = AtomParser::atoms2triggers(args)) {
             // trigger message received, trigger specific voices
@@ -214,15 +214,13 @@ private:
             return;
         }
 
-        auto time = MaxTimePoint::get_time_of(clock.get());
+        auto time = MaxTimePoint::get_time_point_of(clock.get());
         if (!time) {
-            cerr << "unknown clock source" << endl;
+            cerr << *time.err() << endl;
             return;
         }
 
-        auto time_point = time->as_time_point();
-
-        m_oscillator.oscillator.update_time(time_point);
+        m_oscillator.oscillator.update_time(*time);
 
         auto output = m_oscillator.oscillator.process();
 

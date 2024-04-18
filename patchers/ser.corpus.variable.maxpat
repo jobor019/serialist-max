@@ -41,6 +41,19 @@
 		"integercoordinates" : 1,
 		"boxes" : [ 			{
 				"box" : 				{
+					"color" : [ 1.0, 0.0, 0.0, 1.0 ],
+					"id" : "obj-2",
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 162.0, 282.0, 92.0, 22.0 ],
+					"text" : "r #0_numbox"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"comment" : "(any) dumpout",
 					"id" : "obj-8",
 					"index" : 3,
@@ -794,7 +807,7 @@
 					"presentation_rect" : [ 0.0, 3.0, 49.0, 15.0 ],
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
-							"parameter_longname" : "live.numbox",
+							"parameter_longname" : "live.numbox[40]",
 							"parameter_modmode" : 3,
 							"parameter_shortname" : "live.numbox",
 							"parameter_type" : 0,
@@ -911,7 +924,7 @@
 						"exponent" : [ 1.0 ],
 						"high" : [ 1.0 ],
 						"live.numbox" : [ 0.0 ],
-						"low" : [ 0.0 ]
+						"low" : [ 21.0 ]
 					}
 ,
 					"text" : "autopattr @autorestore 0",
@@ -963,7 +976,7 @@
 					"numoutlets" : 3,
 					"outlettype" : [ "", "", "" ],
 					"patching_rect" : [ 177.0, 134.0, 97.0, 22.0 ],
-					"text" : "route initial done"
+					"text" : "route done initial"
 				}
 
 			}
@@ -1148,6 +1161,13 @@
 					"midpoints" : [ 1308.166666666666742, 213.0, 1151.5, 213.0 ],
 					"order" : 0,
 					"source" : [ "obj-190", 2 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-1", 0 ],
+					"source" : [ "obj-2", 0 ]
 				}
 
 			}

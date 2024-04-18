@@ -12,7 +12,7 @@
 		"classnamespace" : "box",
 		"rect" : [ 34.0, 87.0, 2065.0, 1258.0 ],
 		"bglocked" : 0,
-		"openinpresentation" : 0,
+		"openinpresentation" : 1,
 		"default_fontsize" : 12.0,
 		"default_fontface" : 0,
 		"default_fontname" : "Arial",
@@ -38,6 +38,7 @@
 		"style" : "",
 		"subpatcher_template" : "",
 		"assistshowspatchername" : 0,
+		"integercoordinates" : 1,
 		"boxes" : [ 			{
 				"box" : 				{
 					"fontname" : "Ableton Sans Medium",
@@ -154,7 +155,6 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 744.0, 394.0, 48.0, 22.0 ],
-					"presentation_linecount" : 2,
 					"text" : "high $1"
 				}
 
@@ -474,8 +474,8 @@
 					"numinlets" : 11,
 					"numoutlets" : 11,
 					"outlettype" : [ "", "", "", "", "", "", "", "", "", "", "" ],
-					"patching_rect" : [ 278.5, 285.0, 511.5, 22.0 ],
-					"text" : "route list float int mul add type lowmul highmul lowadd highadd"
+					"patching_rect" : [ 278.5, 285.0, 641.0, 22.0 ],
+					"text" : "route list float int mul add type mullow mulhigh addlow addhigh"
 				}
 
 			}
@@ -566,7 +566,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-11", 0 ],
-					"midpoints" : [ 386.5, 336.0, 288.0, 336.0 ],
+					"midpoints" : [ 412.399999999999977, 336.0, 288.0, 336.0 ],
 					"source" : [ "obj-10", 2 ]
 				}
 
@@ -574,7 +574,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-11", 0 ],
-					"midpoints" : [ 337.25, 336.0, 288.0, 336.0 ],
+					"midpoints" : [ 350.199999999999989, 336.0, 288.0, 336.0 ],
 					"source" : [ "obj-10", 1 ]
 				}
 
@@ -847,7 +847,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-24", 0 ],
-					"order" : 0,
+					"order" : 1,
 					"source" : [ "obj-76", 2 ]
 				}
 
@@ -855,7 +855,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-69", 0 ],
-					"order" : 1,
+					"order" : 0,
 					"source" : [ "obj-76", 2 ]
 				}
 
@@ -901,7 +901,7 @@
  ],
 		"parameters" : 		{
 			"obj-16::obj-1" : [ "live.numbox[1]", "live.numbox", 0 ],
-			"obj-1::obj-1" : [ "live.numbox", "live.numbox", 0 ],
+			"obj-1::obj-1" : [ "live.numbox[40]", "live.numbox", 0 ],
 			"parameterbanks" : 			{
 				"0" : 				{
 					"index" : 0,
@@ -913,11 +913,14 @@
 ,
 			"parameter_overrides" : 			{
 				"obj-16::obj-1" : 				{
-					"parameter_longname" : "live.numbox[1]"
+					"parameter_exponent" : 1.0,
+					"parameter_longname" : "live.numbox[1]",
+					"parameter_range" : [ 0.0, 1.0 ]
 				}
 ,
 				"obj-1::obj-1" : 				{
-					"parameter_longname" : "live.numbox"
+					"parameter_exponent" : 1.0,
+					"parameter_range" : [ 0.0, 1.0 ]
 				}
 
 			}
