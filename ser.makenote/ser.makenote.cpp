@@ -45,7 +45,7 @@ public:
     attribute<int> voices{
         this, Keywords::NUM_VOICES, 0, title{Titles::NUM_VOICES}, description{Descriptions::ENABLED}, setter{
             MIN_FUNCTION {
-                if (set_num_voices(args))
+                if (this->set_num_voices(args))
                     return args;
                 return voices;
             }
@@ -55,7 +55,7 @@ public:
     attribute<std::vector<int> > note{
         this, "note", Vec<int>::singular(60).vector(), title{"note"}, setter{
             MIN_FUNCTION {
-                if (set_note_number(args))
+                if (this->set_note_number(args))
                     return args;
                 return note;
             }
@@ -65,7 +65,7 @@ public:
     attribute<std::vector<int> > velocity{
         this, "velocity", Vec<int>::singular(100).vector(), title{"velocity"}, setter{
             MIN_FUNCTION {
-                if (set_velocity(args))
+                if (this->set_velocity(args))
                     return args;
                 return velocity;
             }
@@ -75,7 +75,7 @@ public:
     attribute<std::vector<int> > channel{
         this, "channel", Vec<int>::singular(1).vector(), title{"channel"}, setter{
             MIN_FUNCTION {
-                if (set_channel(args))
+                if (this->set_channel(args))
                     return args;
                 return channel;
             }
@@ -85,13 +85,13 @@ public:
 
     c74::min::function handle_input = MIN_FUNCTION {
         if (inlet == 3) {
-            set_channel(args);
+            this->set_channel(args);
         } else if (inlet == 2) {
-            set_velocity(args);
+            this->set_velocity(args);
         } else if (inlet == 1) {
-            set_note_number(args);
+            this->set_note_number(args);
         } else {
-            process_trigger(args);
+            this->process_trigger(args);
         }
 
         return {};
@@ -139,7 +139,7 @@ private:
 
 
     bool set_note_number(const atoms& args) {
-        return AttributeSetters::try_set_vector(args, m_make_note.note_number, cerr);
+        return AttributeSetters::try_set_voices(args, m_make_note.note_number, cerr);
     }
 
 
