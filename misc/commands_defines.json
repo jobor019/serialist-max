@@ -1,0 +1,78 @@
+{
+    "op_default" : {
+        "object": "ser.op",
+        "key": "7",
+        "description": "op <insert cursor>",
+        "is_bpatcher" : false
+        
+    },
+    "variable" : {
+        "object": "ser.corpus.variable",
+        "key": "a",
+        "description": "variable",
+        "is_bpatcher" : true
+    },
+    "score" : {
+        "object": "ser.corpus.scoreslider",
+        "key": "s",
+        "description": "score (slider)",
+        "is_bpatcher" : true
+    },
+    "multislider" : {
+        "object": "ser.corpus.multislider",
+        "key": "d",
+        "description": "multislider",
+        "is_bpatcher" : true
+    },
+    "pulse" : {
+        "object": "ser.pulse.ui",
+        "key": "q",
+        "description": "pulse",
+        "is_bpatcher" : true
+    },
+    "oscillator" : {
+        "object": "ser.oscillator.ui",
+        "key": "w",
+        "description": "oscillator",
+        "is_bpatcher" : true
+    },
+    "stepper" : {
+        "object": "ser.stepper.ui",
+        "key": "e",
+        "description": "",
+        "is_bpatcher" : true
+    },
+
+    "interpolator" : {
+        "object": "ser.interpolator.ui",
+        "key": "r",
+        "description": "interpolator",
+        "is_bpatcher" : true
+    },
+    "multiview" : {
+        "object": "ser.multiview",
+        "key": "z",
+        "description": "multiview",
+        "is_bpatcher" : true
+    },
+
+    "addmul" : {
+        "object": "ser.addmul.ui",
+        "key": "c",
+        "description": "addmul / scale",
+        "is_bpatcher" : true
+    },
+    "lfo" : {
+        "object": "ser.lfo",
+        "key": "v",
+        "description": "lfo / modulator",
+        "is_bpatcher" : true
+    },
+    
+    "_template_" : {
+        "object": "",
+        "key": "",
+        "description": "",
+        "is_bpatcher" : true
+    }
+}
