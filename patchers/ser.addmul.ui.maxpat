@@ -309,7 +309,7 @@
 				"box" : 				{
 					"comment" : "(list) parameters",
 					"id" : "obj-81",
-					"index" : 0,
+					"index" : 2,
 					"maxclass" : "outlet",
 					"numinlets" : 1,
 					"numoutlets" : 0,
@@ -420,7 +420,7 @@
 				"box" : 				{
 					"comment" : "(any) dumpout",
 					"id" : "obj-68",
-					"index" : 0,
+					"index" : 3,
 					"maxclass" : "outlet",
 					"numinlets" : 1,
 					"numoutlets" : 0,
@@ -432,7 +432,7 @@
 				"box" : 				{
 					"comment" : "mul",
 					"id" : "obj-67",
-					"index" : 0,
+					"index" : 3,
 					"maxclass" : "inlet",
 					"numinlets" : 0,
 					"numoutlets" : 1,
@@ -445,7 +445,7 @@
 				"box" : 				{
 					"comment" : "add",
 					"id" : "obj-66",
-					"index" : 0,
+					"index" : 2,
 					"maxclass" : "inlet",
 					"numinlets" : 0,
 					"numoutlets" : 1,
@@ -458,7 +458,7 @@
 				"box" : 				{
 					"comment" : "(any) control messages",
 					"id" : "obj-18",
-					"index" : 0,
+					"index" : 1,
 					"maxclass" : "inlet",
 					"numinlets" : 0,
 					"numoutlets" : 1,
@@ -481,9 +481,9 @@
 			}
 , 			{
 				"box" : 				{
-					"comment" : "(pulse/list) pulses",
+					"comment" : "(list/listoflist) scaled output",
 					"id" : "obj-3",
-					"index" : 0,
+					"index" : 1,
 					"maxclass" : "outlet",
 					"numinlets" : 1,
 					"numoutlets" : 0,
@@ -898,63 +898,7 @@
 				}
 
 			}
- ],
-		"parameters" : 		{
-			"obj-16::obj-1" : [ "live.numbox[1]", "live.numbox", 0 ],
-			"obj-1::obj-1" : [ "live.numbox[40]", "live.numbox", 0 ],
-			"parameterbanks" : 			{
-				"0" : 				{
-					"index" : 0,
-					"name" : "",
-					"parameters" : [ "-", "-", "-", "-", "-", "-", "-", "-" ]
-				}
-
-			}
-,
-			"parameter_overrides" : 			{
-				"obj-16::obj-1" : 				{
-					"parameter_exponent" : 1.0,
-					"parameter_longname" : "live.numbox[1]",
-					"parameter_range" : [ 0.0, 1.0 ]
-				}
-,
-				"obj-1::obj-1" : 				{
-					"parameter_exponent" : 1.0,
-					"parameter_range" : [ 0.0, 1.0 ]
-				}
-
-			}
-,
-			"inherited_shortname" : 1
-		}
-,
-		"dependency_cache" : [ 			{
-				"name" : "bis.awaitpatcherargs.maxpat",
-				"bootpath" : "~/Mabstractions/abstraction",
-				"patcherrelativepath" : "../../../Mabstractions/abstraction",
-				"type" : "JSON",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "ser.corpus.variable.maxpat",
-				"bootpath" : "~/CLionProjects/serialist-max/patchers",
-				"patcherrelativepath" : ".",
-				"type" : "JSON",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "ser.op.mxo",
-				"type" : "iLaX"
-			}
-, 			{
-				"name" : "ser_.multimap.maxpat",
-				"bootpath" : "~/CLionProjects/serialist-max/patchers/private",
-				"patcherrelativepath" : "./private",
-				"type" : "JSON",
-				"implicit" : 1
-			}
- ],
-		"autosave" : 0
+ ]
 	}
 
 }
