@@ -68,6 +68,12 @@
         "description": "lfo / modulator",
         "is_bpatcher" : true
     },
+    "makenote" : {
+        "object": "ser.makenote.ui",
+        "key": "b",
+        "description": "makenote",
+        "is_bpatcher" : true
+    },
     
     "_template_" : {
         "object": "",

@@ -129,7 +129,7 @@
 					"numoutlets" : 0,
 					"patching_rect" : [ 275.0, 740.0, 103.0, 244.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 10.0, 30.0, 110.0, 220.0 ]
+					"presentation_rect" : [ 10.0, 30.0, 110.0, 242.0 ]
 				}
 
 			}
@@ -213,7 +213,7 @@
 				"box" : 				{
 					"comment" : "",
 					"id" : "obj-4",
-					"index" : 0,
+					"index" : 1,
 					"maxclass" : "outlet",
 					"numinlets" : 1,
 					"numoutlets" : 0,
@@ -225,11 +225,11 @@
 				"box" : 				{
 					"comment" : "",
 					"id" : "obj-3",
-					"index" : 0,
+					"index" : 1,
 					"maxclass" : "inlet",
 					"numinlets" : 0,
 					"numoutlets" : 1,
-					"outlettype" : [ "" ],
+					"outlettype" : [ "bang" ],
 					"patching_rect" : [ 213.0, 149.0, 30.0, 30.0 ]
 				}
 
@@ -349,23 +349,7 @@
 				}
 
 			}
- ],
-		"dependency_cache" : [ 			{
-				"name" : "bis.awaitpatcherargs.maxpat",
-				"bootpath" : "~/Mabstractions/abstraction",
-				"patcherrelativepath" : "../../../Mabstractions/abstraction",
-				"type" : "JSON",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "ser.defines.maxpat",
-				"bootpath" : "~/CLionProjects/serialist-max/patchers",
-				"patcherrelativepath" : ".",
-				"type" : "JSON",
-				"implicit" : 1
-			}
- ],
-		"autosave" : 0
+ ]
 	}
 
 }

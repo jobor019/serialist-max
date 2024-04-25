@@ -112,7 +112,7 @@ public:
                     m_output_type = *type_spec;
                     return args;
                 } else {
-                    error(ErrorMessages::format(*type_spec.err(), CLASS_NAME));
+                    cerr << ErrorMessages::format(*type_spec.err(), CLASS_NAME) << endl;
                 }
                 return type;
             }}
