@@ -2004,7 +2004,7 @@
 							"parameter_enum" : [ "val1", "val2" ],
 							"parameter_initial" : [ 1 ],
 							"parameter_initial_enable" : 1,
-							"parameter_longname" : "live.text[17]",
+							"parameter_longname" : "live.text[57]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text",
@@ -2041,7 +2041,7 @@
 						"valueof" : 						{
 							"parameter_initial" : [ 0.0 ],
 							"parameter_initial_enable" : 1,
-							"parameter_longname" : "live.numbox[30]",
+							"parameter_longname" : "live.numbox[70]",
 							"parameter_mmax" : 20.0,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.numbox",
@@ -2095,7 +2095,7 @@
 						"valueof" : 						{
 							"parameter_initial" : [ 12 ],
 							"parameter_initial_enable" : 1,
-							"parameter_longname" : "live.numbox[33]",
+							"parameter_longname" : "live.numbox[71]",
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.numbox[20]",
 							"parameter_type" : 1,
@@ -2124,7 +2124,7 @@
 							"parameter_enum" : [ "cont.", "modulo", "clip", "pass" ],
 							"parameter_initial" : [ 0 ],
 							"parameter_initial_enable" : 1,
-							"parameter_longname" : "live.menu[16]",
+							"parameter_longname" : "live.menu[39]",
 							"parameter_mmax" : 3,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.menu",
@@ -2271,8 +2271,8 @@
 					"numinlets" : 1,
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
-					"patching_rect" : [ 671.0, 41.0, 162.0, 22.0 ],
-					"text" : "patcherargs @numoctaves 7"
+					"patching_rect" : [ 671.0, 41.0, 72.0, 22.0 ],
+					"text" : "patcherargs"
 				}
 
 			}

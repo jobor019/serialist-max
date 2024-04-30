@@ -87,13 +87,13 @@
 					"outlettype" : [ "", "", "", "" ],
 					"patching_rect" : [ 1527.0, 315.0, 142.0, 22.0 ],
 					"restore" : 					{
-						"_" : [ 0.0 ],
-						"enabled" : [ 0.0 ],
+						"_" : [ 1.0 ],
+						"enabled" : [ 1.0 ],
 						"live.numbox[1]" : [ 1.0 ],
 						"live.numbox[2]" : [ 1.0 ],
 						"live.numbox[3]" : [ 0.0 ],
-						"type" : [ 0.0 ],
-						"voices" : [ 2.0 ]
+						"type" : [ 4.0 ],
+						"voices" : [ 0.0 ]
 					}
 ,
 					"text" : "autopattr @autorestore 0",
@@ -114,10 +114,10 @@
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 1415.0, 259.0, 254.0, 49.0 ],
 					"saved_object_attributes" : 					{
-						"client_rect" : [ 67, 153, 461, 322 ],
+						"client_rect" : [ 100, 159, 483, 521 ],
 						"parameter_enable" : 0,
 						"parameter_mappable" : 0,
-						"storage_rect" : [ 794, -709, 1244, -510 ]
+						"storage_rect" : [ 583, 69, 1034, 197 ]
 					}
 ,
 					"text" : "pattrstorage pattrstorage @savemode 0 @outputmode 1 @autorestore 0 @greedy 0 @changemode 1",
@@ -1149,7 +1149,7 @@
 			}
 , 			{
 				"box" : 				{
-					"comment" : "(pulse/list) pulses",
+					"comment" : "(float/list) values",
 					"id" : "obj-62",
 					"index" : 1,
 					"maxclass" : "outlet",
@@ -1224,7 +1224,7 @@
 						"valueof" : 						{
 							"parameter_enum" : [ "val1", "val2" ],
 							"parameter_invisible" : 2,
-							"parameter_longname" : "live.text[1]",
+							"parameter_longname" : "live.text[36]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text",
@@ -1281,7 +1281,7 @@
 							"parameter_enum" : [ "val1", "val2" ],
 							"parameter_initial" : [ 1 ],
 							"parameter_initial_enable" : 1,
-							"parameter_longname" : "live.text[2]",
+							"parameter_longname" : "live.text[45]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text",
@@ -1489,7 +1489,7 @@
 					"outlettype" : [ "", "" ],
 					"parameter_enable" : 0,
 					"parameter_mappable" : 0,
-					"patching_rect" : [ 435.0, 781.0, 59.0, 41.0 ],
+					"patching_rect" : [ 423.0, 781.0, 59.0, 41.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 7.0, 92.0, 72.0, 36.0 ],
 					"setminmax" : [ 0.0, 1.0 ],

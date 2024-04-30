@@ -3,82 +3,132 @@
         "object": "ser.op",
         "key": "7",
         "description": "op <insert cursor>",
-        "is_bpatcher" : false
+        "is_bpatcher" : false,
+        "args": []
         
     },
     "variable" : {
         "object": "ser.corpus.variable",
         "key": "a",
         "description": "variable",
-        "is_bpatcher" : true
+        "is_bpatcher" : true,
+        "args": []
     },
     "score" : {
         "object": "ser.corpus.scoreslider",
         "key": "s",
         "description": "score (slider)",
-        "is_bpatcher" : true
+        "is_bpatcher" : true,
+        "args": []
     },
     "multislider" : {
         "object": "ser.corpus.multislider",
         "key": "d",
         "description": "multislider",
-        "is_bpatcher" : true
+        "is_bpatcher" : true,
+        "args": []
     },
+    "kslider" : {
+        "object": "ser.corpus.kslider",
+        "key": "g",
+        "description": "kslider",
+        "is_bpatcher" : true,
+        "args": []
+    },
+    "toggle" : {
+        "object": "ser.corpus.toggle",
+        "key": "t",
+        "description": "toggle",
+        "is_bpatcher" : true,
+        "args": []
+    },
+
     "pulse" : {
         "object": "ser.pulse.ui",
         "key": "q",
         "description": "pulse",
-        "is_bpatcher" : true
+        "is_bpatcher" : true,
+        "args": []
     },
     "oscillator" : {
         "object": "ser.oscillator.ui",
         "key": "w",
         "description": "oscillator",
-        "is_bpatcher" : true
+        "is_bpatcher" : true,
+        "args": []
     },
     "stepper" : {
         "object": "ser.stepper.ui",
         "key": "e",
         "description": "",
-        "is_bpatcher" : true
+        "is_bpatcher" : true,
+        "args": []
+    },
+    "looper_i" : {
+        "object": "ser.looper",
+        "key": "h",
+        "description": "",
+        "is_bpatcher" : true,
+        "args": ["i"]
+    },
+    "looper_f" : {
+        "object": "ser.looper",
+        "key": "H",
+        "description": "",
+        "is_bpatcher" : true,
+        "args": ["f"]
     },
 
-    "interpolator" : {
+    "interpolator_i" : {
         "object": "ser.interpolator.ui",
         "key": "r",
-        "description": "interpolator",
-        "is_bpatcher" : true
+        "description": "interpolator_i",
+        "is_bpatcher" : true,
+        "args": ["i"]
+    },
+    "interpolator_f" : {
+        "object": "ser.interpolator.ui",
+        "key": "R",
+        "description": "interpolator_f",
+        "is_bpatcher" : true,
+        "args": ["f"]
     },
     "multiview" : {
         "object": "ser.multiview",
         "key": "z",
         "description": "multiview",
-        "is_bpatcher" : true
+        "is_bpatcher" : true,
+        "args": []
     },
 
     "addmul" : {
         "object": "ser.addmul.ui",
         "key": "c",
         "description": "addmul / scale",
-        "is_bpatcher" : true
+        "is_bpatcher" : true,
+        "args": []
     },
     "lfo" : {
         "object": "ser.lfo",
         "key": "v",
         "description": "lfo / modulator",
-        "is_bpatcher" : true
+        "is_bpatcher" : true,
+        "args": []
     },
     "makenote" : {
         "object": "ser.makenote.ui",
-        "key": "b",
+        "key": "y",
         "description": "makenote",
-        "is_bpatcher" : true
+        "is_bpatcher" : true,
+        "args": []
     },
+    
     
     "_template_" : {
         "object": "",
         "key": "",
         "description": "",
-        "is_bpatcher" : true
+        "is_bpatcher" : true,
+        "args": []
     }
 }

@@ -127,9 +127,9 @@
 					"maxclass" : "dict.view",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 275.0, 740.0, 103.0, 244.0 ],
+					"patching_rect" : [ 275.0, 740.0, 101.0, 306.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 10.0, 30.0, 110.0, 242.0 ]
+					"presentation_rect" : [ 10.0, 30.0, 105.0, 344.0 ]
 				}
 
 			}
