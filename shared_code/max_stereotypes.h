@@ -438,9 +438,33 @@ public:
             return Error(ErrorMessages::TYPE_SPEC_INVALID);
         }
     }
-
-
 };
+
+
+// ==============================================================================================
+
+//class DomainTypeStereotypes {
+//public:
+//    static constexpr std::size_t DOMAIN_TYPES = magic_enum::enum_count<DomainType>();
+//    static constexpr std::size_t FREE_DOMAIN_TYPE  = -1;
+//
+//    DomainTypeStereotypes() = delete;
+//
+//    static Result<std::optional<DomainType>> atoms2domain_type(const c74::min::atoms& args, bool include_free_type) {
+//        if (auto v = AtomParser::atoms2value<std::size_t>(args) ){
+//            if (*v >= DOMAIN_TYPES || *v < 0) {
+//                if (include_free_type) {
+//                    return {std::nullopt};
+//                } else {
+//                    return Error("invalid domain type");
+//                }
+//            } else {
+//                return {static_cast<DomainType>(*v)};
+//            }
+//        }
+//        return Error("bad type for domain type");
+//    }
+//};
 
 
 #endif //SERIALIST_MAX_MAX_STEREOTYPES_H

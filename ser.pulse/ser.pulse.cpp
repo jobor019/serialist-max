@@ -76,6 +76,42 @@ public:
                 return duration;
             }}};
 
+    attribute<int> dtype{this, "dtype"
+                         , static_cast<int>(DomainType::ticks)
+                         , title{"duration type"}
+                         , setter{MIN_FUNCTION {
+                if (set_duration_type(args))
+                    return args;
+                return dtype;
+            }}};
+
+    attribute<std::vector<double>> offset{this, "offset"
+                                          , Vec<double>::singular(0.0).vector()
+                                          , title{"offset"}
+                                          , setter{MIN_FUNCTION {
+                if (set_offset(args))
+                    return args;
+                return offset;
+            }}};
+
+    attribute<int> otype{this, "otype"
+                         , static_cast<int>(DomainType::ticks)
+                         , title{"offset type"}
+                         , setter{MIN_FUNCTION {
+                if (set_offset_type(args))
+                    return args;
+                return otype;
+            }}};
+
+    attribute<bool> oenabled{this, "oenabled"
+                            , true
+                            , title{"offset enabled"}
+                            , setter{MIN_FUNCTION {
+                if (set_offset_enabled(args))
+                    return args;
+                return oenabled;
+            }}};
+
     attribute<std::vector<double>> legato{this, "legato"
                                           , Vec<double>::singular(1.0).vector()
                                           , title{"legato"}
@@ -148,6 +184,19 @@ public:
                 return {};
             }};
 
+    message<> printtime{this, "printtime", MIN_FUNCTION {
+        auto time = MaxTimePoint::get_time_of(clock.get());
+        if (!time) {
+            return {};
+        }
+
+        cout << time->to_string() << endl;
+
+
+
+        return {};
+    }};
+
     message<> bang = Messages::bang_message(this, handle_input);
     message<> list = Messages::list_message(this, handle_input);
     message<> number = Messages::number_message(this, handle_input);
@@ -219,6 +268,21 @@ private:
         return AttributeSetters::try_set_vector(args, m_pulse.duration, cerr);
     }
 
+    bool set_duration_type(const atoms& args) {
+        return AttributeSetters::try_set_value(args, m_pulse.duration_type, cerr);
+    }
+
+    bool set_offset(const atoms& args) {
+        return AttributeSetters::try_set_vector(args, m_pulse.offset, cerr);
+    }
+
+    bool set_offset_type(const atoms& args) {
+        return AttributeSetters::try_set_value(args, m_pulse.offset_type, cerr);
+    }
+
+    bool set_offset_enabled(const atoms& args) {
+        return AttributeSetters::try_set_value(args, m_pulse.offset_enabled, cerr);
+    }
 
     bool set_legato(const atoms& args) {
         return AttributeSetters::try_set_vector(args, m_pulse.legato_amount, cerr);

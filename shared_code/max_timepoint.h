@@ -58,9 +58,12 @@ public:
     }
 
     TimePoint as_time_point() const {
-        return TimePoint(m_ticks / 480.0, m_tempo
-                         , static_cast<double>(m_beats)
-                         , Meter(static_cast<int>(m_meter_num), static_cast<int>(m_meter_denom)));
+        auto meter = Meter(static_cast<int>(m_meter_num), static_cast<int>(m_meter_denom));
+        auto units = m_units / 480.0;
+        auto beats = static_cast<double>(m_beats - 1) + meter.ticks2beats(units);
+        auto bars = static_cast<double>(m_bars) + meter.beats2bars(beats);
+
+        return TimePoint(m_ticks / 480.0, m_tempo, std::nullopt, beats, bars, meter);
     }
 
 

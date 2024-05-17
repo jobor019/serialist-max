@@ -56,7 +56,7 @@
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
 							"parameter_enum" : [ "val1", "val2" ],
-							"parameter_longname" : "live.text[25]",
+							"parameter_longname" : "live.text[38]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text[36]",
@@ -87,7 +87,7 @@
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
 							"parameter_enum" : [ "val1", "val2" ],
-							"parameter_longname" : "live.text[24]",
+							"parameter_longname" : "live.text[29]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text[36]",
@@ -118,7 +118,7 @@
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
 							"parameter_enum" : [ "val1", "val2" ],
-							"parameter_longname" : "live.text[23]",
+							"parameter_longname" : "live.text[27]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text[36]",
@@ -149,7 +149,7 @@
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
 							"parameter_enum" : [ "val1", "val2" ],
-							"parameter_longname" : "live.text[9]",
+							"parameter_longname" : "live.text[26]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text[36]",
@@ -180,7 +180,7 @@
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
 							"parameter_enum" : [ "val1", "val2" ],
-							"parameter_longname" : "live.text[12]",
+							"parameter_longname" : "live.text[37]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text[36]",
@@ -211,7 +211,7 @@
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
 							"parameter_enum" : [ "val1", "val2" ],
-							"parameter_longname" : "live.text[22]",
+							"parameter_longname" : "live.text[28]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text[36]",
@@ -614,10 +614,10 @@
 					"patching_rect" : [ 901.0, 90.0, 142.0, 22.0 ],
 					"restore" : 					{
 						"exponent" : [ 1.0 ],
-						"high" : [ 88.0 ],
+						"high" : [ 1.0 ],
 						"low" : [ 0.0 ],
-						"multislider" : [ 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0 ],
-						"size" : [ 11 ],
+						"multislider" : [ 0.0 ],
+						"size" : [ 1 ],
 						"unused" : [ 0.0 ],
 						"unused[1]" : [ 0.0 ],
 						"unused[2]" : [ 0.0 ],
@@ -644,7 +644,7 @@
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 789.0, 34.0, 254.0, 49.0 ],
 					"saved_object_attributes" : 					{
-						"client_rect" : [ 1057, 45, 1440, 407 ],
+						"client_rect" : [ 100, 159, 483, 521 ],
 						"parameter_enable" : 0,
 						"parameter_mappable" : 0,
 						"storage_rect" : [ 583, 69, 1034, 197 ]
@@ -1530,7 +1530,7 @@
 					"patching_rect" : [ 525.0, 853.0, 68.0, 19.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 23.0, 34.0, 32.0, 19.0 ],
-					"text" : "i=6:",
+					"text" : "i=0:",
 					"textjustification" : 1
 				}
 
@@ -2289,6 +2289,7 @@
 , 			{
 				"box" : 				{
 					"contdata" : 1,
+					"hidden" : 1,
 					"id" : "obj-1",
 					"maxclass" : "multislider",
 					"numinlets" : 1,
@@ -2307,7 +2308,6 @@
 ,
 					"setminmax" : [ 0.0, 1.0 ],
 					"setstyle" : 1,
-					"size" : 11,
 					"slidercolor" : [ 0.427450980392157, 0.843137254901961, 1.0, 1.0 ],
 					"spacing" : 2,
 					"varname" : "multislider"
@@ -2318,7 +2318,6 @@
 				"box" : 				{
 					"appearance" : 2,
 					"fontsize" : 18.0,
-					"hidden" : 1,
 					"id" : "obj-64",
 					"maxclass" : "live.numbox",
 					"numinlets" : 1,
@@ -2330,12 +2329,12 @@
 					"presentation_rect" : [ 3.0, 7.0, 85.0, 25.0 ],
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
-							"parameter_longname" : "live.numbox[27]",
-							"parameter_mmax" : 88.0,
+							"parameter_longname" : "live.numbox[9]",
+							"parameter_mmax" : 1.0,
 							"parameter_modmode" : 3,
 							"parameter_shortname" : "live.numbox",
 							"parameter_type" : 0,
-							"parameter_unitstyle" : 0
+							"parameter_unitstyle" : 1
 						}
 
 					}

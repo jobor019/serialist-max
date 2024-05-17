@@ -154,10 +154,10 @@
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 1442.0, 141.0, 254.0, 49.0 ],
 					"saved_object_attributes" : 					{
-						"client_rect" : [ 100, 159, 483, 521 ],
+						"client_rect" : [ 67, 153, 461, 322 ],
 						"parameter_enable" : 0,
 						"parameter_mappable" : 0,
-						"storage_rect" : [ 583, 69, 1034, 197 ]
+						"storage_rect" : [ 794, -709, 1244, -510 ]
 					}
 ,
 					"text" : "pattrstorage pattrstorage @savemode 0 @outputmode 1 @autorestore 0 @greedy 0 @changemode 1",
@@ -670,6 +670,7 @@
 				"box" : 				{
 					"fontname" : "Ableton Sans Medium",
 					"fontsize" : 9.5,
+					"hidden" : 1,
 					"id" : "obj-11",
 					"maxclass" : "comment",
 					"numinlets" : 1,
@@ -687,6 +688,7 @@
 				"box" : 				{
 					"angle" : 270.0,
 					"bgcolor" : [ 0.368627450980392, 0.368627450980392, 0.368627450980392, 0.82 ],
+					"hidden" : 1,
 					"id" : "obj-15",
 					"maxclass" : "panel",
 					"mode" : 0,
@@ -703,7 +705,7 @@
 				"box" : 				{
 					"bgcolor" : [ 0.2, 0.2, 0.2, 0.0 ],
 					"color" : [ 0.933333333333333, 0.933333333333333, 0.933333333333333, 0.12 ],
-					"columns" : 7,
+					"columns" : 3,
 					"elementcolor" : [ 0.349019607843137, 0.349019607843137, 0.349019607843137, 0.0 ],
 					"id" : "obj-16",
 					"ignoreclick" : 1,
@@ -716,7 +718,7 @@
 					"patching_rect" : [ 586.0, 810.0, 103.0, 47.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 7.0, 61.0, 100.0, 52.0 ],
-					"rows" : 2
+					"rows" : 5
 				}
 
 			}
@@ -1451,7 +1453,7 @@
 					"presentation_rect" : [ 111.0, 61.0, 17.0, 52.0 ],
 					"setminmax" : [ 0.0, 7.0 ],
 					"setstyle" : 1,
-					"size" : 2,
+					"size" : 5,
 					"slidercolor" : [ 1.0, 0.709803921568627, 0.196078431372549, 1.0 ],
 					"spacing" : 1
 				}
@@ -1687,7 +1689,7 @@
 , 			{
 				"box" : 				{
 					"color" : [ 1.0, 0.709803921568627, 0.196078431372549, 1.0 ],
-					"columns" : 7,
+					"columns" : 3,
 					"id" : "obj-2",
 					"ignoreclick" : 1,
 					"maxclass" : "matrixctrl",
@@ -1699,7 +1701,7 @@
 					"patching_rect" : [ 586.0, 739.0, 103.0, 47.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 7.0, 61.0, 100.0, 52.0 ],
-					"rows" : 2
+					"rows" : 5
 				}
 
 			}
@@ -2004,7 +2006,7 @@
 							"parameter_enum" : [ "val1", "val2" ],
 							"parameter_initial" : [ 1 ],
 							"parameter_initial_enable" : 1,
-							"parameter_longname" : "live.text[57]",
+							"parameter_longname" : "live.text[105]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text",
@@ -2041,7 +2043,7 @@
 						"valueof" : 						{
 							"parameter_initial" : [ 0.0 ],
 							"parameter_initial_enable" : 1,
-							"parameter_longname" : "live.numbox[70]",
+							"parameter_longname" : "live.numbox[72]",
 							"parameter_mmax" : 20.0,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.numbox",
@@ -2095,7 +2097,7 @@
 						"valueof" : 						{
 							"parameter_initial" : [ 12 ],
 							"parameter_initial_enable" : 1,
-							"parameter_longname" : "live.numbox[71]",
+							"parameter_longname" : "live.numbox[33]",
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.numbox[20]",
 							"parameter_type" : 1,
@@ -2124,7 +2126,7 @@
 							"parameter_enum" : [ "cont.", "modulo", "clip", "pass" ],
 							"parameter_initial" : [ 0 ],
 							"parameter_initial_enable" : 1,
-							"parameter_longname" : "live.menu[39]",
+							"parameter_longname" : "live.menu[9]",
 							"parameter_mmax" : 3,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.menu",
@@ -2232,7 +2234,7 @@
 					"maxclass" : "inlet",
 					"numinlets" : 0,
 					"numoutlets" : 1,
-					"outlettype" : [ "" ],
+					"outlettype" : [ "float/listoflists" ],
 					"patching_rect" : [ 581.0, 37.0, 30.0, 30.0 ]
 				}
 
@@ -2245,7 +2247,7 @@
 					"maxclass" : "inlet",
 					"numinlets" : 0,
 					"numoutlets" : 1,
-					"outlettype" : [ "" ],
+					"outlettype" : [ "float/listoflists" ],
 					"patching_rect" : [ 401.0, 37.0, 30.0, 30.0 ]
 				}
 
