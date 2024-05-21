@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 34.0, 87.0, 2512.0, 1258.0 ],
+		"rect" : [ 34.0, 87.0, 2068.0, 1258.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 1,
 		"default_fontsize" : 12.0,
@@ -714,7 +714,7 @@
 					"maxclass" : "inlet",
 					"numinlets" : 0,
 					"numoutlets" : 1,
-					"outlettype" : [ "float/listoflists" ],
+					"outlettype" : [ "" ],
 					"patching_rect" : [ 1034.0, 322.0, 30.0, 30.0 ]
 				}
 
@@ -761,7 +761,7 @@
 			}
 , 			{
 				"box" : 				{
-					"comment" : "",
+					"comment" : "(any) control messages / trigger",
 					"id" : "obj-14",
 					"index" : 1,
 					"maxclass" : "inlet",
@@ -1651,7 +1651,7 @@
 					"fontface" : 1,
 					"fontsize" : 10.0,
 					"id" : "obj-40",
-					"items" : [ "AU DLS Synth 1", ",", "IAC IAC1", ",", "IAC IAC2", ",", "IAC IAC3", ",", "Launchkey MK3 25 LKMK3 MIDI In", ",", "Launchkey MK3 25 LKMK3 DAW In", ",", "from Max 1", ",", "from Max 2" ],
+					"items" : [ "AU DLS Synth 1", ",", "IAC IAC1", ",", "IAC IAC2", ",", "IAC IAC3", ",", "MPK Mini Mk II", ",", "from Max 1", ",", "from Max 2" ],
 					"maxclass" : "umenu",
 					"numinlets" : 1,
 					"numoutlets" : 3,
@@ -1791,12 +1791,12 @@
 					"outlettype" : [ "", "", "", "" ],
 					"patching_rect" : [ 1642.0, 516.0, 142.0, 22.0 ],
 					"restore" : 					{
-						"_" : [ 1.0 ],
+						"_" : [ 0.0 ],
 						"channel" : [ 1.0 ],
-						"device" : [ "IAC IAC1" ],
+						"device" : [ "AU DLS Synth 1" ],
 						"enabled" : [ 1.0 ],
 						"live.text" : [ 0.0 ],
-						"velocity" : [ 64.969558984041214 ],
+						"velocity" : [ 100.0 ],
 						"voices" : [ 0.0 ]
 					}
 ,
