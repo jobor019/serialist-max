@@ -10,14 +10,22 @@
 class MaxTimePoint {
 public:
 
-    MaxTimePoint(double tempo, double ticks, long bars, long beats, double units, long meter_num, long meter_denom)
+    MaxTimePoint(double tempo
+                 , double ticks
+                 , long bars
+                 , long beats
+                 , double units
+                 , long meter_num
+                 , long meter_denom
+                 , bool transport_running)
             : m_tempo(tempo)
               , m_ticks(ticks)
               , m_bars(bars)
               , m_beats(beats)
               , m_units(units)
               , m_meter_num(meter_num)
-              , m_meter_denom(meter_denom) {}
+              , m_meter_denom(meter_denom)
+              , m_transport_running(transport_running) {}
 
 
     static std::optional<MaxTimePoint> get_time_of(const c74::min::atoms& clock_name) {
@@ -33,7 +41,7 @@ public:
         if (parsing::is_empty_like(clock_name)) {
             clock_source = (c74::max::t_itm*) c74::max::itm_getglobal();
         } else {
-            clock_source = (c74::max::t_itm*) c74::max::itm_getnamed(clock_name, nullptr, nullptr, 0l);
+            clock_source = (c74::max::t_itm*) c74::max::itm_getnamed(clock_name, nullptr, nullptr, 0L);
         }
 
         if (clock_source) {
@@ -41,8 +49,9 @@ public:
             auto ticks = itm_getticks(clock_source);
             auto [bars, beats, units] = get_bar_beat_units(*clock_source, ticks);
             auto [numerator, denominator] = get_time_signature(*clock_source);
+            auto state = itm_getstate(clock_source);
 
-            return MaxTimePoint(tempo, ticks, bars, beats, units, numerator, denominator);
+            return MaxTimePoint(tempo, ticks, bars, beats, units, numerator, denominator, state);
         }
 
         return std::nullopt;
@@ -63,7 +72,7 @@ public:
         auto beats = static_cast<double>(m_beats - 1) + meter.ticks2beats(units);
         auto bars = static_cast<double>(m_bars) + meter.beats2bars(beats);
 
-        return TimePoint(m_ticks / 480.0, m_tempo, std::nullopt, beats, bars, meter);
+        return TimePoint(m_ticks / 480.0, m_tempo, std::nullopt, beats, bars, meter, m_transport_running);
     }
 
 
@@ -73,7 +82,8 @@ public:
                " bars: " + std::to_string(m_bars) +
                " beats: " + std::to_string(m_beats) +
                " units: " + std::to_string(m_units) +
-               " meter: " + std::to_string(m_meter_num) + "/" + std::to_string(m_meter_denom);
+               " meter: " + std::to_string(m_meter_num) + "/" + std::to_string(m_meter_denom)
+               + " running: " + std::to_string(m_transport_running);
     }
 
 
@@ -90,6 +100,8 @@ public:
     long get_meter_num() const { return m_meter_num; }
 
     long get_meter_denom() const { return m_meter_denom; }
+
+    bool get_transport_running() const { return m_transport_running; }
 
 
 private:
@@ -118,6 +130,7 @@ private:
     double m_units;
     long m_meter_num;
     long m_meter_denom;
+    bool m_transport_running;
 
 
 };
