@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 34.0, 87.0, 2068.0, 1258.0 ],
+		"rect" : [ 34.0, 87.0, 2512.0, 1260.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 1,
 		"default_fontsize" : 12.0,
@@ -40,6 +40,18 @@
 		"assistshowspatchername" : 0,
 		"integercoordinates" : 1,
 		"boxes" : [ 			{
+				"box" : 				{
+					"id" : "obj-14",
+					"maxclass" : "newobj",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "int" ],
+					"patching_rect" : [ 735.0, 412.0, 33.0, 22.0 ],
+					"text" : "== 0"
+				}
+
+			}
+, 			{
 				"box" : 				{
 					"fontname" : "Ableton Sans Medium",
 					"fontsize" : 9.5,
@@ -73,8 +85,8 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 923.0, 490.0, 55.0, 22.0 ],
-					"text" : "otype $1"
+					"patching_rect" : [ 912.0, 490.0, 77.0, 22.0 ],
+					"text" : "offsettype $1"
 				}
 
 			}
@@ -160,7 +172,7 @@
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
 							"parameter_exponent" : 2.0,
-							"parameter_initial" : [ 1 ],
+							"parameter_initial" : [ 0 ],
 							"parameter_initial_enable" : 1,
 							"parameter_longname" : "live.numbox[2]",
 							"parameter_mmax" : 20.0,
@@ -179,26 +191,13 @@
 			}
 , 			{
 				"box" : 				{
-					"id" : "obj-64",
-					"maxclass" : "message",
-					"numinlets" : 2,
-					"numoutlets" : 1,
-					"outlettype" : [ "" ],
-					"patching_rect" : [ 700.0, 491.0, 75.0, 22.0 ],
-					"presentation_linecount" : 2,
-					"text" : "oenabled $1"
-				}
-
-			}
-, 			{
-				"box" : 				{
 					"id" : "obj-62",
 					"maxclass" : "message",
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 640.0, 491.0, 55.0, 22.0 ],
-					"text" : "dtype $1"
+					"patching_rect" : [ 640.0, 491.0, 91.0, 22.0 ],
+					"text" : "durationtype $1"
 				}
 
 			}
@@ -210,7 +209,7 @@
 					"numoutlets" : 3,
 					"outlettype" : [ "", "", "float" ],
 					"parameter_enable" : 1,
-					"patching_rect" : [ 926.0, 444.0, 20.0, 15.0 ],
+					"patching_rect" : [ 916.0, 444.0, 20.0, 15.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 108.0, 56.0, 25.0, 15.0 ],
 					"saved_attribute_attributes" : 					{
@@ -515,8 +514,7 @@
 						"legato" : [ 100.0 ],
 						"live.menu[1]" : [ 0.0 ],
 						"mode" : [ 0.0 ],
-						"oenabled" : [ 0.0 ],
-						"offset" : [ 0.0507597670942 ],
+						"offset" : [ 0.0 ],
 						"voices" : [ 0.0 ]
 					}
 ,
@@ -538,10 +536,10 @@
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 951.0, 248.0, 254.0, 49.0 ],
 					"saved_object_attributes" : 					{
-						"client_rect" : [ 67, 153, 461, 322 ],
+						"client_rect" : [ 4, 44, 358, 172 ],
 						"parameter_enable" : 0,
 						"parameter_mappable" : 0,
-						"storage_rect" : [ 794, -709, 1244, -510 ]
+						"storage_rect" : [ 583, 69, 1034, 197 ]
 					}
 ,
 					"text" : "pattrstorage pattrstorage @savemode 0 @outputmode 1 @autorestore 0 @greedy 0 @changemode 1",
@@ -1010,7 +1008,7 @@
 				"box" : 				{
 					"comment" : "(list) parameters",
 					"id" : "obj-81",
-					"index" : 0,
+					"index" : 2,
 					"maxclass" : "outlet",
 					"numinlets" : 1,
 					"numoutlets" : 0,
@@ -1361,7 +1359,7 @@
 				"box" : 				{
 					"comment" : "(any) dumpout",
 					"id" : "obj-68",
-					"index" : 0,
+					"index" : 3,
 					"maxclass" : "outlet",
 					"numinlets" : 1,
 					"numoutlets" : 0,
@@ -1373,7 +1371,7 @@
 				"box" : 				{
 					"comment" : "legato",
 					"id" : "obj-67",
-					"index" : 0,
+					"index" : 3,
 					"maxclass" : "inlet",
 					"numinlets" : 0,
 					"numoutlets" : 1,
@@ -1386,7 +1384,7 @@
 				"box" : 				{
 					"comment" : "duration",
 					"id" : "obj-66",
-					"index" : 0,
+					"index" : 2,
 					"maxclass" : "inlet",
 					"numinlets" : 0,
 					"numoutlets" : 1,
@@ -1461,7 +1459,7 @@
 				"box" : 				{
 					"comment" : "(any) control messages",
 					"id" : "obj-18",
-					"index" : 0,
+					"index" : 1,
 					"maxclass" : "inlet",
 					"numinlets" : 0,
 					"numoutlets" : 1,
@@ -1474,7 +1472,7 @@
 				"box" : 				{
 					"comment" : "(pulse/list) pulses",
 					"id" : "obj-3",
-					"index" : 0,
+					"index" : 1,
 					"maxclass" : "outlet",
 					"numinlets" : 1,
 					"numoutlets" : 0,
@@ -1805,11 +1803,11 @@
 					"presentation_rect" : [ 58.0, 22.0, 49.000001460313797, 15.0 ],
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
-							"parameter_enum" : [ "auto", "triggered" ],
+							"parameter_enum" : [ "grid", "pulse", "bang", "toggle" ],
 							"parameter_initial" : [ 0 ],
 							"parameter_initial_enable" : 1,
 							"parameter_longname" : "live.menu[5]",
-							"parameter_mmax" : 1,
+							"parameter_mmax" : 3,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.menu",
 							"parameter_type" : 2
@@ -1831,33 +1829,6 @@
 					"outlettype" : [ "int/listoflists", "" ],
 					"patching_rect" : [ 298.0, 610.0, 151.0, 22.0 ],
 					"text" : "ser.pulse"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"id" : "obj-83",
-					"maxclass" : "live.toggle",
-					"numinlets" : 1,
-					"numoutlets" : 1,
-					"outlettype" : [ "" ],
-					"parameter_enable" : 1,
-					"patching_rect" : [ 701.0, 413.0, 15.0, 15.0 ],
-					"presentation" : 1,
-					"presentation_rect" : [ 7.0, 56.0, 36.0, 16.0 ],
-					"saved_attribute_attributes" : 					{
-						"valueof" : 						{
-							"parameter_enum" : [ "off", "on" ],
-							"parameter_longname" : "live.toggle",
-							"parameter_mmax" : 1,
-							"parameter_modmode" : 0,
-							"parameter_shortname" : "live.toggle",
-							"parameter_type" : 2
-						}
-
-					}
-,
-					"varname" : "oenabled"
 				}
 
 			}
@@ -1989,6 +1960,13 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-80", 0 ],
+					"source" : [ "obj-14", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-1259", 0 ],
 					"source" : [ "obj-15", 5 ]
 				}
@@ -2073,7 +2051,16 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-14", 0 ],
+					"order" : 0,
+					"source" : [ "obj-2", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-21", 0 ],
+					"order" : 1,
 					"source" : [ "obj-2", 0 ]
 				}
 
@@ -2343,13 +2330,6 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-109", 0 ],
-					"source" : [ "obj-64", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
 					"destination" : [ "obj-55", 0 ],
 					"source" : [ "obj-66", 0 ]
 				}
@@ -2462,22 +2442,6 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-64", 0 ],
-					"order" : 1,
-					"source" : [ "obj-83", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-80", 0 ],
-					"order" : 0,
-					"source" : [ "obj-83", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
 					"destination" : [ "obj-47", 0 ],
 					"order" : 1,
 					"source" : [ "obj-86", 0 ]
@@ -2538,53 +2502,6 @@
 
 			}
  ],
-		"parameters" : 		{
-			"obj-10" : [ "live.menu", "live.menu", 0 ],
-			"obj-11" : [ "live.menu[6]", "live.menu", 0 ],
-			"obj-2" : [ "live.menu[5]", "live.menu", 0 ],
-			"obj-22" : [ "live.numbox[18]", "live.numbox", 0 ],
-			"obj-27" : [ "live.text[11]", "live.text", 0 ],
-			"obj-36" : [ "live.text[10]", "live.text", 0 ],
-			"obj-5" : [ "live.numbox[19]", "live.numbox", 0 ],
-			"obj-6" : [ "live.numbox[16]", "live.numbox", 0 ],
-			"obj-74" : [ "live.numbox[2]", "live.numbox", 0 ],
-			"obj-83" : [ "live.toggle", "live.toggle", 0 ],
-			"parameterbanks" : 			{
-				"0" : 				{
-					"index" : 0,
-					"name" : "",
-					"parameters" : [ "-", "-", "-", "-", "-", "-", "-", "-" ]
-				}
-
-			}
-,
-			"inherited_shortname" : 1
-		}
-,
-		"dependency_cache" : [ 			{
-				"name" : "bis.awaitpatcherargs.maxpat",
-				"bootpath" : "~/Mabstractions/abstraction",
-				"patcherrelativepath" : "../../../Mabstractions/abstraction",
-				"type" : "JSON",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "ser.op.mxo",
-				"type" : "iLaX"
-			}
-, 			{
-				"name" : "ser.pulse.mxo",
-				"type" : "iLaX"
-			}
-, 			{
-				"name" : "ser_.multimap.maxpat",
-				"bootpath" : "~/CLionProjects/serialist-max/patchers/private",
-				"patcherrelativepath" : "./private",
-				"type" : "JSON",
-				"implicit" : 1
-			}
- ],
-		"autosave" : 0,
 		"boxgroups" : [ 			{
 				"boxes" : [ "obj-47", "obj-60", "obj-52", "obj-57", "obj-58", "obj-51", "obj-53", "obj-50" ]
 			}

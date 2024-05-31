@@ -25,6 +25,17 @@ public:
         return m_msg;
     }
 
+    friend c74::min::logger& operator<<(c74::min::logger& log, const Error& myClass) {
+        log << myClass.message();
+        return log;
+    }
+
+    friend std::ostream& operator<<(std::ostream& os, const Error& myClass) {
+        os << myClass.message();
+        return os;
+    }
+
+
 
 private:
     std::string m_msg;

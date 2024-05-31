@@ -1,7 +1,7 @@
 #include "c74_min.h"
 #include "parsing.h"
 #include "max_stereotypes.h"
-#include "core/generatives/variable_state_pulsator.h"
+#include "core/generatives/pulsator.h"
 #include "max_timepoint.h"
 #include "utils.h"
 
@@ -10,14 +10,14 @@ using namespace c74::min;
 
 class pulse : public object<pulse> {
 private:
-    VariableStatePulsatorWrapper<double> m_pulse;
+    PulsatorWrapper<double> m_pulse;
 
     std::mutex m_mutex;
 
 public:
     static inline const std::string CLASS_NAME = "pulse";
 
-    MIN_DESCRIPTION{"Variable State pulse generator"};
+    MIN_DESCRIPTION{"Pulse generator"};
     MIN_TAGS{"utilities"};
     MIN_AUTHOR{"Borg"};
     MIN_RELATED{"ser.oscillator"};
@@ -68,7 +68,7 @@ public:
     };
 
     attribute<std::vector<double>> duration{this, "duration"
-                                            , Vec<double>::singular(1.0).vector()
+                                            , Vec<double>::singular(PulsatorParameters::DEFAULT_DURATION).vector()
                                             , title{"duration"}
                                             , setter{MIN_FUNCTION {
                 if (set_duration(args))
@@ -76,17 +76,17 @@ public:
                 return duration;
             }}};
 
-    attribute<int> dtype{this, "dtype"
-                         , static_cast<int>(DomainType::ticks)
+    attribute<int> durationtype{this, "durationtype"
+                         , static_cast<int>(PulsatorParameters::DEFAULT_DURATION_TYPE)
                          , title{"duration type"}
                          , setter{MIN_FUNCTION {
                 if (set_duration_type(args))
                     return args;
-                return dtype;
+                return durationtype;
             }}};
 
     attribute<std::vector<double>> offset{this, "offset"
-                                          , Vec<double>::singular(0.0).vector()
+                                          , Vec<double>::singular(PulsatorParameters::DEFAULT_OFFSET).vector()
                                           , title{"offset"}
                                           , setter{MIN_FUNCTION {
                 if (set_offset(args))
@@ -94,26 +94,27 @@ public:
                 return offset;
             }}};
 
-    attribute<int> otype{this, "otype"
-                         , static_cast<int>(DomainType::ticks)
+
+    attribute<int> offsettype{this, "offsettype"
+                         , static_cast<int>(PulsatorParameters::DEFAULT_OFFSET_TYPE)
                          , title{"offset type"}
                          , setter{MIN_FUNCTION {
                 if (set_offset_type(args))
                     return args;
-                return otype;
+                return offsettype;
             }}};
 
-    attribute<bool> oenabled{this, "oenabled"
-                            , true
+    attribute<int> mode{this, "mode"
+                            , static_cast<int>(Pulsator::DEFAULT_MODE)
                             , title{"offset enabled"}
                             , setter{MIN_FUNCTION {
-                if (set_offset_enabled(args))
+                if (set_mode(args))
                     return args;
-                return oenabled;
+                return mode;
             }}};
 
     attribute<std::vector<double>> legato{this, "legato"
-                                          , Vec<double>::singular(1.0).vector()
+                                          , Vec<double>::singular(PulsatorParameters::DEFAULT_LEGATO_AMOUNT).vector()
                                           , title{"legato"}
                                           , setter{MIN_FUNCTION {
                 if (set_legato(args))
@@ -121,41 +122,14 @@ public:
                 return legato;
             }}};
 
+
     attribute<bool> hold{this, "hold"
-                         , true
+                         , PulsatorParameters::DEFAULT_SNH
                          , title{"sample and hold"}
                          , setter{MIN_FUNCTION {
                 if (set_sample_and_hold(args))
                     return args;
                 return hold;
-            }}};
-
-    attribute<int> mode{this, "mode"
-                        , 0
-                        , title{"Pulsation Mode"}
-                        , description{"TODO"}
-                        , setter{MIN_FUNCTION {
-                if (auto mode_index = AtomParser::atoms2value<int>(args)) {
-                    if (*mode_index == static_cast<int>(VariableStatePulsator::Mode::auto_pulsator)) {
-                        m_pulse.pulsator_node.set_trigger(nullptr);
-                        m_pulse.pulsator_node.set_duration(&m_pulse.duration);
-                    } else if (*mode_index == static_cast<int>(VariableStatePulsator::Mode::triggered_pulsator)) {
-                        m_pulse.pulsator_node.set_trigger(&m_pulse.trigger);
-                        m_pulse.pulsator_node.set_duration(&m_pulse.duration);
-                    } else if (*mode_index == static_cast<int>(VariableStatePulsator::Mode::thru_pulsator)) {
-                        m_pulse.pulsator_node.set_trigger(&m_pulse.trigger);
-                        m_pulse.pulsator_node.set_duration(nullptr);
-                    } else {
-                        cerr << "ser.pulse: unknown mode" << endl;
-                        return mode;
-                    }
-
-                    cout << "mode:" << static_cast<int>(m_pulse.pulsator_node.get_mode()) << endl;
-                    return args;
-                } else {
-                    return mode;
-                }
-
             }}};
 
 
@@ -233,7 +207,7 @@ private:
 
             auto time = MaxTimePoint::get_time_point_of(clock.get());
             if (!time) {
-                cerr << *time.err() << endl;
+                cerr << time.err() << endl;
                 return;
             }
 
@@ -280,8 +254,8 @@ private:
         return AttributeSetters::try_set_value(args, m_pulse.offset_type, cerr);
     }
 
-    bool set_offset_enabled(const atoms& args) {
-        return AttributeSetters::try_set_value(args, m_pulse.offset_enabled, cerr);
+    bool set_mode(const atoms& args) {
+        return AttributeSetters::try_set_value(args, m_pulse.mode, cerr);
     }
 
     bool set_legato(const atoms& args) {
