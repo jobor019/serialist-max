@@ -41,6 +41,30 @@
 		"integercoordinates" : 1,
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-23",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 661.0, 408.0, 57.0, 22.0 ],
+					"text" : "active $1"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-16",
+					"maxclass" : "newobj",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "int" ],
+					"patching_rect" : [ 659.0, 373.0, 30.0, 22.0 ],
+					"text" : "!= 3"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-14",
 					"maxclass" : "newobj",
 					"numinlets" : 2,
@@ -509,7 +533,7 @@
 					"restore" : 					{
 						"_" : [ 0.0 ],
 						"dtype" : [ 0.0 ],
-						"duration" : [ 1.0 ],
+						"duration" : [ 0.375339583466501 ],
 						"enabled" : [ 1.0 ],
 						"legato" : [ 100.0 ],
 						"live.menu[1]" : [ 0.0 ],
@@ -536,10 +560,10 @@
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 951.0, 248.0, 254.0, 49.0 ],
 					"saved_object_attributes" : 					{
-						"client_rect" : [ 4, 44, 358, 172 ],
+						"client_rect" : [ 67, 153, 461, 322 ],
 						"parameter_enable" : 0,
 						"parameter_mappable" : 0,
-						"storage_rect" : [ 583, 69, 1034, 197 ]
+						"storage_rect" : [ 794, -709, 1244, -510 ]
 					}
 ,
 					"text" : "pattrstorage pattrstorage @savemode 0 @outputmode 1 @autorestore 0 @greedy 0 @changemode 1",
@@ -2009,6 +2033,13 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-23", 0 ],
+					"source" : [ "obj-16", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-15", 0 ],
 					"midpoints" : [ 780.5, 179.0, 281.5, 179.0 ],
 					"source" : [ "obj-160", 1 ]
@@ -2059,8 +2090,16 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-21", 0 ],
+					"destination" : [ "obj-16", 0 ],
 					"order" : 1,
+					"source" : [ "obj-2", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-21", 0 ],
+					"order" : 2,
 					"source" : [ "obj-2", 0 ]
 				}
 
@@ -2092,6 +2131,22 @@
 					"destination" : [ "obj-221", 0 ],
 					"midpoints" : [ 845.5, 317.06691688471642, 930.0, 317.06691688471642, 930.0, 237.0, 960.5, 237.0 ],
 					"source" : [ "obj-229", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-10", 0 ],
+					"order" : 0,
+					"source" : [ "obj-23", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-5", 0 ],
+					"order" : 1,
+					"source" : [ "obj-23", 0 ]
 				}
 
 			}
