@@ -1,13 +1,16 @@
+#include <core/policies/policies.h>
+#include <core/generatives/oscillator.h>
+
 #include "c74_min.h"
-#include "core/generatives/oscillator.h"
 #include "parsing.h"
 #include "max_timepoint.h"
 #include "max_stereotypes.h"
 
 
 using namespace c74::min;
+using namespace serialist;
 
-class oscillator : public object<oscillator> {
+class ser_oscillator : public object<ser_oscillator> {
 private:
     OscillatorWrapper<double> m_oscillator;
 
@@ -287,4 +290,4 @@ private:
 };
 
 
-MIN_EXTERNAL(oscillator)
+MIN_EXTERNAL(ser_oscillator)

@@ -7,8 +7,8 @@
 TEST_CASE("object produces correct output") {
     ext_main(nullptr);
 
-    test_wrapper<playground> an_instance;
-    playground& playground = an_instance;
+    test_wrapper<ser_playground> an_instance;
+    ser_playground& playground = an_instance;
 
     REQUIRE(playground.inlets().size() == 1);
     playground.myattribute.set(c74::min::atoms{0.88});

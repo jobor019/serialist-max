@@ -5,7 +5,7 @@
 TEST_CASE("object produces correct output") {
     ext_main(nullptr);
 
-    test_wrapper<interpolator> an_instance;
-    interpolator& interpolator = an_instance;
+    test_wrapper<ser_interpolator> an_instance;
+    ser_interpolator& interpolator = an_instance;
 
 }

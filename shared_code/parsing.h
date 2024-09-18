@@ -11,6 +11,8 @@
 #include "core/algo/temporal/trigger.h"
 #include "core/event.h"
 
+using namespace serialist;
+
 namespace parsing {
 
 const inline std::string NULL_STRING = "null";

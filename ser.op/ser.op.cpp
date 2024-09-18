@@ -1,12 +1,16 @@
+#include <core/policies/policies.h>
+#include <core/generatives/operator.h>
+
 #include "c74_min.h"
 #include "parsing.h"
 #include "max_stereotypes.h"
-#include "core/generatives/operator.h"
+
 
 
 using namespace c74::min;
+using namespace serialist;
 
-class op : public object<op> {
+class ser_op : public object<ser_op> {
 private:
     OperatorWrapper<double> m_op;
     bool m_lhs_is_hot = true;
@@ -27,7 +31,7 @@ public:
 
     static const inline std::string CLASS_NAME = "ser.op";
 
-    explicit op(const atoms& args = {}) {
+    explicit ser_op(const atoms& args = {}) {
         if (args.empty()) {
             error(ErrorMessages::missing_argument(CLASS_NAME, "<operator> [inital_value]"));
         } else {
@@ -157,4 +161,4 @@ private:
 };
 
 
-MIN_EXTERNAL(op);
+MIN_EXTERNAL(ser_op)

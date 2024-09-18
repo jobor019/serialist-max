@@ -4,7 +4,7 @@
 		"appversion" : 		{
 			"major" : 8,
 			"minor" : 6,
-			"revision" : 2,
+			"revision" : 4,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
@@ -39,6 +39,29 @@
 		"subpatcher_template" : "",
 		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
+				"box" : 				{
+					"id" : "obj-52",
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 80.0, 261.0, 122.0, 20.0 ],
+					"presentation_linecount" : 4,
+					"text" : "Valid but should warn"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-40",
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 80.0, 140.0, 46.0, 20.0 ],
+					"text" : "invalid "
+				}
+
+			}
+, 			{
 				"box" : 				{
 					"id" : "obj-46",
 					"maxclass" : "button",
@@ -103,7 +126,7 @@
 					"numinlets" : 3,
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
-					"patching_rect" : [ 81.0, 252.0, 148.0, 22.0 ],
+					"patching_rect" : [ 81.0, 283.0, 148.0, 22.0 ],
 					"text" : "ser.interpolator i extra_arg"
 				}
 
@@ -335,7 +358,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "int" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 867.0, 186.0, 24.0, 24.0 ]
+					"patching_rect" : [ 864.0, 129.0, 82.0, 82.0 ]
 				}
 
 			}

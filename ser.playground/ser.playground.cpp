@@ -1,14 +1,12 @@
 
+#include <core/policies/policies.h>
+
 #include "c74_min.h"
-
-
 #include "parsing.h"
 #include "max_timepoint.h"
-#include "core/generatives/sequence.h"
-#include "core/generatives/variable.h"
-//#include "stereotypes.h"
 
 using namespace c74::min;
+using namespace serialist;
 
 //template<typename ObjectType
 //        , typename = std::enable_if_t<std::is_base_of_v<c74::min::object_base, ObjectType>>>
@@ -99,7 +97,7 @@ inline bool set_value(const c74::min::atoms& args
 }
 
 
-class playground : public MaxNodeBase<playground> {
+class ser_playground : public MaxNodeBase<ser_playground> {
 private:
     // member variables
     Voices<double> m_freqs = Voices<double>::empty_like();
@@ -118,7 +116,7 @@ public:
     outlet<> dumpout{this, "(any) dumpout"};
 
 
-    explicit playground(const atoms& = {}) {
+    explicit ser_playground(const atoms& = {}) {
 //        metro.delay(1.0);
 
     }
@@ -284,4 +282,4 @@ private:
 //}
 
 
-MIN_EXTERNAL(playground)
+MIN_EXTERNAL(ser_playground)

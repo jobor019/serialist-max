@@ -1,14 +1,16 @@
+#include <core/policies/policies.h>
+#include <core/generatives/pulsator.h>
+
 #include "c74_min.h"
 #include "parsing.h"
 #include "max_stereotypes.h"
-#include "core/generatives/pulsator.h"
 #include "max_timepoint.h"
-#include "utils.h"
 
 
 using namespace c74::min;
+using namespace serialist;
 
-class pulse : public object<pulse> {
+class ser_pulse : public object<ser_pulse> {
 private:
     PulsatorWrapper<double> m_pulse;
 
@@ -29,7 +31,7 @@ public:
     outlet<> outlet_main{this, "pulse", "int/listoflists"};
     outlet<> dumpout{this, "(any) dumpout"};
 
-    explicit pulse(const atoms& = {}) {
+    explicit ser_pulse(const atoms& = {}) {
         metro.delay(1.0);
     }
 
@@ -77,9 +79,9 @@ public:
             }}};
 
     attribute<int> durationtype{this, "durationtype"
-                         , static_cast<int>(PulsatorParameters::DEFAULT_DURATION_TYPE)
-                         , title{"duration type"}
-                         , setter{MIN_FUNCTION {
+                                , static_cast<int>(PulsatorParameters::DEFAULT_DURATION_TYPE)
+                                , title{"duration type"}
+                                , setter{MIN_FUNCTION {
                 if (set_duration_type(args))
                     return args;
                 return durationtype;
@@ -96,18 +98,18 @@ public:
 
 
     attribute<int> offsettype{this, "offsettype"
-                         , static_cast<int>(PulsatorParameters::DEFAULT_OFFSET_TYPE)
-                         , title{"offset type"}
-                         , setter{MIN_FUNCTION {
+                              , static_cast<int>(PulsatorParameters::DEFAULT_OFFSET_TYPE)
+                              , title{"offset type"}
+                              , setter{MIN_FUNCTION {
                 if (set_offset_type(args))
                     return args;
                 return offsettype;
             }}};
 
     attribute<int> mode{this, "mode"
-                            , static_cast<int>(Pulsator::DEFAULT_MODE)
-                            , title{"offset enabled"}
-                            , setter{MIN_FUNCTION {
+                        , static_cast<int>(Pulsator::DEFAULT_MODE)
+                        , title{"offset enabled"}
+                        , setter{MIN_FUNCTION {
                 if (set_mode(args))
                     return args;
                 return mode;
@@ -167,7 +169,6 @@ public:
         cout << time->to_string() << endl;
 
 
-
         return {};
     }};
 
@@ -214,7 +215,6 @@ private:
             // CRITICAL SECTION: BEGIN //
 
             std::unique_lock lock{m_mutex}; // should not try_to_lock, important to get output in same scheduler cycle
-
             m_pulse.trigger.set_values(*incoming_triggers);
             auto outgoing_triggers = process_unsafe(*time);
 
@@ -229,7 +229,7 @@ private:
     }
 
 
-    Voices<Trigger> process_unsafe(const TimePoint& t) {
+    Voices <Trigger> process_unsafe(const TimePoint& t) {
         m_pulse.pulsator_node.update_time(t);
         auto output = m_pulse.pulsator_node.process();
 
@@ -281,4 +281,4 @@ private:
 };
 
 
-MIN_EXTERNAL(pulse);
+MIN_EXTERNAL(ser_pulse);

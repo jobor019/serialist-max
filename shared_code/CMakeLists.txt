@@ -1,4 +1,4 @@
-add_library(sharedCode
+add_library(shared_code
         INTERFACE
         max_timepoint.h
         parsing.h
@@ -6,4 +6,4 @@ add_library(sharedCode
         max_stereotypes.h
         utils.h)
 
-target_include_directories(sharedCode INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(shared_code INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})

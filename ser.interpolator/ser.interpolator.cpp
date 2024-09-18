@@ -1,10 +1,8 @@
+#include <core/policies/policies.h>
+#include <core/generatives/interpolator.h>
 
 #include "c74_min.h"
-
-
 #include "parsing.h"
-
-#include "core/generatives/interpolator.h"
 #include "max_stereotypes.h"
 
 using namespace c74::min;
@@ -120,8 +118,8 @@ protected:
     Sequence<Facet, double> m_cursor{InterpolatorKeys::CURSOR, m_parameter_handler};
     Sequence<Facet, double> m_strategy_type{InterpolationAdapter<double>::STRATEGY, m_parameter_handler};
 
-    Sequence<Facet, bool> m_enabled{ParameterKeys::ENABLED, m_parameter_handler, Voices<bool>::singular(true)};
-    Variable<Facet, std::size_t> m_num_voices{ParameterKeys::NUM_VOICES, m_parameter_handler, 1};
+    Sequence<Facet, bool> m_enabled{param::properties::enabled, m_parameter_handler, Voices<bool>::singular(true)};
+    Variable<Facet, std::size_t> m_num_voices{param::properties::num_voices, m_parameter_handler, 1};
 
 private:
     bool m_auto_trigger = false;
@@ -192,7 +190,7 @@ class MaxInterpolatorSymbol : public MaxInterpolatorGeneric<std::string, std::st
 
 // ==============================================================================================
 
-class interpolator : public object<interpolator> {
+class ser_interpolator : public object<ser_interpolator> {
 private:
     // MEMBER VARIABLES (position enforced by c74::min architecture)
     std::unique_ptr<MaxInterpolatorBase> m_interpolator;
@@ -213,7 +211,7 @@ public:
     static const inline std::string CLASS_NAME = "interpolator";
 
 
-    explicit interpolator(const atoms& args = {}) {
+    explicit ser_interpolator(const atoms& args = {}) {
         if (args.size() > 1) {
             cwarn << ErrorMessages::extra_argument(CLASS_NAME) << endl;
         }
@@ -369,4 +367,4 @@ private:
 };
 
 
-MIN_EXTERNAL(interpolator);
+MIN_EXTERNAL(ser_interpolator);

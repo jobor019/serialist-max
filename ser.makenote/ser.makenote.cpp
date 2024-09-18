@@ -1,14 +1,15 @@
+#include <core/policies/policies.h>
+#include <core/generatives/make_note.h>
+
 #include "c74_min.h"
 #include "parsing.h"
 #include "max_stereotypes.h"
-#include "core/generatives/make_note.h"
 #include "max_timepoint.h"
-#include "utils.h"
 
 
 using namespace c74::min;
 
-class makenote : public object<makenote> {
+class ser_makenote : public object<ser_makenote> {
 private:
     MakeNoteWrapper m_make_note;
 
@@ -32,54 +33,54 @@ public:
 
 
     attribute<bool> enabled{
-        this, Keywords::ENABLED, true, title{Titles::ENABLED}, description{Descriptions::ENABLED}, setter{
-            MIN_FUNCTION {
-                if (this->set_enabled(args))
-                    return args;
-                return enabled;
+            this, Keywords::ENABLED, true, title{Titles::ENABLED}, description{Descriptions::ENABLED}, setter{
+                    MIN_FUNCTION {
+                        if (this->set_enabled(args))
+                            return args;
+                        return enabled;
+                    }
             }
-        }
     };
 
 
     attribute<int> voices{
-        this, Keywords::NUM_VOICES, 0, title{Titles::NUM_VOICES}, description{Descriptions::ENABLED}, setter{
-            MIN_FUNCTION {
-                if (this->set_num_voices(args))
-                    return args;
-                return voices;
+            this, Keywords::NUM_VOICES, 0, title{Titles::NUM_VOICES}, description{Descriptions::ENABLED}, setter{
+                    MIN_FUNCTION {
+                        if (this->set_num_voices(args))
+                            return args;
+                        return voices;
+                    }
             }
-        }
     };
 
     attribute<std::vector<int> > note{
-        this, "note", Vec<int>::singular(60).vector(), title{"note"}, setter{
-            MIN_FUNCTION {
-                if (this->set_note_number(args))
-                    return args;
-                return note;
+            this, "note", Vec<int>::singular(60).vector(), title{"note"}, setter{
+                    MIN_FUNCTION {
+                        if (this->set_note_number(args))
+                            return args;
+                        return note;
+                    }
             }
-        }
     };
 
     attribute<std::vector<int> > velocity{
-        this, "velocity", Vec<int>::singular(100).vector(), title{"velocity"}, setter{
-            MIN_FUNCTION {
-                if (this->set_velocity(args))
-                    return args;
-                return velocity;
+            this, "velocity", Vec<int>::singular(100).vector(), title{"velocity"}, setter{
+                    MIN_FUNCTION {
+                        if (this->set_velocity(args))
+                            return args;
+                        return velocity;
+                    }
             }
-        }
     };
 
     attribute<std::vector<int> > channel{
-        this, "channel", Vec<int>::singular(1).vector(), title{"channel"}, setter{
-            MIN_FUNCTION {
-                if (this->set_channel(args))
-                    return args;
-                return channel;
+            this, "channel", Vec<int>::singular(1).vector(), title{"channel"}, setter{
+                    MIN_FUNCTION {
+                        if (this->set_channel(args))
+                            return args;
+                        return channel;
+                    }
             }
-        }
     };
 
 
@@ -99,14 +100,14 @@ public:
 
 
     message<> flush{
-        this, Keywords::FLUSH, description{Descriptions::FLUSH}, MIN_FUNCTION {
-            if (inlet != 0) {
+            this, Keywords::FLUSH, description{Descriptions::FLUSH}, MIN_FUNCTION {
+                if (inlet != 0) {
+                    return {};
+                }
+
+                cwarn << "flush not implemented yet" << endl;
                 return {};
             }
-
-            cwarn << "flush not implemented yet" << endl;
-            return {};
-        }
     };
 
     message<> list = Messages::list_message(this, handle_input);
@@ -164,4 +165,4 @@ private:
 };
 
 
-MIN_EXTERNAL(makenote);
+MIN_EXTERNAL(ser_makenote);

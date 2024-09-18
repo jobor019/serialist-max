@@ -4,13 +4,13 @@
 		"appversion" : 		{
 			"major" : 8,
 			"minor" : 6,
-			"revision" : 2,
+			"revision" : 4,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 34.0, 87.0, 2085.0, 1260.0 ],
+		"rect" : [ 34.0, 87.0, 2085.0, 1258.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -39,6 +39,19 @@
 		"subpatcher_template" : "",
 		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
+				"box" : 				{
+					"fontface" : 1,
+					"fontsize" : 18.0,
+					"id" : "obj-145",
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 1506.0, 31.0, 178.0, 27.0 ],
+					"text" : "1. Turn on transport"
+				}
+
+			}
+, 			{
 				"box" : 				{
 					"id" : "obj-166",
 					"maxclass" : "message",
@@ -228,7 +241,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "bang" ],
-					"patching_rect" : [ 1499.0, 89.0, 106.0, 22.0 ],
+					"patching_rect" : [ 1542.0, 117.0, 106.0, 22.0 ],
 					"text" : "metro 1 @active 1"
 				}
 
@@ -348,33 +361,6 @@
 					"numoutlets" : 0,
 					"patching_rect" : [ 256.0, 237.5, 80.0, 20.0 ],
 					"text" : "free triggered"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"id" : "obj-131",
-					"maxclass" : "live.menu",
-					"numinlets" : 1,
-					"numoutlets" : 3,
-					"outlettype" : [ "", "", "float" ],
-					"parameter_enable" : 1,
-					"patching_rect" : [ 1350.0, 104.125, 25.0, 15.0 ],
-					"saved_attribute_attributes" : 					{
-						"valueof" : 						{
-							"parameter_enum" : [ "t", "b*", "B" ],
-							"parameter_initial" : [ 0.0 ],
-							"parameter_initial_enable" : 1,
-							"parameter_longname" : "live.menu[2]",
-							"parameter_mmax" : 2,
-							"parameter_modmode" : 0,
-							"parameter_shortname" : "live.menu",
-							"parameter_type" : 2
-						}
-
-					}
-,
-					"varname" : "live.menu[2]"
 				}
 
 			}
@@ -609,7 +595,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"parameter_enable" : 1,
-					"patching_rect" : [ 1776.0, 168.5, 32.0, 30.0 ],
+					"patching_rect" : [ 1384.0, 23.5, 121.0, 127.0 ],
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
 							"parameter_enum" : [ "off", "on" ],
@@ -852,7 +838,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 1830.0, 438.0, 50.0, 35.0 ],
-					"text" : "47693.7918"
+					"text" : "4723.6686"
 				}
 
 			}
@@ -1214,8 +1200,8 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 1210.0, 184.25, 53.0, 22.0 ],
-					"text" : "1121"
+					"patching_rect" : [ 1210.0, 205.5, 53.0, 22.0 ],
+					"text" : "829"
 				}
 
 			}
@@ -1235,7 +1221,7 @@
 					"numoutlets" : 3,
 					"offset" : [ 0.0, 0.0 ],
 					"outlettype" : [ "int/listoflists", "", "" ],
-					"patching_rect" : [ 1244.0, 65.25, 123.0, 99.75 ],
+					"patching_rect" : [ 1244.0, 62.5, 135.0, 124.0 ],
 					"varname" : "ser.pulse.ui",
 					"viewvisibility" : 1
 				}
@@ -1599,7 +1585,7 @@
 						"appversion" : 						{
 							"major" : 8,
 							"minor" : 6,
-							"revision" : 2,
+							"revision" : 4,
 							"architecture" : "x64",
 							"modernui" : 1
 						}
@@ -2137,7 +2123,7 @@
 						"appversion" : 						{
 							"major" : 8,
 							"minor" : 6,
-							"revision" : 2,
+							"revision" : 4,
 							"architecture" : "x64",
 							"modernui" : 1
 						}
@@ -3169,7 +3155,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 1798.0, 482.0, 50.0, 35.0 ],
-					"text" : "173.7918"
+					"text" : "408.4686"
 				}
 
 			}
@@ -3181,7 +3167,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 1782.0, 458.0, 50.0, 22.0 ],
-					"text" : "1"
+					"text" : "2"
 				}
 
 			}
@@ -3193,7 +3179,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 1767.0, 434.0, 50.0, 22.0 ],
-					"text" : "53"
+					"text" : "3"
 				}
 
 			}
@@ -4344,7 +4330,6 @@
 		"parameters" : 		{
 			"obj-101" : [ "live.numbox[5]", "live.numbox", 0 ],
 			"obj-129" : [ "live.numbox[11]", "live.numbox", 0 ],
-			"obj-131" : [ "live.menu[2]", "live.menu", 0 ],
 			"obj-133" : [ "live.numbox[8]", "live.numbox", 0 ],
 			"obj-137" : [ "live.numbox[9]", "live.numbox", 0 ],
 			"obj-13::obj-10" : [ "live.menu", "live.menu", 0 ],
@@ -4356,7 +4341,6 @@
 			"obj-13::obj-5" : [ "live.numbox[19]", "live.numbox", 0 ],
 			"obj-13::obj-6" : [ "live.numbox[16]", "live.numbox", 0 ],
 			"obj-13::obj-74" : [ "live.numbox[2]", "live.numbox", 0 ],
-			"obj-13::obj-83" : [ "live.toggle", "live.toggle", 0 ],
 			"obj-17" : [ "live.numbox", "live.numbox", 0 ],
 			"obj-3" : [ "live.numbox[20]", "live.numbox[7]", 0 ],
 			"obj-31" : [ "live.numbox[1]", "live.numbox", 0 ],
@@ -4399,8 +4383,8 @@
 ,
 		"dependency_cache" : [ 			{
 				"name" : "bis.awaitpatcherargs.maxpat",
-				"bootpath" : "~/Mabstractions/abstraction",
-				"patcherrelativepath" : "../../../../Mabstractions/abstraction",
+				"bootpath" : "~/MaxProjects/Mabstractions/abstraction",
+				"patcherrelativepath" : "../../../Mabstractions/abstraction",
 				"type" : "JSON",
 				"implicit" : 1
 			}
@@ -4414,14 +4398,14 @@
 			}
 , 			{
 				"name" : "ser.pulse.ui.maxpat",
-				"bootpath" : "~/CLionProjects/serialist-max/patchers",
+				"bootpath" : "~/MaxProjects/serialist-max/patchers",
 				"patcherrelativepath" : "../../patchers",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
 				"name" : "ser_.multimap.maxpat",
-				"bootpath" : "~/CLionProjects/serialist-max/patchers/private",
+				"bootpath" : "~/MaxProjects/serialist-max/patchers/private",
 				"patcherrelativepath" : "../../patchers/private",
 				"type" : "JSON",
 				"implicit" : 1
