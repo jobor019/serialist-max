@@ -280,6 +280,5 @@ package-info.json
 
 # Repo-specific
 experiments/
-min-api
 serialist
 patchers/ongoing/
