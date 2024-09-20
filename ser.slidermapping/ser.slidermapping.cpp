@@ -12,7 +12,7 @@ using namespace serialist;
 
 struct MappingResult {
     double quantized_raw_value;
-    std::variant<long, double> scaled_value;
+    std::variant<long, double, ExtendedFraction> scaled_value;
 };
 
 
@@ -24,15 +24,15 @@ public:
 
 
     enum class Format {
-        custom, percentage, midi_note, enum_count
+        custom, percentage, midi_note, improper_fraction, mixed_fraction, fraction_list, enum_count
     };
 
     explicit ValueFormatter(Format fmt = Format::custom
-                   , std::size_t num_decimals = 2
-                   , bool is_integral = false
-                   , bool scientific = false
-                   , const std::string& prepend_arg = ""
-                   , const std::string append_arg = "")
+                            , std::size_t num_decimals = 2
+                            , bool is_integral = false
+                            , bool scientific = false
+                            , const std::string& prepend_arg = ""
+                            , const std::string& append_arg = "")
             : m_fmt(fmt)
               , m_num_decimals(num_decimals)
               , m_is_integral(is_integral)
@@ -49,23 +49,43 @@ public:
                 return format_percentage(x, num_decimals);
             case Format::midi_note:
                 return format_midi_note(y);
-            default:
+            default: // Any fractional format on a non-fractional value will fall back on `format_custom`
                 return format_custom(y, num_decimals, scientific, prepend_arg, append_arg);
         }
     }
 
 
+    static std::string format_fraction_static(const ExtendedFraction& q
+                                              , Format fmt
+                                              , const std::string& prepend_arg = ""
+                                              , const std::string& append_arg = "") {
+        switch (fmt) {
+            case Format::mixed_fraction:
+                return format_mixed_number(q);
+            case Format::fraction_list:
+                return format_fraction_list(q);
+            default: // Any non-fractional format non a fraction value will fall back to improper
+                return format_improper_fraction(q);
+        }
+    }
+
+
     std::string format(double x, double y) {
-        return format_static(x, y, m_fmt, m_is_integral ? 0 : m_num_decimals, m_scientific, m_prepend_arg, m_append_arg);
+        return format_static(x, y, m_fmt, m_is_integral ? 0 : m_num_decimals, m_scientific
+                             , m_prepend_arg, m_append_arg);
     }
 
     std::string format(const MappingResult& r) {
         if (std::holds_alternative<double>(r.scaled_value)) {
             return format(r.quantized_raw_value, std::get<double>(r.scaled_value));
-        } else {
+        } else if (std::holds_alternative<long>(r.scaled_value)) {
             return format(r.quantized_raw_value, static_cast<double>(std::get<long>(r.scaled_value)));
+        } else {
+            return format_fraction_static(std::get<ExtendedFraction>(r.scaled_value)
+                                          , m_fmt, m_prepend_arg, m_append_arg);
         }
     }
+
 
     void set_format(Format fmt) { m_fmt = fmt; }
 
@@ -97,6 +117,36 @@ private:
                                      , const std::string& prepend_arg, const std::string& append_arg) {
         std::string num = format_number(y, num_decimals, scientific);
         return prepend_arg + num + " " + append_arg;
+    }
+
+    static std::string format_improper_fraction(const ExtendedFraction& q) {
+        return std::to_string(q.get_integral_part() * q.get_d() + q.get_n()) + "/" + std::to_string(q.get_d());
+    }
+
+    static std::string format_mixed_number(const ExtendedFraction& q) {
+        std::stringstream ss;
+
+        bool has_integral_part = std::abs(q.get_integral_part()) > 0;
+        bool has_fractional_part = std::abs(q.get_n()) > 0;
+
+        if (has_integral_part)
+            ss << q.get_integral_part();
+
+        if (has_integral_part && has_fractional_part)
+            ss << " ";
+
+        if (has_fractional_part)
+            ss << q.get_n() << "/" << q.get_d();
+
+        if (!has_integral_part && !has_fractional_part)
+            ss << 0;
+
+        return ss.str();
+    }
+
+    static std::string format_fraction_list(const ExtendedFraction& q) {
+        return std::to_string(q.get_integral_part()) + " " + std::to_string(q.get_n()) + " " +
+               std::to_string(q.get_d());
     }
 
 
@@ -137,6 +187,7 @@ public:
                            , double exponent1 = 1.0
                            , std::optional<double> exponent2 = std::nullopt
                            , double midpoint = 0.5
+                           , const std::variant<long, Vec<long>>& fractional_denominators = 32L
                            , bool is_integral = false)
             : m_map_mode(mode)
               , m_minimum(min)
@@ -145,6 +196,7 @@ public:
               , m_exponent1(exponent1)
               , m_exponent2(exponent2)
               , m_midpoint(midpoint)
+              , m_fractional_denominators(fractional_denominators)
               , m_is_integral(is_integral) {
     }
 
@@ -170,6 +222,8 @@ public:
                 y = utils::map_exponential(x, min, max, m_midpoint
                                            , m_exponent1, m_exponent2.value_or(m_exponent1));
                 break;
+            case MapMode::fractional:
+                return handle_fraction(x, m_fractional_denominators);
             default:
                 throw std::runtime_error("not implemented: "); // TODO
         }
@@ -200,9 +254,22 @@ public:
 
     void set_midpoint(double midpoint) { m_midpoint = midpoint; }
 
+    void set_denominators(long d) { m_fractional_denominators = d; }
+
+    void set_denominators(const Vec<long>& ds) { m_fractional_denominators = ds; }
+
     void set_integral(bool is_integral) { m_is_integral = is_integral; }
 
 private:
+    static MappingResult handle_fraction(double x, std::variant<long, Vec<long>> denoms) {
+        if (std::holds_alternative<long>(denoms)) {
+            return {x, ExtendedFraction::from_decimal(x, std::get<long>(denoms))};
+        } else {
+            return {x, ExtendedFraction::from_decimal(x, std::get<Vec<long>>(denoms).as_type<long>())};
+        }
+    }
+
+
     MapMode m_map_mode;
     double m_minimum;
     double m_maximum;
@@ -211,6 +278,7 @@ private:
     double m_exponent1;
     std::optional<double> m_exponent2;
     double m_midpoint;
+    std::variant<long, Vec<long>> m_fractional_denominators;
     bool m_is_integral;
 };
 
@@ -356,8 +424,9 @@ public:
 
 
     c74::min::enum_map format_info = {
-            "number", "percentage", "midinote"
+            "number", "percentage", "midinote", "improperfrac", "mixed", "fraclist"
     };
+
     attribute<ValueFormatter::Format> format{this, "format", ValueFormatter::Format::custom, format_info, setter{
             MIN_FUNCTION {
                 if (auto v = AtomParser::atoms2value<ValueFormatter::Format>(args)) {
@@ -441,6 +510,37 @@ public:
             }
     }};
 
+    attribute<std::vector<int>> denominators{this, "denominators", {32}, setter{
+            MIN_FUNCTION {
+                if (args.empty()) {
+                    cerr << "no denominator provided" << endl;
+                    return denominators;
+                }
+
+                if (args.size() == 1) {
+                    if (auto v = AtomParser::atoms2value<long>(args)) {
+                        m_mapping.set_denominators(std::max(*v, 1L));
+                        process();
+                        return args;
+                    } else {
+                        cerr << v.err().message() << endl;
+                        return denominators;
+                    }
+                }
+
+                if (auto v = AtomParser::atoms2vec<long>(args)) {
+                    m_mapping.set_denominators(v->map([](long v) { return std::max(v, 1L); }));
+                    process();
+                    return args;
+                } else {
+                    cerr << v.err().message() << endl;
+                    return denominators;
+                }
+            }
+    }
+    };
+
+
 //    attribute<bool> changedonly{ this, "changedonly", false, setter{
 //            MIN_FUNCTION {
 //                if (auto v = AtomParser::atoms2value<bool>(args)) {
@@ -520,11 +620,13 @@ private:
         }
     }
 
-    atom rvariant2atom(const std::variant<long, double>& v) const {
+    static atom rvariant2atom(const std::variant<long, double, ExtendedFraction>& v) {
         if (std::holds_alternative<double>(v)) {
             return AtomFormatter::value2atom<double>(std::get<double>(v));
-        } else {
+        } else if (std::holds_alternative<long>(v)) {
             return AtomFormatter::value2atom<long>(std::get<long>(v));;
+        } else {
+            return AtomFormatter::value2atom<double>(std::get<ExtendedFraction>(v).get_decimal());
         }
     }
 
