@@ -1,0 +1,566 @@
+#include <core/algo/fraction.h>
+#include <core/collections/vec.h>
+#include <core/utility/mapping.h>
+
+
+#include "c74_min.h"
+#include "parsing.h"
+#include "max_stereotypes.h"
+
+using namespace c74::min;
+using namespace serialist;
+
+struct MappingResult {
+    double quantized_raw_value;
+    std::variant<long, double> scaled_value;
+};
+
+
+class ValueFormatter {
+public:
+    static const inline std::array<std::string, 12> note_names = {
+            "C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#", "A", "Bb", "B"
+    };
+
+
+    enum class Format {
+        custom, percentage, midi_note, enum_count
+    };
+
+    explicit ValueFormatter(Format fmt = Format::custom
+                   , std::size_t num_decimals = 2
+                   , bool is_integral = false
+                   , bool scientific = false
+                   , const std::string& prepend_arg = ""
+                   , const std::string append_arg = "")
+            : m_fmt(fmt)
+              , m_num_decimals(num_decimals)
+              , m_is_integral(is_integral)
+              , m_scientific(scientific)
+              , m_prepend_arg(prepend_arg)
+              , m_append_arg(append_arg) {}
+
+
+    static std::string format_static(double x, double y, Format fmt, std::size_t num_decimals, bool scientific = false
+                                     , const std::string& prepend_arg = ""
+                                     , const std::string& append_arg = "") {
+        switch (fmt) {
+            case Format::percentage:
+                return format_percentage(x, num_decimals);
+            case Format::midi_note:
+                return format_midi_note(y);
+            default:
+                return format_custom(y, num_decimals, scientific, prepend_arg, append_arg);
+        }
+    }
+
+
+    std::string format(double x, double y) {
+        return format_static(x, y, m_fmt, m_is_integral ? 0 : m_num_decimals, m_scientific, m_prepend_arg, m_append_arg);
+    }
+
+    std::string format(const MappingResult& r) {
+        if (std::holds_alternative<double>(r.scaled_value)) {
+            return format(r.quantized_raw_value, std::get<double>(r.scaled_value));
+        } else {
+            return format(r.quantized_raw_value, static_cast<double>(std::get<long>(r.scaled_value)));
+        }
+    }
+
+    void set_format(Format fmt) { m_fmt = fmt; }
+
+    void set_num_decimals(std::size_t num_decimals) { m_num_decimals = num_decimals; }
+
+    void set_integral(bool integral) { m_is_integral = integral; }
+
+    void set_scientific(bool scientific) { m_scientific = scientific; }
+
+    void set_prepend_arg(const std::string& s) { m_prepend_arg = s; }
+
+    void set_append_arg(const std::string& s) { m_append_arg = s; }
+
+
+private:
+    static std::string format_percentage(double x, std::size_t num_decimals) {
+        double y = x * 100.0;
+        return format_number(y, num_decimals, false) + "%";
+    }
+
+    static std::string format_midi_note(double y) {
+        auto pitch = std::lround(y);
+        auto [octave, pitch_class] = utils::divmod(pitch, 12L);
+
+        return note_names[pitch_class] + std::to_string(octave - 2);
+    }
+
+    static std::string format_custom(double y, std::size_t num_decimals, bool scientific
+                                     , const std::string& prepend_arg, const std::string& append_arg) {
+        std::string num = format_number(y, num_decimals, scientific);
+        return prepend_arg + num + " " + append_arg;
+    }
+
+
+    static std::string format_number(double num, std::size_t num_decimals, bool scientific = false) {
+        std::stringstream ss;
+        if (scientific) {
+            ss << std::scientific;
+        } else {
+            ss << std::fixed;
+        }
+
+        ss << std::setprecision(static_cast<int>(num_decimals)) << num;
+        return ss.str();
+    }
+
+    ValueFormatter::Format m_fmt;
+    std::size_t m_num_decimals;
+    bool m_is_integral;
+    bool m_scientific;
+    std::string m_prepend_arg;
+    std::string m_append_arg;
+};
+
+
+// ==============================================================================================
+
+class SliderMapping {
+public:
+    enum class MapMode {
+        exponential, midpoint, fractional, enum_count
+    };
+
+
+    explicit SliderMapping(MapMode mode = MapMode::exponential
+                           , double min = 0.0
+                           , double max = 1.0
+                           , std::optional<std::size_t> num_steps = std::nullopt
+                           , double exponent1 = 1.0
+                           , std::optional<double> exponent2 = std::nullopt
+                           , double midpoint = 0.5
+                           , bool is_integral = false)
+            : m_map_mode(mode)
+              , m_minimum(min)
+              , m_maximum(max)
+              , m_num_steps(num_steps)
+              , m_exponent1(exponent1)
+              , m_exponent2(exponent2)
+              , m_midpoint(midpoint)
+              , m_is_integral(is_integral) {
+    }
+
+
+    MappingResult process(double x) {
+        x = utils::clip(x, 0.0, 1.0);
+
+        if (m_num_steps) {
+            x = utils::quantize(x, *m_num_steps);
+        }
+
+        double min = std::min(m_minimum, m_maximum);
+        double max = std::max(m_minimum, m_maximum);
+
+
+        double y;
+
+        switch (m_map_mode) {
+            case MapMode::exponential:
+                y = utils::map_exponential(x, min, max, m_exponent1);
+                break;
+            case MapMode::midpoint:
+                y = utils::map_exponential(x, min, max, m_midpoint
+                                           , m_exponent1, m_exponent2.value_or(m_exponent1));
+                break;
+            default:
+                throw std::runtime_error("not implemented: "); // TODO
+        }
+
+        if (m_is_integral)
+            return {x, std::lround(y)};
+
+        return {x, y};
+    }
+
+
+    Vec<MappingResult> process(const Vec<double>& xs) {
+        return xs.cloned().as_type<MappingResult>([this](double x) { return process(x); });
+    }
+
+
+    void set_map_mode(MapMode map_mode) { m_map_mode = map_mode; }
+
+    void set_minimum(double minimum) { m_minimum = minimum; }
+
+    void set_maximum(double maximum) { m_maximum = maximum; }
+
+    void set_num_steps(std::optional<std::size_t> num_steps) { m_num_steps = num_steps; }
+
+    void set_exponent1(double exponent1) { m_exponent1 = exponent1; }
+
+    void set_exponent2(const std::optional<double>& exponent2) { m_exponent2 = exponent2; }
+
+    void set_midpoint(double midpoint) { m_midpoint = midpoint; }
+
+    void set_integral(bool is_integral) { m_is_integral = is_integral; }
+
+private:
+    MapMode m_map_mode;
+    double m_minimum;
+    double m_maximum;
+    std::optional<std::size_t> m_num_steps;
+
+    double m_exponent1;
+    std::optional<double> m_exponent2;
+    double m_midpoint;
+    bool m_is_integral;
+};
+
+
+class slidermapping : public c74::min::object<slidermapping> {
+private:
+    SliderMapping m_mapping;
+    ValueFormatter m_formatter;
+    c74::min::atoms m_last_input;
+//    bool m_format_changed_only;
+
+
+public:
+    MIN_DESCRIPTION{"Variable-state mapping"};
+    MIN_TAGS{"utilities"};
+    MIN_AUTHOR{"Borg"};
+    MIN_RELATED{"scale, live.numbox"};
+
+    inlet<> inlet_main{this, "(float/list, 0 - 1) raw value(s) to scale"};
+    inlet<> inlet_min{this, "(float/int) minimum"};
+    inlet<> inlet_max{this, "(float/int) maximum"};
+
+    outlet<> outlet_main{this, "(float/int/list) scaled value(s)"};
+    outlet<> outlet_symout{this, "(symbol/list) formatted string"};
+    outlet<> outlet_feedback{this, "(float/list) feedback / quantized raw value(s)"};
+
+
+    attribute<double> minimum{this, "minimum", 0.0, setter{
+            MIN_FUNCTION {
+                if (auto v = AtomParser::atoms2value<double>(args)) {
+                    m_mapping.set_minimum(*v);
+                    process();
+                    return args;
+                } else {
+                    cerr << v.err().message() << endl;
+                    return minimum;
+                }
+            }
+    }
+    };
+
+    attribute<double> maximum{this, "maximum", 1.0, setter{
+            MIN_FUNCTION {
+                if (auto v = AtomParser::atoms2value<double>(args)) {
+                    m_mapping.set_maximum(*v);
+                    process();
+                    return args;
+                } else {
+                    cerr << v.err().message() << endl;
+                    return maximum;
+                }
+            }
+    }
+    };
+
+    c74::min::enum_map mode_info = {
+            "exponential", "midpoint", "fractional"
+    };
+
+    attribute<SliderMapping::MapMode> mode{this, "mode", SliderMapping::MapMode::exponential, mode_info, setter{
+            MIN_FUNCTION {
+                if (auto v = AtomParser::atoms2value<SliderMapping::MapMode>(args)) {
+                    m_mapping.set_map_mode(*v);
+                    process();
+                    return args;
+                } else {
+                    cerr << v.err().message() << endl;
+                    return mode;
+                }
+            }
+    }
+    };
+
+    attribute<int> numsteps{this, "numsteps", -1, setter{
+            MIN_FUNCTION {
+                if (auto v = AtomParser::atoms2value<long>(args)) {
+                    m_mapping.set_num_steps(v.ok() > 0
+                                            ? std::make_optional<long>(static_cast<std::size_t>(*v))
+                                            : std::nullopt);
+                    process();
+                    return args;
+                } else {
+                    cerr << v.err().message() << endl;
+                    return numsteps;
+                }
+            }
+    }
+    };
+
+    attribute<std::vector<double>> exponent{this, "exponent", {1.0}, setter{
+            MIN_FUNCTION {
+                if (auto v = AtomParser::atoms2vec<double>(args)) {
+                    if (v->empty()) {
+                        cerr << "exponent must have at least one value" << endl;
+                        return exponent;
+                    }
+
+                    if (v->size() > 2) {
+                        cwarn << ErrorMessages::extra_argument("exponent") << endl;
+                    }
+
+                    if (v->size() == 2) {
+                        m_mapping.set_exponent2(std::max(0.0, v.ok()[1]));
+                    }
+
+                    m_mapping.set_exponent1(std::max(0.0, v.ok()[0]));
+                    process();
+                    return args;
+
+                } else {
+                    cerr << v.err().message() << endl;
+                    return exponent;
+                }
+            }
+    }};
+
+    attribute<double> midpoint{this, "midpoint", 0.5, setter{
+            MIN_FUNCTION {
+                if (auto v = AtomParser::atoms2value<double>(args)) {
+                    m_mapping.set_midpoint(*v);
+                    process();
+                    return args;
+                } else {
+                    cerr << v.err().message() << endl;
+                    return midpoint;
+                }
+            }
+    }
+    };
+
+    attribute<bool> integral{this, "integral", false, setter{MIN_FUNCTION {
+        if (auto v = AtomParser::atoms2value<bool>(args)) {
+            m_mapping.set_integral(*v);
+            m_formatter.set_integral(*v);
+            process();
+            return args;
+        } else {
+            cerr << v.err().message() << endl;
+            return integral;
+        }
+    }
+    }};
+
+
+    c74::min::enum_map format_info = {
+            "number", "percentage", "midinote"
+    };
+    attribute<ValueFormatter::Format> format{this, "format", ValueFormatter::Format::custom, format_info, setter{
+            MIN_FUNCTION {
+                if (auto v = AtomParser::atoms2value<ValueFormatter::Format>(args)) {
+                    m_formatter.set_format(*v);
+                    process();
+                    return args;
+                } else {
+                    cerr << v.err().message() << endl;
+                    return format;
+                }
+            }
+    }
+    };
+
+
+    attribute<int> decimals{this, "decimals", 2, setter{
+            MIN_FUNCTION {
+                if (auto v = AtomParser::atoms2value<int>(args)) {
+                    m_formatter.set_num_decimals(*v > 0 ? static_cast<std::size_t>(*v) : 0u);
+                    process();
+                    return args;
+                } else {
+                    cerr << v.err().message() << endl;
+                    return decimals;
+                }
+            }
+    }};
+
+
+    attribute<bool> scientific{this, "scientific", false, setter{
+            MIN_FUNCTION {
+                if (auto v = AtomParser::atoms2value<bool>(args)) {
+                    m_formatter.set_scientific(*v);
+                    process();
+                    return args;
+                } else {
+                    cerr << v.err().message() << endl;
+                    return decimals;
+                }
+            }
+    }};
+
+
+    attribute<symbol> prependarg{this, "prependarg", "", setter{
+            MIN_FUNCTION {
+                if (args.empty()) {
+                    m_formatter.set_append_arg("");
+                    process();
+                    return args;
+                }
+
+                if (auto v = AtomParser::atoms2value<std::string>(args)) {
+                    m_formatter.set_prepend_arg(*v);
+                    process();
+                    return args;
+                } else {
+                    cerr << v.err().message() << endl;
+                    return prependarg;
+                }
+            }
+    }};
+
+
+    attribute<symbol> appendarg{this, "appendarg", "", setter{
+            MIN_FUNCTION {
+                if (args.empty()) {
+                    m_formatter.set_append_arg("");
+                    process();
+                    return args;
+                }
+
+
+                if (auto v = AtomParser::atoms2value<std::string>(args)) {
+                    m_formatter.set_append_arg(*v);
+                    process();
+                    return args;
+                } else {
+                    cerr << v.err().message() << endl;
+                    return appendarg;
+                }
+            }
+    }};
+
+//    attribute<bool> changedonly{ this, "changedonly", false, setter{
+//            MIN_FUNCTION {
+//                if (auto v = AtomParser::atoms2value<bool>(args)) {
+//
+//                }
+//            }
+//        }
+//    };
+
+
+    message<> range{this, "range", "set minimum and maximum", setter{MIN_FUNCTION {
+        if (inlet != 0) {
+            cerr << "invalid message \"range\" for inlet " << inlet << endl;
+            return {};
+        }
+
+        if (args.size() != 2) {
+            cerr << "range requires exactly two arguments" << endl;
+            return {};
+        }
+
+        minimum.set({args[0]});
+        maximum.set({args[1]});
+
+        return {};
+    }}};
+
+
+    c74::min::function handle_input = MIN_FUNCTION {
+        if (inlet == 2) {
+            maximum.set(args);
+        } else if (inlet == 1) {
+            minimum.set(args);
+        } else {
+            process(args);
+        }
+
+        return {};
+    };
+
+    message<> bang{this, "bang", MIN_FUNCTION {
+        process();
+        return {};
+    }};
+
+    message<> list{this, "list", handle_input};
+    message<> number{this, "number", handle_input};
+//    message<> anything{this, "anything", handle_input};
+
+
+private:
+    void process(const atoms& args) {
+        m_last_input = args;
+        process();
+    }
+
+    void process() {
+        if (m_last_input.empty()) {
+            return;
+        }
+
+        if (m_last_input.size() == 1) {
+            if (auto v = AtomParser::atoms2value<double>(m_last_input)) {
+                process_single(*v);
+                return;
+            } else {
+                cerr << v.err().message() << endl;
+                return;
+            }
+        }
+
+        if (auto v = AtomParser::atoms2vec<double>(m_last_input)) {
+            process_multiple(*v);
+        } else {
+            cerr << v.err().message() << endl;
+            return;
+        }
+    }
+
+    atom rvariant2atom(const std::variant<long, double>& v) const {
+        if (std::holds_alternative<double>(v)) {
+            return AtomFormatter::value2atom<double>(std::get<double>(v));
+        } else {
+            return AtomFormatter::value2atom<long>(std::get<long>(v));;
+        }
+    }
+
+    void process_single(double raw_value) {
+        auto mapping_result = m_mapping.process(raw_value);
+
+        atoms output_feedback{AtomFormatter::value2atom<double>(mapping_result.quantized_raw_value)};
+        outlet_feedback.send(output_feedback);
+
+        atoms output_fmt{AtomFormatter::value2atom<std::string>(m_formatter.format(mapping_result))};
+        outlet_symout.send(output_fmt);
+
+        atoms output_main{rvariant2atom(mapping_result.scaled_value)};
+        outlet_main.send(output_main);
+
+    }
+
+    void process_multiple(const Vec<double>& xs) {
+        auto mapping_result = m_mapping.process(xs);
+
+        atoms output_feedback;
+        atoms output_fmt;
+        atoms output_main;
+
+        for (const auto& r: mapping_result) {
+            output_main.emplace_back(rvariant2atom(r.scaled_value));
+            output_fmt.emplace_back(AtomFormatter::value2atom<std::string>(m_formatter.format(r)));
+            output_feedback.emplace_back(AtomFormatter::value2atom<double>(r.quantized_raw_value));
+        }
+
+        outlet_feedback.send(output_feedback);
+        outlet_symout.send(output_fmt);
+        outlet_main.send(output_main);
+    }
+
+};
+
+
+MIN_EXTERNAL(slidermapping);
