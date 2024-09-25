@@ -106,8 +106,8 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 1314.0, 424.0, 96.0, 22.0 ],
-					"text" : "numdecimals $1"
+					"patching_rect" : [ 1314.0, 424.0, 73.0, 22.0 ],
+					"text" : "decimals $1"
 				}
 
 			}
@@ -641,14 +641,14 @@
 						"exponent" : [ 1.0 ],
 						"high" : [ 1.0 ],
 						"low" : [ 0.0 ],
-						"type" : [ 0.0 ],
+						"type" : [ 1.0 ],
 						"unused" : [ 0.0 ],
 						"unused[1]" : [ 0.0 ],
 						"unused[2]" : [ 0.0 ],
 						"unused[3]" : [ 0.0 ],
 						"unused[4]" : [ 0.0 ],
 						"unused[5]" : [ 0.0 ],
-						"value" : [ 0.0 ]
+						"value" : [ 1.0 ]
 					}
 ,
 					"text" : "autopattr @autorestore 0",
@@ -1761,7 +1761,7 @@
 					"patching_rect" : [ 149.0, 541.0, 77.0, 18.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 1.0, 5.0, 49.0, 18.0 ],
-					"text" : "0.00 ",
+					"text" : "1 ",
 					"textjustification" : 1
 				}
 

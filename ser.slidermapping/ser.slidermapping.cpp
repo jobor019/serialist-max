@@ -299,7 +299,6 @@ private:
     SliderMapping m_mapping;
     ValueFormatter m_formatter;
     c74::min::atoms m_last_input;
-//    bool m_format_changed_only;
 
 
 public:
