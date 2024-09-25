@@ -16,6 +16,8 @@ struct MappingResult {
 };
 
 
+// ==============================================================================================
+
 class ValueFormatter {
 public:
     static const inline std::array<std::string, 12> note_names = {
@@ -176,28 +178,32 @@ private:
 class SliderMapping {
 public:
     enum class MapMode {
-        exponential, midpoint, fractional, enum_count
+        exponential, midpoint, enum_count
+    };
+
+    enum class Type {
+        floating, integral, fractional, enum_count
     };
 
 
     explicit SliderMapping(MapMode mode = MapMode::exponential
+            , Type type = Type::floating
                            , double min = 0.0
                            , double max = 1.0
                            , std::optional<std::size_t> num_steps = std::nullopt
                            , double exponent1 = 1.0
                            , std::optional<double> exponent2 = std::nullopt
                            , double midpoint = 0.5
-                           , const std::variant<long, Vec<long>>& fractional_denominators = 32L
-                           , bool is_integral = false)
+                           , const std::variant<long, Vec<long>>& fractional_denominators = 32L)
             : m_map_mode(mode)
+            , m_type(type)
               , m_minimum(min)
               , m_maximum(max)
               , m_num_steps(num_steps)
               , m_exponent1(exponent1)
               , m_exponent2(exponent2)
               , m_midpoint(midpoint)
-              , m_fractional_denominators(fractional_denominators)
-              , m_is_integral(is_integral) {
+              , m_fractional_denominators(fractional_denominators) {
     }
 
 
@@ -215,23 +221,23 @@ public:
         double y;
 
         switch (m_map_mode) {
-            case MapMode::exponential:
-                y = utils::map_exponential(x, min, max, m_exponent1);
-                break;
             case MapMode::midpoint:
                 y = utils::map_exponential(x, min, max, m_midpoint
                                            , m_exponent1, m_exponent2.value_or(m_exponent1));
                 break;
-            case MapMode::fractional:
-                return handle_fraction(x, m_fractional_denominators);
             default:
-                throw std::runtime_error("not implemented: "); // TODO
+                y = utils::map_exponential(x, min, max, m_exponent1);
+                break;
         }
 
-        if (m_is_integral)
-            return {x, std::lround(y)};
-
-        return {x, y};
+        switch (m_type) {
+            case Type::integral:
+                return handle_integral(x, y);
+            case Type::fractional:
+                return handle_fractional(x, y, m_fractional_denominators);
+            default:
+                return {x, y};
+        }
     }
 
 
@@ -241,6 +247,8 @@ public:
 
 
     void set_map_mode(MapMode map_mode) { m_map_mode = map_mode; }
+
+    void set_numeric_type(Type type) { m_type = type; }
 
     void set_minimum(double minimum) { m_minimum = minimum; }
 
@@ -258,19 +266,23 @@ public:
 
     void set_denominators(const Vec<long>& ds) { m_fractional_denominators = ds; }
 
-    void set_integral(bool is_integral) { m_is_integral = is_integral; }
 
 private:
-    static MappingResult handle_fraction(double x, std::variant<long, Vec<long>> denoms) {
+    static MappingResult handle_fractional(double x, double y, std::variant<long, Vec<long>> denoms) {
         if (std::holds_alternative<long>(denoms)) {
-            return {x, ExtendedFraction::from_decimal(x, std::get<long>(denoms))};
+            return {x, ExtendedFraction::from_decimal(y, std::get<long>(denoms))};
         } else {
-            return {x, ExtendedFraction::from_decimal(x, std::get<Vec<long>>(denoms).as_type<long>())};
+            return {x, ExtendedFraction::from_decimal(y, std::get<Vec<long>>(denoms).as_type<long>())};
         }
+    }
+
+    static MappingResult handle_integral(double x, double y) {
+        return {x, std::lround(y)};
     }
 
 
     MapMode m_map_mode;
+    Type m_type;
     double m_minimum;
     double m_maximum;
     std::optional<std::size_t> m_num_steps;
@@ -279,7 +291,6 @@ private:
     std::optional<double> m_exponent2;
     double m_midpoint;
     std::variant<long, Vec<long>> m_fractional_denominators;
-    bool m_is_integral;
 };
 
 
@@ -334,14 +345,36 @@ public:
     }
     };
 
-    c74::min::enum_map mode_info = {
-            "exponential", "midpoint", "fractional"
-    };
+    c74::min::enum_map mode_info = {"exponential", "midpoint"};
 
     attribute<SliderMapping::MapMode> mode{this, "mode", SliderMapping::MapMode::exponential, mode_info, setter{
             MIN_FUNCTION {
                 if (auto v = AtomParser::atoms2value<SliderMapping::MapMode>(args)) {
+                    if (v.ok() >= SliderMapping::MapMode::enum_count) {
+                        cwarn << "invalid mode, using default" << endl;
+                    }
+
                     m_mapping.set_map_mode(*v);
+                    process();
+                    return args;
+                } else {
+                    cerr << v.err().message() << endl;
+                    return mode;
+                }
+            }
+    }
+    };
+
+    c74::min::enum_map type_info = {"floating", "integral", "fractional"};
+
+    attribute<SliderMapping::Type> type{this, "type", SliderMapping::Type::floating, type_info, title{"Type"}, description{"output type on left outlet"}, setter{
+            MIN_FUNCTION {
+                if (auto v = AtomParser::atoms2value<SliderMapping::Type>(args)) {
+                    if (v.ok() >= SliderMapping::Type::enum_count) {
+                        cwarn << "invalid type, using default" << endl;
+                    }
+
+                    m_mapping.set_numeric_type(*v);
                     process();
                     return args;
                 } else {
@@ -381,7 +414,14 @@ public:
                     }
 
                     if (v->size() == 2) {
+                        if (v.ok()[1] < 0.0) {
+                            cwarn << "negative exponent not allowed, exponent clipped to 0" << endl;
+                        }
                         m_mapping.set_exponent2(std::max(0.0, v.ok()[1]));
+                    }
+
+                    if (v.ok()[0] < 0.0) {
+                        cwarn << "negative exponent not allowed, exponent clipped to 0" << endl;
                     }
 
                     m_mapping.set_exponent1(std::max(0.0, v.ok()[0]));
@@ -409,27 +449,15 @@ public:
     }
     };
 
-    attribute<bool> integral{this, "integral", false, setter{MIN_FUNCTION {
-        if (auto v = AtomParser::atoms2value<bool>(args)) {
-            m_mapping.set_integral(*v);
-            m_formatter.set_integral(*v);
-            process();
-            return args;
-        } else {
-            cerr << v.err().message() << endl;
-            return integral;
-        }
-    }
-    }};
-
-
-    c74::min::enum_map format_info = {
-            "number", "percentage", "midinote", "improperfrac", "mixed", "fraclist"
-    };
+    c74::min::enum_map format_info = {"number", "percentage", "midinote", "improperfrac", "mixed", "fraclist"};
 
     attribute<ValueFormatter::Format> format{this, "format", ValueFormatter::Format::custom, format_info, setter{
             MIN_FUNCTION {
                 if (auto v = AtomParser::atoms2value<ValueFormatter::Format>(args)) {
+                    if (v.ok() >= ValueFormatter::Format::enum_count) {
+                        cwarn << "invalid format, using default" << endl;
+                    }
+
                     m_formatter.set_format(*v);
                     process();
                     return args;
@@ -498,7 +526,6 @@ public:
                     return args;
                 }
 
-
                 if (auto v = AtomParser::atoms2value<std::string>(args)) {
                     m_formatter.set_append_arg(*v);
                     process();
@@ -519,6 +546,10 @@ public:
 
                 if (args.size() == 1) {
                     if (auto v = AtomParser::atoms2value<long>(args)) {
+                        if (*v < 1L) {
+                            cwarn << "denominator clipped to 1" << endl;
+                        }
+
                         m_mapping.set_denominators(std::max(*v, 1L));
                         process();
                         return args;
@@ -529,6 +560,10 @@ public:
                 }
 
                 if (auto v = AtomParser::atoms2vec<long>(args)) {
+                    if (v->any([](long v) { return v < 1L; })) {
+                        cwarn << "invalid denominator clipped to 1" << endl;
+                    }
+
                     m_mapping.set_denominators(v->map([](long v) { return std::max(v, 1L); }));
                     process();
                     return args;
