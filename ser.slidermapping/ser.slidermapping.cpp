@@ -187,7 +187,7 @@ public:
 
 
     explicit SliderMapping(MapMode mode = MapMode::exponential
-            , Type type = Type::floating
+                           , Type type = Type::floating
                            , double min = 0.0
                            , double max = 1.0
                            , std::optional<std::size_t> num_steps = std::nullopt
@@ -196,7 +196,7 @@ public:
                            , double midpoint = 0.5
                            , const std::variant<long, Vec<long>>& fractional_denominators = 32L)
             : m_map_mode(mode)
-            , m_type(type)
+              , m_type(type)
               , m_minimum(min)
               , m_maximum(max)
               , m_num_steps(num_steps)
@@ -234,7 +234,7 @@ public:
             case Type::integral:
                 return handle_integral(x, y);
             case Type::fractional:
-                return handle_fractional(x, y, m_fractional_denominators);
+                return handle_fractional(y);
             default:
                 return {x, y};
         }
@@ -243,6 +243,14 @@ public:
 
     Vec<MappingResult> process(const Vec<double>& xs) {
         return xs.cloned().as_type<MappingResult>([this](double x) { return process(x); });
+    }
+
+    MappingResult inverse(double y) {
+        return {inversed(utils::clip(y, m_minimum, m_maximum)), y};
+    }
+
+    Vec<MappingResult> inverse(const Vec<double>& xs) {
+        return xs.cloned().as_type<MappingResult>([this](double x) { return inverse(x); });
     }
 
 
@@ -262,22 +270,37 @@ public:
 
     void set_midpoint(double midpoint) { m_midpoint = midpoint; }
 
-    void set_denominators(long d) { m_fractional_denominators = d; }
+    void set_denominators(long d) {
+        m_fractional_denominators = d; }
 
     void set_denominators(const Vec<long>& ds) { m_fractional_denominators = ds; }
 
 
 private:
-    static MappingResult handle_fractional(double x, double y, std::variant<long, Vec<long>> denoms) {
-        if (std::holds_alternative<long>(denoms)) {
-            return {x, ExtendedFraction::from_decimal(y, std::get<long>(denoms))};
+    MappingResult handle_fractional(double y) {
+        ExtendedFraction q;
+        if (std::holds_alternative<long>(m_fractional_denominators)) {
+            q = ExtendedFraction::from_decimal(y, std::get<long>(m_fractional_denominators));
         } else {
-            return {x, ExtendedFraction::from_decimal(y, std::get<Vec<long>>(denoms).as_type<long>())};
+            q = ExtendedFraction::from_decimal(y, std::get<Vec<long>>(m_fractional_denominators));
         }
+
+        return {inversed(q.get_decimal()), q};
     }
 
     static MappingResult handle_integral(double x, double y) {
         return {x, std::lround(y)};
+    }
+
+    double inversed(double y) {
+        double min = std::min(m_minimum, m_maximum);
+        double max = std::max(m_minimum, m_maximum);
+
+        if (m_map_mode == MapMode::midpoint) {
+            return utils::map_inverse_exponential(y, min, max, m_midpoint, m_exponent1
+                                                  , m_exponent2.value_or(m_exponent1));
+        }
+        return utils::map_inverse_exponential(y, min, max, m_exponent1);
     }
 
 
@@ -296,10 +319,14 @@ private:
 
 class slidermapping : public c74::min::object<slidermapping> {
 private:
+    struct Input {
+        c74::min::atoms args;
+        bool input_is_x = true;
+    };
+
     SliderMapping m_mapping;
     ValueFormatter m_formatter;
-    c74::min::atoms m_last_input;
-
+    Input m_last_input;
 
 public:
     MIN_DESCRIPTION{"Variable-state mapping"};
@@ -316,6 +343,16 @@ public:
     outlet<> outlet_feedback{this, "(float/list) feedback / quantized raw value(s)"};
 
 
+    attribute<bool> enabled{this, "enabled", true};
+
+    attribute<std::vector<double>> initial{this, "initial", {0.0}, setter{
+            MIN_FUNCTION {
+                process({args, false});
+                return args;
+            }
+    }};
+
+
     attribute<double> minimum{this, "minimum", 0.0, setter{
             MIN_FUNCTION {
                 if (auto v = AtomParser::atoms2value<double>(args)) {
@@ -327,8 +364,7 @@ public:
                     return minimum;
                 }
             }
-    }
-    };
+    }};
 
     attribute<double> maximum{this, "maximum", 1.0, setter{
             MIN_FUNCTION {
@@ -366,22 +402,23 @@ public:
 
     c74::min::enum_map type_info = {"floating", "integral", "fractional"};
 
-    attribute<SliderMapping::Type> type{this, "type", SliderMapping::Type::floating, type_info, title{"Type"}, description{"output type on left outlet"}, setter{
-            MIN_FUNCTION {
-                if (auto v = AtomParser::atoms2value<SliderMapping::Type>(args)) {
-                    if (v.ok() >= SliderMapping::Type::enum_count) {
-                        cwarn << "invalid type, using default" << endl;
-                    }
+    attribute<SliderMapping::Type> type{this, "type", SliderMapping::Type::floating, type_info, title{"Type"}
+                                        , description{"output type on left outlet"}, setter{
+                    MIN_FUNCTION {
+                        if (auto v = AtomParser::atoms2value<SliderMapping::Type>(args)) {
+                            if (v.ok() >= SliderMapping::Type::enum_count) {
+                                cwarn << "invalid type, using default" << endl;
+                            }
 
-                    m_mapping.set_numeric_type(*v);
-                    process();
-                    return args;
-                } else {
-                    cerr << v.err().message() << endl;
-                    return mode;
-                }
+                            m_mapping.set_numeric_type(*v);
+                            process();
+                            return args;
+                        } else {
+                            cerr << v.err().message() << endl;
+                            return mode;
+                        }
+                    }
             }
-    }
     };
 
     attribute<int> numsteps{this, "numsteps", -1, setter{
@@ -536,7 +573,7 @@ public:
             }
     }};
 
-    attribute<std::vector<int>> denominators{this, "denominators", {32}, setter{
+    attribute<std::vector<int>> denominators{this, "denominators", {-32}, setter{
             MIN_FUNCTION {
                 if (args.empty()) {
                     cerr << "no denominator provided" << endl;
@@ -545,13 +582,20 @@ public:
 
                 if (args.size() == 1) {
                     if (auto v = AtomParser::atoms2value<long>(args)) {
-                        if (*v < 1L) {
-                            cwarn << "denominator clipped to 1" << endl;
+                        if (*v == 0) {
+                            cerr << "zero denominator not allowed" << endl;
+                            return denominators;
+                        } else if (*v < 0) {
+                            // single negative denominator => use abs value as max_denominator (i.e. range from 1 to v)
+                            m_mapping.set_denominators(std::abs(*v));
+                        } else {
+                            // single positive denominator => use as single chosen denominator (vector of size 1)
+                            m_mapping.set_denominators(Vec<long>::singular(*v));
                         }
 
-                        m_mapping.set_denominators(std::max(*v, 1L));
                         process();
                         return args;
+
                     } else {
                         cerr << v.err().message() << endl;
                         return denominators;
@@ -575,15 +619,6 @@ public:
     };
 
 
-//    attribute<bool> changedonly{ this, "changedonly", false, setter{
-//            MIN_FUNCTION {
-//                if (auto v = AtomParser::atoms2value<bool>(args)) {
-//
-//                }
-//            }
-//        }
-//    };
-
 
     message<> range{this, "range", "set minimum and maximum", setter{MIN_FUNCTION {
         if (inlet != 0) {
@@ -603,42 +638,80 @@ public:
     }}};
 
 
+    message<> setraw{this, "setraw", "set raw value (x) without output on first outlet", setter{MIN_FUNCTION {
+        if (inlet != 0) {
+            cerr << "invalid message \"setraw\" for inlet " << inlet << endl;
+            return {};
+        }
+
+        process({args, true}, false);
+
+        return {};
+    }}};
+
+
+    message<> inverse{this, "inverse", "set scaled value (y)", setter{MIN_FUNCTION {
+        if (inlet != 0) {
+            cerr << "invalid message \"inverse\" for inlet " << inlet << endl;
+            return {};
+        }
+
+        process({args, false});
+
+        return {};
+    }}};
+
+
+    message<> setinverse{this, "setinverse", "set scaled value (y) without output on first outlet", setter{MIN_FUNCTION {
+        if (inlet != 0) {
+            cerr << "invalid message \"setinverse\" for inlet " << inlet << endl;
+            return {};
+        }
+
+        process({args, false}, false);
+
+        return {};
+    }}};
+
+
     c74::min::function handle_input = MIN_FUNCTION {
         if (inlet == 2) {
             maximum.set(args);
         } else if (inlet == 1) {
             minimum.set(args);
         } else {
-            process(args);
+            process({args, true});
         }
 
         return {};
     };
+
 
     message<> bang{this, "bang", MIN_FUNCTION {
         process();
         return {};
     }};
 
+
     message<> list{this, "list", handle_input};
     message<> number{this, "number", handle_input};
-//    message<> anything{this, "anything", handle_input};
 
 
 private:
-    void process(const atoms& args) {
-        m_last_input = args;
-        process();
+    void process(const Input& input, bool trigger_output = true) {
+        m_last_input = input;
+        process(trigger_output);
     }
 
-    void process() {
-        if (m_last_input.empty()) {
+    void process(bool trigger_output = true) {
+        auto& args = m_last_input.args;
+        if (args.empty()) {
             return;
         }
 
-        if (m_last_input.size() == 1) {
-            if (auto v = AtomParser::atoms2value<double>(m_last_input)) {
-                process_single(*v);
+        if (args.size() == 1) {
+            if (auto v = AtomParser::atoms2value<double>(args)) {
+                process_single(*v, m_last_input.input_is_x, trigger_output);
                 return;
             } else {
                 cerr << v.err().message() << endl;
@@ -646,8 +719,8 @@ private:
             }
         }
 
-        if (auto v = AtomParser::atoms2vec<double>(m_last_input)) {
-            process_multiple(*v);
+        if (auto v = AtomParser::atoms2vec<double>(args)) {
+            process_multiple(*v, m_last_input.input_is_x, trigger_output);
         } else {
             cerr << v.err().message() << endl;
             return;
@@ -664,8 +737,8 @@ private:
         }
     }
 
-    void process_single(double raw_value) {
-        auto mapping_result = m_mapping.process(raw_value);
+    void process_single(double raw_value, bool is_x, bool trigger_output) {
+        auto mapping_result = is_x ? m_mapping.process(raw_value) : m_mapping.inverse(raw_value);
 
         atoms output_feedback{AtomFormatter::value2atom<double>(mapping_result.quantized_raw_value)};
         outlet_feedback.send(output_feedback);
@@ -673,13 +746,15 @@ private:
         atoms output_fmt{AtomFormatter::value2atom<std::string>(m_formatter.format(mapping_result))};
         outlet_symout.send(output_fmt);
 
-        atoms output_main{rvariant2atom(mapping_result.scaled_value)};
-        outlet_main.send(output_main);
+        if (trigger_output && enabled.get()) {
+            atoms output_main{rvariant2atom(mapping_result.scaled_value)};
+            outlet_main.send(output_main);
+        }
 
     }
 
-    void process_multiple(const Vec<double>& xs) {
-        auto mapping_result = m_mapping.process(xs);
+    void process_multiple(const Vec<double>& xs, bool is_x, bool trigger_output) {
+        auto mapping_result = is_x ? m_mapping.process(xs) : m_mapping.inverse(xs);
 
         atoms output_feedback;
         atoms output_fmt;
@@ -693,7 +768,10 @@ private:
 
         outlet_feedback.send(output_feedback);
         outlet_symout.send(output_fmt);
-        outlet_main.send(output_main);
+
+        if (trigger_output && enabled.get()) {
+            outlet_main.send(output_main);
+        }
     }
 
 };
