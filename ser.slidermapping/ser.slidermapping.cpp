@@ -650,9 +650,9 @@ public:
     }}};
 
 
-    message<> inverse{this, "inverse", "set scaled value (y)", setter{MIN_FUNCTION {
+    message<> output{this, "output", "set scaled value (y)", setter{MIN_FUNCTION {
         if (inlet != 0) {
-            cerr << "invalid message \"inverse\" for inlet " << inlet << endl;
+            cerr << "invalid message \"output\" for inlet " << inlet << endl;
             return {};
         }
 
@@ -662,9 +662,9 @@ public:
     }}};
 
 
-    message<> setinverse{this, "setinverse", "set scaled value (y) without output on first outlet", setter{MIN_FUNCTION {
+    message<> setoutput{this, "setoutput", "set scaled value (y) without output on first outlet", setter{MIN_FUNCTION {
         if (inlet != 0) {
-            cerr << "invalid message \"setinverse\" for inlet " << inlet << endl;
+            cerr << "invalid message \"setoutput\" for inlet " << inlet << endl;
             return {};
         }
 

@@ -26,54 +26,49 @@ public:
     outlet<> outlet_main{this, "(float/list) oscillator output"};
     outlet<> dumpout{this, "(any) dumpout"};
 
-    attribute<symbol> clock{this, Keywords::CLOCK
-                            , ""
+    attribute<symbol> clock{this, Keywords::CLOCK, ""
                             , title{Titles::CLOCK}
                             , description{Descriptions::CLOCK}};
 
 
-    attribute<bool> enabled{this, Keywords::ENABLED
-                            , true
+    attribute<bool> enabled{this, Keywords::ENABLED, true
                             , title{Titles::ENABLED}
                             , description{Descriptions::ENABLED}
                             , setter{MIN_FUNCTION {
-                if (set_enabled(args))
+                if (AttributeSetters::try_set_vector<bool>(args, m_oscillator.enabled, cerr))
                     return args;
                 return enabled;
             }}
     };
 
 
-    attribute<int> voices{this, Keywords::NUM_VOICES
-                          , 0
+    attribute<int> voices{this, Keywords::NUM_VOICES, 0
                           , title{Titles::NUM_VOICES}
                           , description{Descriptions::ENABLED}
                           , setter{MIN_FUNCTION {
-                if (set_num_voices(args))
+                if (AttributeSetters::try_set_value<std::size_t, int>(args, m_oscillator.num_voices, cerr))
                     return args;
                 return voices;
             }}
     };
 
 
-    attribute<int> mode{this, "mode"
-                        , static_cast<int>(PhaseAccumulator::DEFAULT_MODE)
+    attribute<int> mode{this, "mode", static_cast<int>(PhaseAccumulator::DEFAULT_MODE)
                         , title{"Set oscillator mode"}
                         , description{""}
                         , setter{MIN_FUNCTION {
-                if (this->set_mode(args))
+                if (AttributeSetters::try_set_value(args, m_oscillator.mode, cerr))
                     return args;
                 return mode;
             }}
     };
 
 
-    attribute<int> waveform{this, "waveform"
-                            , static_cast<int>(Waveform::DEFAULT_TYPE)
+    attribute<int> waveform{this, "waveform", static_cast<int>(Waveform::DEFAULT_TYPE)
                             , title{"Set oscillator waveform"}
                             , description{""}
                             , setter{MIN_FUNCTION {
-                if (this->set_waveform(args))
+                if (AttributeSetters::try_set_value(args, m_oscillator.waveform, cerr))
                     return args;
                 return waveform;
             }}
@@ -85,7 +80,7 @@ public:
                                           , title{"Set period"}
                                           , description{""}
                                           , setter{MIN_FUNCTION {
-                if (this->set_period(args))
+                if (AttributeSetters::try_set_vector(args, m_oscillator.period, cerr))
                     return args;
                 return period;
             }}
@@ -96,7 +91,7 @@ public:
                               , title{"Set period type"}
                               , description{""}
                               , setter{MIN_FUNCTION {
-                if (this->set_period_type(args))
+                if (AttributeSetters::try_set_value(args, m_oscillator.period_type, cerr))
                     return args;
                 return periodtype;
             }}
@@ -108,7 +103,7 @@ public:
                                           , title{"Set offset"}
                                           , description{""}
                                           , setter{MIN_FUNCTION {
-                if (this->set_offset(args))
+                if (AttributeSetters::try_set_vector(args, m_oscillator.offset, cerr))
                     return args;
                 return offset;
             }}
@@ -119,7 +114,7 @@ public:
                               , title{"Set offset type"}
                               , description{""}
                               , setter{MIN_FUNCTION {
-                if (this->set_offset_type(args))
+                if (AttributeSetters::try_set_value(args, m_oscillator.offset_type, cerr))
                     return args;
                 return offsettype;
             }}
@@ -131,7 +126,7 @@ public:
                                             , title{"Set step size"}
                                             , description{""}
                                             , setter{MIN_FUNCTION {
-                if (this->set_step_size(args))
+                if (AttributeSetters::try_set_vector(args, m_oscillator.step_size, cerr))
                     return args;
                 return stepsize;
             }}
@@ -143,7 +138,7 @@ public:
                                         , title{"Set duty"}
                                         , description{""}
                                         , setter{MIN_FUNCTION {
-                if (this->set_duty(args))
+                if (AttributeSetters::try_set_vector(args, m_oscillator.duty, cerr))
                     return args;
                 return duty;
             }}
@@ -154,7 +149,7 @@ public:
                                          , title{"Set curve"}
                                          , description{""}
                                          , setter{MIN_FUNCTION {
-                if (this->set_curve(args))
+                if (AttributeSetters::try_set_vector(args, m_oscillator.curve, cerr))
                     return args;
                 return curve;
             }}
@@ -165,7 +160,7 @@ public:
                                        , title{"Set tau"}
                                        , description{""}
                                        , setter{MIN_FUNCTION {
-                if (this->set_tau(args))
+                if (AttributeSetters::try_set_vector(args, m_oscillator.tau, cerr))
                     return args;
                 return tau;
             }}
@@ -177,7 +172,7 @@ public:
                            , title{"Set tau type"}
                            , description{""}
                            , setter{MIN_FUNCTION {
-                if (this->set_tau_type(args))
+                if (AttributeSetters::try_set_value(args, m_oscillator.tau_type, cerr))
                     return args;
                 return tautype;
             }}
@@ -186,7 +181,7 @@ public:
 
     c74::min::function handle_input = MIN_FUNCTION {
          if (inlet == 1) {
-            this->set_period(args);
+            period.set(args);
         } else {
             this->process(args);
         }
@@ -229,64 +224,6 @@ private:
         auto formatted_atoms = AtomFormatter::voices2atoms<float>(output);
         outlet_main.send(formatted_atoms);
     }
-
-
-    bool set_mode(const atoms& args) {
-        return AttributeSetters::try_set_value(args, m_oscillator.mode, cerr);
-    }
-
-    bool set_waveform(const atoms& args) {
-        return AttributeSetters::try_set_value(args, m_oscillator.waveform, cerr);
-    }
-
-
-    bool set_period(const atoms& args) {
-        return AttributeSetters::try_set_vector(args, m_oscillator.period, cerr);
-    }
-
-    bool set_period_type(const atoms& args) {
-        return AttributeSetters::try_set_value(args, m_oscillator.period_type, cerr);
-    }
-
-    bool set_offset(const atoms& args) {
-        return AttributeSetters::try_set_vector(args, m_oscillator.offset, cerr);
-    }
-
-    bool set_offset_type(const atoms& args) {
-        return AttributeSetters::try_set_value(args, m_oscillator.offset_type, cerr);
-    }
-
-    bool set_step_size(const atoms& args) {
-        return AttributeSetters::try_set_vector(args, m_oscillator.step_size, cerr);
-    }
-
-    bool set_duty(const atoms& args) {
-        return AttributeSetters::try_set_vector(args, m_oscillator.duty, cerr);
-    }
-
-    bool set_curve(const atoms& args) {
-        return AttributeSetters::try_set_vector(args, m_oscillator.curve, cerr);
-    }
-
-    bool set_tau(const atoms& args) {
-        return AttributeSetters::try_set_vector(args, m_oscillator.tau, cerr);
-    }
-
-    bool set_tau_type(const atoms& args) {
-        return AttributeSetters::try_set_value(args, m_oscillator.tau_type, cerr);
-    }
-
-
-    bool set_enabled(const atoms& args) {
-        return AttributeSetters::try_set_vector<bool>(args, m_oscillator.enabled, cerr);
-    }
-
-
-    bool set_num_voices(const atoms& args) {
-        return AttributeSetters::try_set_value<std::size_t, int>(args, m_oscillator.num_voices, cerr);
-    }
-
-
 };
 
 

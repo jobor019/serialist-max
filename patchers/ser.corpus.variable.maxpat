@@ -41,13 +41,25 @@
 		"integercoordinates" : 1,
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-19",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 174.0, 309.0, 75.0, 22.0 ],
+					"text" : "setoutput $1"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-4",
 					"maxclass" : "message",
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 107.0, 309.0, 64.0, 22.0 ],
-					"text" : "inverse $1"
+					"patching_rect" : [ 107.0, 309.0, 59.0, 22.0 ],
+					"text" : "output $1"
 				}
 
 			}
@@ -989,7 +1001,7 @@
 				"box" : 				{
 					"comment" : "(any) dumpout",
 					"id" : "obj-8",
-					"index" : 3,
+					"index" : 0,
 					"maxclass" : "outlet",
 					"numinlets" : 1,
 					"numoutlets" : 0,
@@ -1001,7 +1013,7 @@
 				"box" : 				{
 					"comment" : "(list) parameters",
 					"id" : "obj-78",
-					"index" : 2,
+					"index" : 0,
 					"maxclass" : "outlet",
 					"numinlets" : 1,
 					"numoutlets" : 0,
@@ -1013,7 +1025,7 @@
 				"box" : 				{
 					"comment" : "(float) value",
 					"id" : "obj-161",
-					"index" : 1,
+					"index" : 0,
 					"maxclass" : "outlet",
 					"numinlets" : 1,
 					"numoutlets" : 0,
@@ -1665,11 +1677,11 @@
 				"box" : 				{
 					"id" : "obj-225",
 					"maxclass" : "newobj",
-					"numinlets" : 5,
-					"numoutlets" : 5,
-					"outlettype" : [ "", "", "", "", "" ],
-					"patching_rect" : [ 107.0, 239.0, 185.0, 22.0 ],
-					"text" : "route float int disableconfig dump"
+					"numinlets" : 6,
+					"numoutlets" : 6,
+					"outlettype" : [ "", "", "", "", "", "" ],
+					"patching_rect" : [ 107.0, 239.0, 237.0, 22.0 ],
+					"text" : "route float int setoutput disableconfig dump"
 				}
 
 			}
@@ -1755,7 +1767,7 @@
 				"box" : 				{
 					"comment" : "(any) control messages",
 					"id" : "obj-88",
-					"index" : 1,
+					"index" : 0,
 					"maxclass" : "inlet",
 					"numinlets" : 0,
 					"numoutlets" : 1,
@@ -1939,6 +1951,13 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-17", 0 ],
+					"source" : [ "obj-19", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-138", 0 ],
 					"midpoints" : [ 1306.833333333333258, 229.0, 961.5, 229.0 ],
 					"order" : 3,
@@ -2049,21 +2068,28 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-10", 0 ],
-					"source" : [ "obj-225", 2 ]
+					"source" : [ "obj-225", 3 ]
 				}
 
 			}
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-1259", 0 ],
-					"source" : [ "obj-225", 4 ]
+					"source" : [ "obj-225", 5 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-19", 0 ],
+					"source" : [ "obj-225", 2 ]
 				}
 
 			}
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-231", 0 ],
-					"source" : [ "obj-225", 3 ]
+					"source" : [ "obj-225", 4 ]
 				}
 
 			}
@@ -2445,6 +2471,40 @@
 
 			}
  ],
+		"parameters" : 		{
+			"obj-1" : [ "live.numbox[1]", "live.numbox", 0 ],
+			"obj-13" : [ "live.text[5]", "live.text[36]", 0 ],
+			"obj-14" : [ "live.text[1]", "live.text[36]", 0 ],
+			"obj-15" : [ "live.text[3]", "live.text[36]", 0 ],
+			"obj-32" : [ "live.text[6]", "live.text[36]", 0 ],
+			"obj-33" : [ "live.text[2]", "live.text[36]", 0 ],
+			"obj-34" : [ "live.text[4]", "live.text[36]", 0 ],
+			"obj-5" : [ "live.menu[1]", "live.menu", 0 ],
+			"parameterbanks" : 			{
+				"0" : 				{
+					"index" : 0,
+					"name" : "",
+					"parameters" : [ "-", "-", "-", "-", "-", "-", "-", "-" ]
+				}
+
+			}
+,
+			"inherited_shortname" : 1
+		}
+,
+		"dependency_cache" : [ 			{
+				"name" : "bis.awaitpatcherargs.maxpat",
+				"bootpath" : "~/MaxProjects/Mabstractions/abstraction",
+				"patcherrelativepath" : "../../Mabstractions/abstraction",
+				"type" : "JSON",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "ser.slidermapping.mxo",
+				"type" : "iLaX"
+			}
+ ],
+		"autosave" : 0,
 		"boxgroups" : [ 			{
 				"boxes" : [ "obj-138", "obj-22", "obj-23", "obj-26", "obj-27" ]
 			}

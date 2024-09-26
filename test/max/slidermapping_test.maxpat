@@ -172,8 +172,8 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 663.0, 68.0, 80.0, 22.0 ],
-					"text" : "setinverse $1"
+					"patching_rect" : [ 663.0, 68.0, 75.0, 22.0 ],
+					"text" : "setoutput $1"
 				}
 
 			}
@@ -197,8 +197,8 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 383.0, 2181.0, 80.0, 22.0 ],
-					"text" : "setinverse $1"
+					"patching_rect" : [ 383.0, 2181.0, 75.0, 22.0 ],
+					"text" : "setoutput $1"
 				}
 
 			}
@@ -394,33 +394,34 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 700.0, 2231.0, 95.0, 22.0 ],
-					"text" : "prepend inverse"
+					"patching_rect" : [ 700.0, 2231.0, 89.0, 22.0 ],
+					"text" : "prepend output"
 				}
 
 			}
 , 			{
 				"box" : 				{
 					"id" : "obj-218",
+					"linecount" : 4,
 					"maxclass" : "message",
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 617.5, 2359.0, 54.0, 22.0 ],
-					"text" : "\"77.70 \""
+					"patching_rect" : [ 617.5, 2359.0, 54.0, 62.0 ],
+					"text" : "\"0.00 \" \"62.17 \" \"0.00 \" \"0.00 \""
 				}
 
 			}
 , 			{
 				"box" : 				{
 					"id" : "obj-216",
-					"linecount" : 2,
+					"linecount" : 3,
 					"maxclass" : "message",
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 775.0, 2359.0, 50.0, 35.0 ],
-					"text" : "0.651724"
+					"patching_rect" : [ 775.0, 2359.0, 50.0, 49.0 ],
+					"text" : "0. 0.473235 0. 0."
 				}
 
 			}
@@ -431,8 +432,8 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 603.5, 2231.0, 64.0, 22.0 ],
-					"text" : "inverse $1"
+					"patching_rect" : [ 603.5, 2231.0, 59.0, 22.0 ],
+					"text" : "output $1"
 				}
 
 			}
@@ -451,13 +452,13 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-204",
-					"linecount" : 2,
+					"linecount" : 4,
 					"maxclass" : "message",
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 460.0, 2359.0, 50.0, 35.0 ],
-					"text" : "21. 0. 0. 0."
+					"patching_rect" : [ 460.0, 2359.0, 50.0, 62.0 ],
+					"text" : "0. 62.171429 0. 0."
 				}
 
 			}
