@@ -54,7 +54,7 @@ public:
 
 
     attribute<int> mode{this, "mode", static_cast<int>(PhaseAccumulator::DEFAULT_MODE)
-                        , title{"Set oscillator mode"}
+                        , title{"Mode"}
                         , description{""}
                         , setter{MIN_FUNCTION {
                 if (AttributeSetters::try_set_value(args, m_oscillator.mode, cerr))
@@ -65,7 +65,7 @@ public:
 
 
     attribute<int> waveform{this, "waveform", static_cast<int>(Waveform::DEFAULT_TYPE)
-                            , title{"Set oscillator waveform"}
+                            , title{"Waveform"}
                             , description{""}
                             , setter{MIN_FUNCTION {
                 if (AttributeSetters::try_set_value(args, m_oscillator.waveform, cerr))
@@ -77,7 +77,7 @@ public:
 
     attribute<std::vector<double>> period{this, "period"
                                           , Vec<double>::singular(PaParameters::DEFAULT_PERIOD).vector()
-                                          , title{"Set period"}
+                                          , title{"Period"}
                                           , description{""}
                                           , setter{MIN_FUNCTION {
                 if (AttributeSetters::try_set_vector(args, m_oscillator.period, cerr))
@@ -88,7 +88,7 @@ public:
 
     attribute<int> periodtype{this, "periodtype"
                               , static_cast<int>(PaParameters::DEFAULT_PERIOD_TYPE)
-                              , title{"Set period type"}
+                              , title{"Period type"}
                               , description{""}
                               , setter{MIN_FUNCTION {
                 if (AttributeSetters::try_set_value(args, m_oscillator.period_type, cerr))
@@ -100,7 +100,7 @@ public:
 
     attribute<std::vector<double>> offset{this, "offset"
                                           , Vec<double>::singular(PaParameters::DEFAULT_OFFSET).vector()
-                                          , title{"Set offset"}
+                                          , title{"Offset"}
                                           , description{""}
                                           , setter{MIN_FUNCTION {
                 if (AttributeSetters::try_set_vector(args, m_oscillator.offset, cerr))
@@ -111,7 +111,7 @@ public:
 
     attribute<int> offsettype{this, "offsettype"
                               , static_cast<int>(PaParameters::DEFAULT_OFFSET_TYPE)
-                              , title{"Set offset type"}
+                              , title{"Offset type"}
                               , description{""}
                               , setter{MIN_FUNCTION {
                 if (AttributeSetters::try_set_value(args, m_oscillator.offset_type, cerr))
@@ -123,7 +123,7 @@ public:
 
     attribute<std::vector<double>> stepsize{this, "stepsize"
                                             , Vec<double>::singular(PaParameters::DEFAULT_STEP_SIZE).vector()
-                                            , title{"Set step size"}
+                                            , title{"Step size"}
                                             , description{""}
                                             , setter{MIN_FUNCTION {
                 if (AttributeSetters::try_set_vector(args, m_oscillator.step_size, cerr))
@@ -146,7 +146,7 @@ public:
 
     attribute<std::vector<double>> curve{this, "curve"
                                          , {Waveform::DEFAULT_CURVE}
-                                         , title{"Set curve"}
+                                         , title{"Curve"}
                                          , description{""}
                                          , setter{MIN_FUNCTION {
                 if (AttributeSetters::try_set_vector(args, m_oscillator.curve, cerr))
@@ -157,7 +157,7 @@ public:
 
     attribute<std::vector<double>> tau{this, "tau"
                                        , {FilterSmoo::DEFAULT_TAU}
-                                       , title{"Set tau"}
+                                       , title{"Tau"}
                                        , description{""}
                                        , setter{MIN_FUNCTION {
                 if (AttributeSetters::try_set_vector(args, m_oscillator.tau, cerr))
@@ -169,7 +169,7 @@ public:
 
     attribute<int> tautype{this, "tautype"
                            , static_cast<int>(FilterSmoo::DEFAULT_TAU_TYPE)
-                           , title{"Set tau type"}
+                           , title{"Tau type"}
                            , description{""}
                            , setter{MIN_FUNCTION {
                 if (AttributeSetters::try_set_value(args, m_oscillator.tau_type, cerr))
@@ -177,6 +177,17 @@ public:
                 return tautype;
             }}
     };
+
+
+    message<> reset{this, "reset", setter{MIN_FUNCTION {
+        if (inlet != 0) {
+            cerr << "invalid message \"reset\" for inlet " << inlet << endl;
+            return {};
+        }
+
+        m_oscillator.reset_trigger.set_values(Trigger::pulse_on());
+        return {};
+    }}};
 
 
     c74::min::function handle_input = MIN_FUNCTION {
@@ -220,6 +231,10 @@ private:
         m_oscillator.oscillator.update_time(*time);
 
         auto output = m_oscillator.oscillator.process();
+
+        if (!m_oscillator.reset_trigger.get_values().is_empty_like()) {
+            m_oscillator.reset_trigger.set_values(Voices<Trigger>::empty_like());
+        }
 
         auto formatted_atoms = AtomFormatter::voices2atoms<float>(output);
         outlet_main.send(formatted_atoms);

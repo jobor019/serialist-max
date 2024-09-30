@@ -191,6 +191,7 @@ public:
                            , double min = 0.0
                            , double max = 1.0
                            , std::optional<std::size_t> num_steps = std::nullopt
+                           , bool quantize_feedback = true
                            , double exponent1 = 1.0
                            , std::optional<double> exponent2 = std::nullopt
                            , double midpoint = 0.5
@@ -200,6 +201,7 @@ public:
               , m_minimum(min)
               , m_maximum(max)
               , m_num_steps(num_steps)
+              , m_quantize_feedback(quantize_feedback)
               , m_exponent1(exponent1)
               , m_exponent2(exponent2)
               , m_midpoint(midpoint)
@@ -210,8 +212,10 @@ public:
     MappingResult process(double x) {
         x = utils::clip(x, 0.0, 1.0);
 
+        double x_quantized = x;
+
         if (m_num_steps) {
-            x = utils::quantize(x, *m_num_steps);
+            x_quantized = utils::quantize(x, *m_num_steps);
         }
 
         double min = std::min(m_minimum, m_maximum);
@@ -222,21 +226,23 @@ public:
 
         switch (m_map_mode) {
             case MapMode::midpoint:
-                y = utils::map_exponential(x, min, max, m_midpoint
+                y = utils::map_exponential(x_quantized, min, max, m_midpoint
                                            , m_exponent1, m_exponent2.value_or(m_exponent1));
                 break;
             default:
-                y = utils::map_exponential(x, min, max, m_exponent1);
+                y = utils::map_exponential(x_quantized, min, max, m_exponent1);
                 break;
         }
 
+        double x_output = m_quantize_feedback ? x_quantized : x;
+
         switch (m_type) {
             case Type::integral:
-                return handle_integral(x, y);
+                return handle_integral(x_output, y);
             case Type::fractional:
-                return handle_fractional(y);
+                return handle_fractional(x_output, y);
             default:
-                return {x, y};
+                return {x_output, y};
         }
     }
 
@@ -264,6 +270,8 @@ public:
 
     void set_num_steps(std::optional<std::size_t> num_steps) { m_num_steps = num_steps; }
 
+    void set_quantize_feedback(bool quantize_feedback) { m_quantize_feedback = quantize_feedback; }
+
     void set_exponent1(double exponent1) { m_exponent1 = exponent1; }
 
     void set_exponent2(const std::optional<double>& exponent2) { m_exponent2 = exponent2; }
@@ -271,13 +279,14 @@ public:
     void set_midpoint(double midpoint) { m_midpoint = midpoint; }
 
     void set_denominators(long d) {
-        m_fractional_denominators = d; }
+        m_fractional_denominators = d;
+    }
 
     void set_denominators(const Vec<long>& ds) { m_fractional_denominators = ds; }
 
 
 private:
-    MappingResult handle_fractional(double y) {
+    MappingResult handle_fractional(double x, double y) {
         ExtendedFraction q;
         if (std::holds_alternative<long>(m_fractional_denominators)) {
             q = ExtendedFraction::from_decimal(y, std::get<long>(m_fractional_denominators));
@@ -285,7 +294,10 @@ private:
             q = ExtendedFraction::from_decimal(y, std::get<Vec<long>>(m_fractional_denominators));
         }
 
-        return {inversed(q.get_decimal()), q};
+        if (m_quantize_feedback)
+            return {inversed(q.get_decimal()), q};
+
+        return {x, q};
     }
 
     static MappingResult handle_integral(double x, double y) {
@@ -309,6 +321,7 @@ private:
     double m_minimum;
     double m_maximum;
     std::optional<std::size_t> m_num_steps;
+    bool m_quantize_feedback;
 
     double m_exponent1;
     std::optional<double> m_exponent2;
@@ -485,6 +498,24 @@ public:
     }
     };
 
+
+    // Note: objects that respond to absolute mouse position (e.g. multislider) behaves extremely well when the
+    // feedback is quantized, but mouse delta-based objects (e.g. live.numbox) will run into lots of issues when the
+    // output is quantized (dragging past certain thresholds becomes extremely difficult).
+    attribute<bool> quantizefeedback{this, "quantizefeedback", true, setter{
+            MIN_FUNCTION {
+                if (auto v = AtomParser::atoms2value<bool>(args)) {
+                    m_mapping.set_quantize_feedback(*v);
+                    process();
+                    return args;
+                } else {
+                    cerr << v.err().message() << endl;
+                    return quantizefeedback;
+                }
+            }
+    }
+    };
+
     c74::min::enum_map format_info = {"number", "percentage", "midinote", "improperfrac", "mixed", "fraclist"};
 
     attribute<ValueFormatter::Format> format{this, "format", ValueFormatter::Format::custom, format_info, setter{
@@ -617,7 +648,6 @@ public:
             }
     }
     };
-
 
 
     message<> range{this, "range", "set minimum and maximum", setter{MIN_FUNCTION {

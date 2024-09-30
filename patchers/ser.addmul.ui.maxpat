@@ -769,10 +769,10 @@
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 1032.0, 332.0, 254.0, 49.0 ],
 					"saved_object_attributes" : 					{
-						"client_rect" : [ 67, 153, 461, 322 ],
+						"client_rect" : [ 100, 159, 483, 521 ],
 						"parameter_enable" : 0,
 						"parameter_mappable" : 0,
-						"storage_rect" : [ 794, -709, 1244, -510 ]
+						"storage_rect" : [ 583, 69, 1034, 197 ]
 					}
 ,
 					"text" : "pattrstorage pattrstorage @savemode 0 @outputmode 1 @autorestore 0 @greedy 0 @changemode 1",
@@ -929,7 +929,7 @@
 			}
 , 			{
 				"box" : 				{
-					"args" : [ "@initial", 0 ],
+					"args" : [ "@initial", 0, "@showborder", 0 ],
 					"bgmode" : 0,
 					"border" : 0,
 					"clickthrough" : 0,
@@ -966,7 +966,7 @@
 			}
 , 			{
 				"box" : 				{
-					"args" : [ "@initial", 1 ],
+					"args" : [ "@initial", 1, "@showborder", 0 ],
 					"bgmode" : 0,
 					"border" : 0,
 					"clickthrough" : 0,
