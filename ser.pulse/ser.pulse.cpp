@@ -46,12 +46,14 @@ public:
                             , title{Titles::CLOCK}
                             , description{Descriptions::CLOCK}};
 
+
     attribute<bool> enabled{this, Keywords::ENABLED
                             , true
                             , title{Titles::ENABLED}
                             , description{Descriptions::ENABLED}
                             , setter{MIN_FUNCTION {
-                if (set_enabled(args))
+                std::lock_guard lock{m_mutex};
+                if (AttributeSetters::try_set_value(args, m_pulse.enabled, cerr))
                     return args;
                 return enabled;
             }}
@@ -63,7 +65,8 @@ public:
                           , title{Titles::NUM_VOICES}
                           , description{Descriptions::ENABLED}
                           , setter{MIN_FUNCTION {
-                if (set_num_voices(args))
+                std::lock_guard lock{m_mutex};
+                if (AttributeSetters::try_set_value(args, m_pulse.num_voices, cerr))
                     return args;
                 return voices;
             }}
@@ -73,78 +76,82 @@ public:
                                             , Vec<double>::singular(PulsatorParameters::DEFAULT_DURATION).vector()
                                             , title{"duration"}
                                             , setter{MIN_FUNCTION {
-                if (set_duration(args))
+                std::lock_guard lock{m_mutex};
+                if (AttributeSetters::try_set_vector(args, m_pulse.duration, cerr))
                     return args;
                 return duration;
-            }}};
+            }}
+    };
 
     attribute<int> durationtype{this, "durationtype"
                                 , static_cast<int>(PulsatorParameters::DEFAULT_DURATION_TYPE)
                                 , title{"duration type"}
                                 , setter{MIN_FUNCTION {
-                if (set_duration_type(args))
+                std::lock_guard lock{m_mutex};
+                if (AttributeSetters::try_set_value(args, m_pulse.duration_type, cerr))
                     return args;
                 return durationtype;
-            }}};
+            }}
+    };
+
 
     attribute<std::vector<double>> offset{this, "offset"
                                           , Vec<double>::singular(PulsatorParameters::DEFAULT_OFFSET).vector()
                                           , title{"offset"}
                                           , setter{MIN_FUNCTION {
-                if (set_offset(args))
+                std::lock_guard lock{m_mutex};
+                if (AttributeSetters::try_set_vector(args, m_pulse.offset, cerr))
                     return args;
                 return offset;
-            }}};
+            }}
+    };
 
 
     attribute<int> offsettype{this, "offsettype"
                               , static_cast<int>(PulsatorParameters::DEFAULT_OFFSET_TYPE)
                               , title{"offset type"}
                               , setter{MIN_FUNCTION {
-                if (set_offset_type(args))
+                std::lock_guard lock{m_mutex};
+                if (AttributeSetters::try_set_value(args, m_pulse.offset_type, cerr))
                     return args;
                 return offsettype;
-            }}};
+            }}
+    };
+
 
     attribute<int> mode{this, "mode"
                         , static_cast<int>(Pulsator::DEFAULT_MODE)
                         , title{"offset enabled"}
                         , setter{MIN_FUNCTION {
-                if (set_mode(args))
+                std::lock_guard lock{m_mutex};
+                if (AttributeSetters::try_set_value(args, m_pulse.mode, cerr))
                     return args;
                 return mode;
-            }}};
+            }}
+    };
+
 
     attribute<std::vector<double>> legato{this, "legato"
                                           , Vec<double>::singular(PulsatorParameters::DEFAULT_LEGATO_AMOUNT).vector()
                                           , title{"legato"}
                                           , setter{MIN_FUNCTION {
-                if (set_legato(args))
+                std::lock_guard lock{m_mutex};
+                if (AttributeSetters::try_set_vector(args, m_pulse.legato_amount, cerr))
                     return args;
                 return legato;
-            }}};
+            }}
+    };
 
 
     attribute<bool> hold{this, "hold"
                          , PulsatorParameters::DEFAULT_SNH
                          , title{"sample and hold"}
                          , setter{MIN_FUNCTION {
-                if (set_sample_and_hold(args))
+                std::lock_guard lock{m_mutex};
+                if (AttributeSetters::try_set_vector(args, m_pulse.sample_and_hold, cerr))
                     return args;
                 return hold;
-            }}};
-
-
-    c74::min::function handle_input = MIN_FUNCTION {
-        if (inlet == 2) {
-            set_legato(args);
-        } else if (inlet == 1) {
-            set_duration(args);
-        } else {
-            process_incoming_triggers(args);
-        }
-
-        return {};
+            }}
     };
 
 
@@ -160,17 +167,19 @@ public:
                 return {};
             }};
 
-    message<> printtime{this, "printtime", MIN_FUNCTION {
-        auto time = MaxTimePoint::get_time_of(clock.get());
-        if (!time) {
-            return {};
+
+    c74::min::function handle_input = MIN_FUNCTION {
+        if (inlet == 2) {
+            legato.set(args);
+        } else if (inlet == 1) {
+            duration.set(args);
+        } else {
+            process_incoming_triggers(args);
         }
 
-        cout << time->to_string() << endl;
-
-
         return {};
-    }};
+    };
+
 
     message<> bang = Messages::bang_message(this, handle_input);
     message<> list = Messages::list_message(this, handle_input);
@@ -229,55 +238,13 @@ private:
     }
 
 
-    Voices <Trigger> process_unsafe(const TimePoint& t) {
+    Voices<Trigger> process_unsafe(const TimePoint& t) {
         m_pulse.pulsator_node.update_time(t);
         auto output = m_pulse.pulsator_node.process();
 
         m_pulse.trigger.set_values(Voices<Trigger>::empty_like()); // remove any processed incoming trigger
         return output;
     }
-
-
-    bool set_duration(const atoms& args) {
-        return AttributeSetters::try_set_vector(args, m_pulse.duration, cerr);
-    }
-
-    bool set_duration_type(const atoms& args) {
-        return AttributeSetters::try_set_value(args, m_pulse.duration_type, cerr);
-    }
-
-    bool set_offset(const atoms& args) {
-        return AttributeSetters::try_set_vector(args, m_pulse.offset, cerr);
-    }
-
-    bool set_offset_type(const atoms& args) {
-        return AttributeSetters::try_set_value(args, m_pulse.offset_type, cerr);
-    }
-
-    bool set_mode(const atoms& args) {
-        return AttributeSetters::try_set_value(args, m_pulse.mode, cerr);
-    }
-
-    bool set_legato(const atoms& args) {
-        return AttributeSetters::try_set_vector(args, m_pulse.legato_amount, cerr);
-    }
-
-
-    bool set_sample_and_hold(const atoms& args) {
-        return AttributeSetters::try_set_vector(args, m_pulse.sample_and_hold, cerr);
-    }
-
-
-    bool set_enabled(const atoms& args) {
-        return AttributeSetters::try_set_value(args, m_pulse.enabled, cerr);
-    }
-
-
-    bool set_num_voices(const atoms& args) {
-        return AttributeSetters::try_set_value(args, m_pulse.num_voices, cerr);
-    }
-
-
 };
 
 
