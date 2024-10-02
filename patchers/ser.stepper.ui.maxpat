@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 34.0, 87.0, 2068.0, 1258.0 ],
+		"rect" : [ 34.0, 100.0, 1039.0, 787.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 1,
 		"default_fontsize" : 12.0,
@@ -41,6 +41,18 @@
 		"integercoordinates" : 1,
 		"boxes" : [ 			{
 				"box" : 				{
+					"color" : [ 1.0, 0.7098039216, 0.1960784314, 1.0 ],
+					"id" : "obj-5",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 479.0, 672.0, 103.0, 22.0 ],
+					"text" : "print actual_value"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"activebgoncolor" : [ 0.996078431372549, 0.423529411764706, 0.423529411764706, 1.0 ],
 					"id" : "obj-22",
 					"maxclass" : "live.text",
@@ -59,7 +71,7 @@
 ,
 						"valueof" : 						{
 							"parameter_enum" : [ "val1", "val2" ],
-							"parameter_longname" : "live.text[189]",
+							"parameter_longname" : "live.text[269]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text[189]",
@@ -214,7 +226,7 @@
 			}
 , 			{
 				"box" : 				{
-					"args" : [ "@type", 1, "@minimum", -11, "@maximum", 11, "@initial", 1, "@showborder", 0, "@disableconfig", 1 ],
+					"args" : [ "@type", 1, "@low", -11, "@high", 11, "@initial", 1, "@showborder", 0, "@disableconfig", 1 ],
 					"bgmode" : 0,
 					"border" : 0,
 					"clickthrough" : 0,
@@ -522,7 +534,7 @@
 							"parameter_enum" : [ "phasor", "sine", "square", "tri", "random" ],
 							"parameter_initial" : [ 0.0 ],
 							"parameter_initial_enable" : 1,
-							"parameter_longname" : "live.menu[50]",
+							"parameter_longname" : "live.menu[24]",
 							"parameter_mmax" : 4,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.menu",
@@ -572,7 +584,7 @@
 					"outlettype" : [ "", "", "", "" ],
 					"patching_rect" : [ 1379.0, 276.0, 142.0, 22.0 ],
 					"restore" : 					{
-						"_" : [ 1.0 ],
+						"_" : [ 0.0 ],
 						"enabled" : [ 1.0 ],
 						"live.text" : [ 0.0 ],
 						"type" : [ 0.0 ],
@@ -1329,7 +1341,7 @@
 						"valueof" : 						{
 							"parameter_enum" : [ "val1", "val2" ],
 							"parameter_invisible" : 2,
-							"parameter_longname" : "live.text[209]",
+							"parameter_longname" : "live.text[270]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text",
@@ -1386,7 +1398,7 @@
 							"parameter_enum" : [ "val1", "val2" ],
 							"parameter_initial" : [ 1 ],
 							"parameter_initial_enable" : 1,
-							"parameter_longname" : "live.text[210]",
+							"parameter_longname" : "live.text[271]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text",
@@ -1423,7 +1435,7 @@
 						"valueof" : 						{
 							"parameter_initial" : [ 0.0 ],
 							"parameter_initial_enable" : 1,
-							"parameter_longname" : "live.numbox[89]",
+							"parameter_longname" : "live.numbox[42]",
 							"parameter_mmax" : 20.0,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.numbox",
@@ -1543,7 +1555,7 @@
 			}
 , 			{
 				"box" : 				{
-					"args" : [ "@type", 1, "@minimum", -11, "@maximum", 11, "@initial", 4, "@showborder", 0, "@disableconfig", 1 ],
+					"args" : [ "@type", 1, "@low", -11, "@high", 11, "@initial", 4, "@showborder", 0, "@disableconfig", 1 ],
 					"bgmode" : 0,
 					"border" : 0,
 					"clickthrough" : 0,
@@ -1781,6 +1793,15 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-3", 0 ],
+					"order" : 1,
+					"source" : [ "obj-30", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-5", 0 ],
+					"order" : 0,
 					"source" : [ "obj-30", 0 ]
 				}
 

@@ -25,6 +25,21 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.util)
 #add_subdirectory(ser.allocator)
 #add_subdirectory(ser.selector)
 
+add_custom_target(all_externals)
+add_dependencies(all_externals
+    ser.oscillator
+    ser.op
+    ser.pulse
+    ser.makenote
+    ser.interpolator
+    ser.playground
+    ser.slidermapping
+    ser.util
+    #ser.randpulse
+    #ser.allocator
+    #ser.selector
+)
+
 
 # Override settings from min-api for C++17 support
 set(CMAKE_OSX_DEPLOYMENT_TARGET "10.13" CACHE STRING "Minimum OS X deployment version" FORCE)

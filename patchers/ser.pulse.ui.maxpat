@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 34.0, 87.0, 2087.0, 1258.0 ],
+		"rect" : [ 34.0, 100.0, 1039.0, 787.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 1,
 		"default_fontsize" : 12.0,
@@ -43,7 +43,7 @@
 				"box" : 				{
 					"comment" : "(pulse/list) pulses (order 1)",
 					"id" : "obj-77",
-					"index" : 0,
+					"index" : 5,
 					"maxclass" : "outlet",
 					"numinlets" : 1,
 					"numoutlets" : 0,
@@ -55,7 +55,7 @@
 				"box" : 				{
 					"comment" : "(pulse/list) pulses (order 2)",
 					"id" : "obj-64",
-					"index" : 0,
+					"index" : 4,
 					"maxclass" : "outlet",
 					"numinlets" : 1,
 					"numoutlets" : 0,
@@ -67,7 +67,7 @@
 				"box" : 				{
 					"comment" : "(pulse/list) pulses (order 3)",
 					"id" : "obj-49",
-					"index" : 0,
+					"index" : 3,
 					"maxclass" : "outlet",
 					"numinlets" : 1,
 					"numoutlets" : 0,
@@ -79,7 +79,7 @@
 				"box" : 				{
 					"comment" : "(pulse/list) pulses (order 4)",
 					"id" : "obj-40",
-					"index" : 0,
+					"index" : 2,
 					"maxclass" : "outlet",
 					"numinlets" : 1,
 					"numoutlets" : 0,
@@ -220,7 +220,7 @@
 				"box" : 				{
 					"id" : "obj-72",
 					"maxclass" : "newobj",
-					"numinlets" : 1,
+					"numinlets" : 2,
 					"numoutlets" : 3,
 					"outlettype" : [ "int", "int", "" ],
 					"patching_rect" : [ 786.0, 373.0, 84.0, 22.0 ],
@@ -620,10 +620,10 @@
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 951.0, 248.0, 254.0, 49.0 ],
 					"saved_object_attributes" : 					{
-						"client_rect" : [ 100, 159, 483, 521 ],
+						"client_rect" : [ 67, 153, 461, 322 ],
 						"parameter_enable" : 0,
 						"parameter_mappable" : 0,
-						"storage_rect" : [ 583, 69, 1034, 197 ]
+						"storage_rect" : [ 794, -709, 1244, -510 ]
 					}
 ,
 					"text" : "pattrstorage pattrstorage @savemode 0 @outputmode 1 @autorestore 0 @greedy 0 @changemode 1",
@@ -831,7 +831,7 @@
 				"box" : 				{
 					"id" : "obj-93",
 					"maxclass" : "newobj",
-					"numinlets" : 1,
+					"numinlets" : 2,
 					"numoutlets" : 3,
 					"outlettype" : [ "int", "int", "" ],
 					"patching_rect" : [ 997.0, 372.0, 84.0, 22.0 ],
@@ -1092,7 +1092,7 @@
 				"box" : 				{
 					"comment" : "(list) parameters",
 					"id" : "obj-81",
-					"index" : 0,
+					"index" : 6,
 					"maxclass" : "outlet",
 					"numinlets" : 1,
 					"numoutlets" : 0,
@@ -1104,7 +1104,7 @@
 				"box" : 				{
 					"id" : "obj-76",
 					"maxclass" : "newobj",
-					"numinlets" : 1,
+					"numinlets" : 2,
 					"numoutlets" : 3,
 					"outlettype" : [ "int", "int", "" ],
 					"patching_rect" : [ 523.0, 373.0, 84.0, 22.0 ],
@@ -1443,7 +1443,7 @@
 				"box" : 				{
 					"comment" : "(any) dumpout",
 					"id" : "obj-68",
-					"index" : 0,
+					"index" : 7,
 					"maxclass" : "outlet",
 					"numinlets" : 1,
 					"numoutlets" : 0,
@@ -1455,7 +1455,7 @@
 				"box" : 				{
 					"comment" : "legato",
 					"id" : "obj-67",
-					"index" : 0,
+					"index" : 3,
 					"maxclass" : "inlet",
 					"numinlets" : 0,
 					"numoutlets" : 1,
@@ -1468,7 +1468,7 @@
 				"box" : 				{
 					"comment" : "duration",
 					"id" : "obj-66",
-					"index" : 0,
+					"index" : 2,
 					"maxclass" : "inlet",
 					"numinlets" : 0,
 					"numoutlets" : 1,
@@ -1543,7 +1543,7 @@
 				"box" : 				{
 					"comment" : "(any) control messages",
 					"id" : "obj-18",
-					"index" : 0,
+					"index" : 1,
 					"maxclass" : "inlet",
 					"numinlets" : 0,
 					"numoutlets" : 1,
@@ -1556,7 +1556,7 @@
 				"box" : 				{
 					"comment" : "(pulse/list) pulses (order 5)",
 					"id" : "obj-3",
-					"index" : 0,
+					"index" : 1,
 					"maxclass" : "outlet",
 					"numinlets" : 1,
 					"numoutlets" : 0,
@@ -1884,10 +1884,10 @@
 					"parameter_mappable" : 0,
 					"patching_rect" : [ 448.0, 448.0, 50.0, 15.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 58.0, 22.0, 49.000001460313797, 15.0 ],
+					"presentation_rect" : [ 58.0, 22.0, 60.0, 15.0 ],
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
-							"parameter_enum" : [ "grid", "pulse", "bang", "toggle" ],
+							"parameter_enum" : [ "transport", "free", "bang", "toggle" ],
 							"parameter_initial" : [ 0 ],
 							"parameter_initial_enable" : 1,
 							"parameter_longname" : "live.menu[5]",
@@ -2652,52 +2652,6 @@
 
 			}
  ],
-		"parameters" : 		{
-			"obj-10" : [ "live.menu", "live.menu", 0 ],
-			"obj-11" : [ "live.menu[6]", "live.menu", 0 ],
-			"obj-2" : [ "live.menu[5]", "live.menu", 0 ],
-			"obj-22" : [ "live.numbox[18]", "live.numbox", 0 ],
-			"obj-27" : [ "live.text[11]", "live.text", 0 ],
-			"obj-36" : [ "live.text[10]", "live.text", 0 ],
-			"obj-5" : [ "live.numbox[19]", "live.numbox", 0 ],
-			"obj-6" : [ "live.numbox[16]", "live.numbox", 0 ],
-			"obj-74" : [ "live.numbox[2]", "live.numbox", 0 ],
-			"parameterbanks" : 			{
-				"0" : 				{
-					"index" : 0,
-					"name" : "",
-					"parameters" : [ "-", "-", "-", "-", "-", "-", "-", "-" ]
-				}
-
-			}
-,
-			"inherited_shortname" : 1
-		}
-,
-		"dependency_cache" : [ 			{
-				"name" : "bis.awaitpatcherargs.maxpat",
-				"bootpath" : "~/MaxProjects/Mabstractions/abstraction",
-				"patcherrelativepath" : "../../Mabstractions/abstraction",
-				"type" : "JSON",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "ser.op.mxo",
-				"type" : "iLaX"
-			}
-, 			{
-				"name" : "ser.pulse.mxo",
-				"type" : "iLaX"
-			}
-, 			{
-				"name" : "ser_.multimap.maxpat",
-				"bootpath" : "~/MaxProjects/serialist-max/patchers/private",
-				"patcherrelativepath" : "./private",
-				"type" : "JSON",
-				"implicit" : 1
-			}
- ],
-		"autosave" : 0,
 		"boxgroups" : [ 			{
 				"boxes" : [ "obj-47", "obj-60", "obj-52", "obj-57", "obj-58", "obj-51", "obj-53", "obj-50" ]
 			}

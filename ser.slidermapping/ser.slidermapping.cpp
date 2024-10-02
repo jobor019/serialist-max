@@ -334,12 +334,14 @@ class slidermapping : public c74::min::object<slidermapping> {
 private:
     struct Input {
         c74::min::atoms args;
-        bool input_is_x = true;
+        bool input_is_raw_value = true;
     };
 
     SliderMapping m_mapping;
     ValueFormatter m_formatter;
-    Input m_last_input;
+    Input m_last_user_input;
+
+    bool m_value_called_internally = false;
 
 public:
     MIN_DESCRIPTION{"Variable-state mapping"};
@@ -358,10 +360,26 @@ public:
 
     attribute<bool> enabled{this, "enabled", true};
 
-    attribute<std::vector<double>> initial{this, "initial", {0.0}, setter{
+    attribute<std::vector<double>> value{this, "value", {0.0}, setter{
             MIN_FUNCTION {
-                process({args, false});
-                return args;
+                if (auto v = AtomParser::atoms2vec<double>(args); v && !v->empty()) {
+
+                    // attribute `value` is a special operator in max for storing state in pattr / Live Parameters.
+                    //   Since this may be called both internally (whenever `process` is called by any
+                    //   other attribute/function) and externally (directly by user or by pattr / Live Parameter),
+                    //   we need different strategies to handle the different cases.
+                    //   When called externally: We should compute the raw value and output values on all outlets
+                    //   When called internally, we should just update the internal attribute without triggering
+                    //   any output, as we expect this to already have been handled elsewhere.
+                    if (!m_value_called_internally) {
+                        this->process({args, false});
+                    }
+                    return args;
+
+                } else {
+                    cerr << v.err().message() << endl;
+                    return value;
+                }
             }
     }};
 
@@ -370,7 +388,7 @@ public:
             MIN_FUNCTION {
                 if (auto v = AtomParser::atoms2value<double>(args)) {
                     m_mapping.set_minimum(*v);
-                    process();
+                    this->process();
                     return args;
                 } else {
                     cerr << v.err().message() << endl;
@@ -383,7 +401,7 @@ public:
             MIN_FUNCTION {
                 if (auto v = AtomParser::atoms2value<double>(args)) {
                     m_mapping.set_maximum(*v);
-                    process();
+                    this->process();
                     return args;
                 } else {
                     cerr << v.err().message() << endl;
@@ -403,7 +421,7 @@ public:
                     }
 
                     m_mapping.set_map_mode(*v);
-                    process();
+                    this->process();
                     return args;
                 } else {
                     cerr << v.err().message() << endl;
@@ -424,7 +442,7 @@ public:
                             }
 
                             m_mapping.set_numeric_type(*v);
-                            process();
+                            this->process();
                             return args;
                         } else {
                             cerr << v.err().message() << endl;
@@ -440,7 +458,7 @@ public:
                     m_mapping.set_num_steps(v.ok() > 0
                                             ? std::make_optional<long>(static_cast<std::size_t>(*v))
                                             : std::nullopt);
-                    process();
+                    this->process();
                     return args;
                 } else {
                     cerr << v.err().message() << endl;
@@ -474,7 +492,7 @@ public:
                     }
 
                     m_mapping.set_exponent1(std::max(0.0, v.ok()[0]));
-                    process();
+                    this->process();
                     return args;
 
                 } else {
@@ -488,7 +506,7 @@ public:
             MIN_FUNCTION {
                 if (auto v = AtomParser::atoms2value<double>(args)) {
                     m_mapping.set_midpoint(*v);
-                    process();
+                    this->process();
                     return args;
                 } else {
                     cerr << v.err().message() << endl;
@@ -506,7 +524,7 @@ public:
             MIN_FUNCTION {
                 if (auto v = AtomParser::atoms2value<bool>(args)) {
                     m_mapping.set_quantize_feedback(*v);
-                    process();
+                    this->process();
                     return args;
                 } else {
                     cerr << v.err().message() << endl;
@@ -526,7 +544,7 @@ public:
                     }
 
                     m_formatter.set_format(*v);
-                    process();
+                    this->process();
                     return args;
                 } else {
                     cerr << v.err().message() << endl;
@@ -541,7 +559,7 @@ public:
             MIN_FUNCTION {
                 if (auto v = AtomParser::atoms2value<int>(args)) {
                     m_formatter.set_num_decimals(*v > 0 ? static_cast<std::size_t>(*v) : 0u);
-                    process();
+                    this->process();
                     return args;
                 } else {
                     cerr << v.err().message() << endl;
@@ -555,7 +573,7 @@ public:
             MIN_FUNCTION {
                 if (auto v = AtomParser::atoms2value<bool>(args)) {
                     m_formatter.set_scientific(*v);
-                    process();
+                    this->process();
                     return args;
                 } else {
                     cerr << v.err().message() << endl;
@@ -569,13 +587,13 @@ public:
             MIN_FUNCTION {
                 if (args.empty()) {
                     m_formatter.set_append_arg("");
-                    process();
+                    this->process();
                     return args;
                 }
 
                 if (auto v = AtomParser::atoms2value<std::string>(args)) {
                     m_formatter.set_prepend_arg(*v);
-                    process();
+                    this->process();
                     return args;
                 } else {
                     cerr << v.err().message() << endl;
@@ -589,13 +607,13 @@ public:
             MIN_FUNCTION {
                 if (args.empty()) {
                     m_formatter.set_append_arg("");
-                    process();
+                    this->process();
                     return args;
                 }
 
                 if (auto v = AtomParser::atoms2value<std::string>(args)) {
                     m_formatter.set_append_arg(*v);
-                    process();
+                    this->process();
                     return args;
                 } else {
                     cerr << v.err().message() << endl;
@@ -624,7 +642,7 @@ public:
                             m_mapping.set_denominators(Vec<long>::singular(*v));
                         }
 
-                        process();
+                        this->process();
                         return args;
 
                     } else {
@@ -639,7 +657,7 @@ public:
                     }
 
                     m_mapping.set_denominators(v->map([](long v) { return std::max(v, 1L); }));
-                    process();
+                    this->process();
                     return args;
                 } else {
                     cerr << v.err().message() << endl;
@@ -674,31 +692,19 @@ public:
             return {};
         }
 
-        process({args, true}, false);
+        this->process({args, true}, false);
 
         return {};
     }}};
 
 
-    message<> output{this, "output", "set scaled value (y)", setter{MIN_FUNCTION {
-        if (inlet != 0) {
-            cerr << "invalid message \"output\" for inlet " << inlet << endl;
-            return {};
-        }
-
-        process({args, false});
-
-        return {};
-    }}};
-
-
-    message<> setoutput{this, "setoutput", "set scaled value (y) without output on first outlet", setter{MIN_FUNCTION {
+    message<> setvalue{this, "setvalue", "set scaled value (y) without output on first outlet", setter{MIN_FUNCTION {
         if (inlet != 0) {
             cerr << "invalid message \"setoutput\" for inlet " << inlet << endl;
             return {};
         }
 
-        process({args, false}, false);
+        this->process({args, false}, false);
 
         return {};
     }}};
@@ -710,7 +716,7 @@ public:
         } else if (inlet == 1) {
             minimum.set(args);
         } else {
-            process({args, true});
+            this->process({args, true});
         }
 
         return {};
@@ -718,7 +724,7 @@ public:
 
 
     message<> bang{this, "bang", MIN_FUNCTION {
-        process();
+        this->process();
         return {};
     }};
 
@@ -729,19 +735,19 @@ public:
 
 private:
     void process(const Input& input, bool trigger_output = true) {
-        m_last_input = input;
+        m_last_user_input = input;
         process(trigger_output);
     }
 
     void process(bool trigger_output = true) {
-        auto& args = m_last_input.args;
+        auto& args = m_last_user_input.args;
         if (args.empty()) {
             return;
         }
 
         if (args.size() == 1) {
             if (auto v = AtomParser::atoms2value<double>(args)) {
-                process_single(*v, m_last_input.input_is_x, trigger_output);
+                process_single(*v, m_last_user_input.input_is_raw_value, trigger_output);
                 return;
             } else {
                 cerr << v.err().message() << endl;
@@ -750,7 +756,7 @@ private:
         }
 
         if (auto v = AtomParser::atoms2vec<double>(args)) {
-            process_multiple(*v, m_last_input.input_is_x, trigger_output);
+            process_multiple(*v, m_last_user_input.input_is_raw_value, trigger_output);
         } else {
             cerr << v.err().message() << endl;
             return;
@@ -767,41 +773,52 @@ private:
         }
     }
 
-    void process_single(double raw_value, bool is_x, bool trigger_output) {
-        auto mapping_result = is_x ? m_mapping.process(raw_value) : m_mapping.inverse(raw_value);
+    void process_single(double v, bool is_x, bool trigger_output) {
+        auto mapping_result = is_x ? m_mapping.process(v) : m_mapping.inverse(v);
 
-        atoms output_feedback{AtomFormatter::value2atom<double>(mapping_result.quantized_raw_value)};
-        outlet_feedback.send(output_feedback);
+        atoms x{AtomFormatter::value2atom<double>(mapping_result.quantized_raw_value)};
+        outlet_feedback.send(x);
 
         atoms output_fmt{AtomFormatter::value2atom<std::string>(m_formatter.format(mapping_result))};
         outlet_symout.send(output_fmt);
 
+        atoms y{rvariant2atom(mapping_result.scaled_value)};
+        set_value_internally(y);
+
         if (trigger_output && enabled.get()) {
-            atoms output_main{rvariant2atom(mapping_result.scaled_value)};
-            outlet_main.send(output_main);
+            outlet_main.send(y);
         }
 
     }
 
-    void process_multiple(const Vec<double>& xs, bool is_x, bool trigger_output) {
-        auto mapping_result = is_x ? m_mapping.process(xs) : m_mapping.inverse(xs);
+    void process_multiple(const Vec<double>& vs, bool is_x, bool trigger_output) {
+        auto mapping_result = is_x ? m_mapping.process(vs) : m_mapping.inverse(vs);
 
-        atoms output_feedback;
+        atoms xs;
         atoms output_fmt;
-        atoms output_main;
+        atoms ys;
 
         for (const auto& r: mapping_result) {
-            output_main.emplace_back(rvariant2atom(r.scaled_value));
+            ys.emplace_back(rvariant2atom(r.scaled_value));
             output_fmt.emplace_back(AtomFormatter::value2atom<std::string>(m_formatter.format(r)));
-            output_feedback.emplace_back(AtomFormatter::value2atom<double>(r.quantized_raw_value));
+            xs.emplace_back(AtomFormatter::value2atom<double>(r.quantized_raw_value));
         }
 
-        outlet_feedback.send(output_feedback);
+        outlet_feedback.send(xs);
         outlet_symout.send(output_fmt);
 
+        set_value_internally(ys);
+
         if (trigger_output && enabled.get()) {
-            outlet_main.send(output_main);
+            outlet_main.send(ys);
         }
+    }
+
+
+    void set_value_internally(const atoms& args) {
+        m_value_called_internally = true;
+        value.set(args);
+        m_value_called_internally = false;
     }
 
 };
