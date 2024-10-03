@@ -1252,6 +1252,11 @@
 					"numoutlets" : 3,
 					"outlettype" : [ "", "", "" ],
 					"patching_rect" : [ 75.0, 472.0, 230.0, 22.0 ],
+					"saved_object_attributes" : 					{
+						"parameter_enable" : 0,
+						"parameter_mappable" : 0
+					}
+,
 					"text" : "ser.slidermapping"
 				}
 
@@ -1457,7 +1462,7 @@
 				"box" : 				{
 					"comment" : "(int) size",
 					"id" : "obj-2",
-					"index" : 2,
+					"index" : 0,
 					"maxclass" : "outlet",
 					"numinlets" : 1,
 					"numoutlets" : 0,
@@ -1469,7 +1474,7 @@
 				"box" : 				{
 					"comment" : "(any) dumpout",
 					"id" : "obj-5",
-					"index" : 4,
+					"index" : 0,
 					"maxclass" : "outlet",
 					"numinlets" : 1,
 					"numoutlets" : 0,
@@ -1582,7 +1587,7 @@
 				"box" : 				{
 					"comment" : "(list) parameters",
 					"id" : "obj-78",
-					"index" : 3,
+					"index" : 0,
 					"maxclass" : "outlet",
 					"numinlets" : 1,
 					"numoutlets" : 0,
@@ -1622,7 +1627,7 @@
 						"low" : [ 0.0 ],
 						"multislider" : [ 0.0 ],
 						"size" : [ 1 ],
-						"type" : [ 2.0 ],
+						"type" : [ 0.0 ],
 						"unused" : [ 0.0 ],
 						"unused[1]" : [ 0.0 ],
 						"unused[2]" : [ 0.0 ],
@@ -2549,7 +2554,6 @@
 					"patching_rect" : [ 602.0, 897.0, 68.0, 19.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 41.0, 34.0, 46.0, 19.0 ],
-					"text" : "0",
 					"textjustification" : 2
 				}
 
@@ -2558,7 +2562,7 @@
 				"box" : 				{
 					"comment" : "(float/list) values",
 					"id" : "obj-161",
-					"index" : 1,
+					"index" : 0,
 					"maxclass" : "outlet",
 					"numinlets" : 1,
 					"numoutlets" : 0,
@@ -2666,7 +2670,6 @@
 					"patching_rect" : [ 525.0, 897.0, 68.0, 19.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 23.0, 34.0, 32.0, 19.0 ],
-					"text" : "i=0:",
 					"textjustification" : 1
 				}
 
@@ -3251,7 +3254,7 @@
 				"box" : 				{
 					"comment" : "(any) control messages",
 					"id" : "obj-88",
-					"index" : 1,
+					"index" : 0,
 					"maxclass" : "inlet",
 					"numinlets" : 0,
 					"numoutlets" : 1,
@@ -3425,7 +3428,7 @@
 					"patching_rect" : [ 209.0, 572.0, 61.0, 28.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 4.0, 6.0, 84.0, 28.0 ],
-					"text" : "0",
+					"text" : "0.00 ",
 					"textjustification" : 1
 				}
 
@@ -3440,6 +3443,7 @@
 					"numoutlets" : 2,
 					"outlettype" : [ "", "float" ],
 					"parameter_enable" : 1,
+					"parameter_mappable" : 0,
 					"patching_rect" : [ 286.0, 573.0, 75.0, 25.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 3.0, 7.0, 85.0, 25.0 ],
@@ -3461,8 +3465,7 @@
 
 					}
 ,
-					"textcolor" : [ 0.0, 0.0, 0.0, 0.0 ],
-					"varname" : "live.numbox"
+					"textcolor" : [ 0.0, 0.0, 0.0, 0.0 ]
 				}
 
 			}
@@ -4137,7 +4140,7 @@
 			}
 , 			{
 				"patchline" : 				{
-					"color" : [ 0.501961, 0.501961, 0.501961, 1.0 ],
+					"color" : [ 0.0, 0.0, 0.0, 0.08307122565 ],
 					"destination" : [ "obj-64", 0 ],
 					"hidden" : 1,
 					"source" : [ "obj-345", 1 ]
@@ -4524,7 +4527,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-7", 0 ],
-					"midpoints" : [ 295.5, 603.5, 381.5, 603.5, 381.5, 641.0, 467.0, 641.0, 467.0, 461.0, 84.5, 461.0 ],
+					"midpoints" : [ 295.5, 641.5, 381.5, 641.5, 381.5, 641.0, 467.0, 641.0, 467.0, 461.0, 84.5, 461.0 ],
 					"source" : [ "obj-64", 0 ]
 				}
 
@@ -4860,6 +4863,55 @@
 
 			}
  ],
+		"parameters" : 		{
+			"obj-13" : [ "live.text[172]", "live.text[36]", 0 ],
+			"obj-14" : [ "live.text[179]", "live.text[36]", 0 ],
+			"obj-15" : [ "live.text[188]", "live.text[36]", 0 ],
+			"obj-32" : [ "live.text[173]", "live.text[36]", 0 ],
+			"obj-33" : [ "live.text[184]", "live.text[36]", 0 ],
+			"obj-34" : [ "live.text[168]", "live.text[36]", 0 ],
+			"obj-45" : [ "live.text[175]", "live.text[15]", 0 ],
+			"obj-57" : [ "live.text[174]", "live.text[15]", 0 ],
+			"obj-59" : [ "live.text[180]", "live.text[15]", 0 ],
+			"obj-61" : [ "live.text[182]", "live.text[15]", 0 ],
+			"obj-63" : [ "live.text[183]", "live.text[15]", 0 ],
+			"obj-64" : [ "live.numbox[22]", "live.numbox", 0 ],
+			"obj-65" : [ "live.text[170]", "live.text[15]", 0 ],
+			"obj-66" : [ "live.text[181]", "live.text[15]", 0 ],
+			"obj-67" : [ "live.text[185]", "live.text[15]", 0 ],
+			"obj-68" : [ "live.text[186]", "live.text[15]", 0 ],
+			"obj-69" : [ "live.text[176]", "live.text[15]", 0 ],
+			"obj-70" : [ "live.text[169]", "live.text[15]", 0 ],
+			"obj-71" : [ "live.text[187]", "live.text[15]", 0 ],
+			"obj-72" : [ "live.text[178]", "live.text[15]", 0 ],
+			"obj-74" : [ "live.text[171]", "live.text[15]", 0 ],
+			"obj-75" : [ "live.text[177]", "live.text[15]", 0 ],
+			"obj-95" : [ "live.menu[14]", "live.menu", 0 ],
+			"parameterbanks" : 			{
+				"0" : 				{
+					"index" : 0,
+					"name" : "",
+					"parameters" : [ "-", "-", "-", "-", "-", "-", "-", "-" ]
+				}
+
+			}
+,
+			"inherited_shortname" : 1
+		}
+,
+		"dependency_cache" : [ 			{
+				"name" : "bis.awaitpatcherargs.maxpat",
+				"bootpath" : "~/MaxProjects/Mabstractions/abstraction",
+				"patcherrelativepath" : "../../Mabstractions/abstraction",
+				"type" : "JSON",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "ser.slidermapping.mxo",
+				"type" : "iLaX"
+			}
+ ],
+		"autosave" : 0,
 		"boxgroups" : [ 			{
 				"boxes" : [ "obj-35", "obj-33", "obj-34", "obj-13", "obj-32", "obj-14", "obj-15" ]
 			}
