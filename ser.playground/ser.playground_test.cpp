@@ -4,24 +4,6 @@
 #include "parsing.h"
 
 
-TEST_CASE("object produces correct output") {
-    ext_main(nullptr);
-
-    test_wrapper<ser_playground> an_instance;
-    ser_playground& playground = an_instance;
-
-    REQUIRE(playground.inlets().size() == 1);
-    playground.myattribute.set(c74::min::atoms{0.88});
-    REQUIRE(playground.myattribute.get() == std::vector<double>{0.88});
-
-
-    REQUIRE(playground.mymessage.name() == "mymessage");
-    REQUIRE(playground.mymessage(c74::min::atoms{1, 2, 3}, 0) == c74::min::atoms{1, 2, 3});
-
-
-}
-
-
 // ==============================================================================================
 /**
  * Unit tests for shared code.
@@ -394,4 +376,35 @@ TEST_CASE("Parsing Lists of lists (Voices)") {
     SECTION("Nested list without outer brackets") {
         c74::min::atoms atms{1, "[", 2, 3, "]", 4};
     }
+}
+
+TEST_CASE("Parsing Symbolic Lists of lists (Voices)") {
+    SECTION("Simple List") {
+        c74::min::atoms atms{"[", "a", "abc", "def", "]"};
+        auto result = AtomParser::atoms2voices<std::string>(atms);
+        REQUIRE(result.is_ok());
+        REQUIRE(result->size() == 3);
+        REQUIRE(result.ok()[0] == Voice<std::string>{"a"});
+        REQUIRE(result.ok()[1] == Voice<std::string>{"abc"});
+        REQUIRE(result.ok()[2] == Voice<std::string>{"def"});
+    }
+
+    // TODO: This should maybe fail (!result.ok())
+    SECTION("Wrong input type (number to string)") {
+        c74::min::atoms atms{"[", 1, 2, 3, "]"};
+        auto result = AtomParser::atoms2voices<std::string>(atms);
+        REQUIRE(result.is_ok());
+        REQUIRE(result.ok()[0] == Voice<std::string>{"1"});
+        REQUIRE(result.ok()[1] == Voice<std::string>{"2"});
+        REQUIRE(result.ok()[2] == Voice<std::string>{"3"});
+    }
+
+    // TODO: This should definitely not be ok()
+//    SECTION("Wrong input type (string to number)") {
+//        c74::min::atoms atms{"[", "a", "b", "c", "]"};
+//        auto result = AtomParser::atoms2voices<int>(atms);
+//        result.ok().print();
+//        REQUIRE(!result.is_ok());
+//    }
+
 }

@@ -54,7 +54,7 @@ public:
     Result() : m_error(std::nullopt) {}
 
 
-    Result(const Error& error) : m_error(error) {}
+    Result(const Error& error) : m_error(error) {} // NOLINT(*-explicit-constructor)
 
 
     explicit operator bool() const noexcept {
@@ -83,6 +83,8 @@ class Result {
 public:
     // ReSharper disable once CppNonExplicitConvertingConstructor
     Result(const T& value) : m_value(value), m_error(std::nullopt) {} // NOLINT(*-explicit-constructor)
+
+    Result(T&& value) : m_value(std::move(value)), m_error(std::nullopt) {}
 
     // ReSharper disable once CppNonExplicitConvertingConstructor
     Result(const Error& error) : m_value(std::nullopt), m_error(error) {} // NOLINT(*-explicit-constructor)
@@ -128,6 +130,20 @@ public:
         if (!m_value)
             throw ResultError(m_error->message());
         return *m_value;
+    }
+
+
+    /**
+    * Move the underlying value of T if available, otherwise throws an exception.
+    * Note that the Result object will be in an invalid state after calling this operator,
+    * and should not be used hereafter.
+    * @throws ResultError
+    */
+    T&& move_ok() {
+        if (!m_value) {
+            throw ResultError(m_error->message());
+        }
+        return std::move(*m_value);
     }
 
 
