@@ -69,6 +69,7 @@ public:
     TimePoint as_time_point() const {
         auto meter = Meter(static_cast<int>(m_meter_num), static_cast<int>(m_meter_denom));
         auto units = m_units / 480.0;
+        // Note that this is not an appropriate representation of absolute beat if the time signature has changed over the course of time
         auto beats = static_cast<double>(m_beats - 1) + meter.ticks2beats(units);
         auto bars = static_cast<double>(m_bars) + meter.beats2bars(beats);
 
@@ -84,6 +85,10 @@ public:
                " units: " + std::to_string(m_units) +
                " meter: " + std::to_string(m_meter_num) + "/" + std::to_string(m_meter_denom)
                + " running: " + std::to_string(m_transport_running);
+    }
+
+    c74::min::atoms to_atoms() const {
+        return c74::min::atoms{m_tempo, m_ticks, m_bars, m_beats, m_units, m_meter_num, m_meter_denom, m_transport_running};
     }
 
 

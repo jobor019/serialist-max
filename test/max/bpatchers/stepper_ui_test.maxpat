@@ -46,7 +46,6 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 160.0, 74.0, 69.0, 22.0 ],
-					"presentation_linecount" : 3,
 					"text" : "0.33 0.75 1"
 				}
 
@@ -59,7 +58,6 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 92.0, 74.0, 32.0, 22.0 ],
-					"presentation_linecount" : 2,
 					"text" : "0.33"
 				}
 
@@ -721,13 +719,12 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-16",
-					"linecount" : 2,
 					"maxclass" : "message",
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 37.0, 447.0, 61.0, 35.0 ],
-					"text" : "offset 0. 0.33 0.67"
+					"patching_rect" : [ 37.0, 447.0, 61.0, 22.0 ],
+					"text" : "legato 1."
 				}
 
 			}

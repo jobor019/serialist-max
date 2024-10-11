@@ -18,23 +18,19 @@ public:
         cout << "ser.playground::constructor" << endl;
     }
 
-    attribute<std::vector<double>> myattr{this, "myattr", {}, setter{
-            MIN_FUNCTION {
-                if (AtomParser::atoms2vec<double>(args)) {
-                    cout << "myattr" << endl;
-                    outlet_main.send(args);
-                    return args;
-                }
-                return myattr;
-            }
-    }};
+    attribute<symbol> clock{this, "clock", "", description{"Set clock source"}};
 
-    message<> setup{this, "setup", MIN_FUNCTION {
-        if (myattr.get().empty()) {
-            error("failed instantiation of object since attribute myattr is empty");
+
+    message<> bang{this, "bang", "A description", setter{MIN_FUNCTION {
+        if (auto tp = MaxTimePoint::get_time_of(clock.get())) {
+            outlet_main.send(tp->to_atoms());
         }
         return {};
-    }};
+    }}};
+
+
+
+
 
 };
 
