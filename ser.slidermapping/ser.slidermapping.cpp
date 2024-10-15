@@ -43,7 +43,11 @@ public:
               , m_append_arg(append_arg) {}
 
 
-    static std::string format_static(double x, double y, Format fmt, std::size_t num_decimals, bool scientific = false
+    static std::string format_static(double x
+                                     , double y
+                                     , Format fmt
+                                     , std::size_t num_decimals
+                                     , bool scientific = false
                                      , const std::string& prepend_arg = ""
                                      , const std::string& append_arg = "") {
         switch (fmt) {
@@ -62,12 +66,12 @@ public:
                                               , const std::string& prepend_arg = ""
                                               , const std::string& append_arg = "") {
         switch (fmt) {
-            case Format::mixed_fraction:
-                return format_mixed_number(q);
+            case Format::improper_fraction:
+                return q.to_string(ExtendedFraction::Format::improper);
             case Format::fraction_list:
-                return format_fraction_list(q);
+                return q.to_string(ExtendedFraction::Format::list);
             default: // Any non-fractional format non a fraction value will fall back to improper
-                return format_improper_fraction(q);
+                return q.to_string(ExtendedFraction::Format::mixed, false, "  ");
         }
     }
 
@@ -119,36 +123,6 @@ private:
                                      , const std::string& prepend_arg, const std::string& append_arg) {
         std::string num = format_number(y, num_decimals, scientific);
         return prepend_arg + num + " " + append_arg;
-    }
-
-    static std::string format_improper_fraction(const ExtendedFraction& q) {
-        return std::to_string(q.get_integral_part() * q.get_d() + q.get_n()) + "/" + std::to_string(q.get_d());
-    }
-
-    static std::string format_mixed_number(const ExtendedFraction& q) {
-        std::stringstream ss;
-
-        bool has_integral_part = std::abs(q.get_integral_part()) > 0;
-        bool has_fractional_part = std::abs(q.get_n()) > 0;
-
-        if (has_integral_part)
-            ss << q.get_integral_part();
-
-        if (has_integral_part && has_fractional_part)
-            ss << " ";
-
-        if (has_fractional_part)
-            ss << q.get_n() << "/" << q.get_d();
-
-        if (!has_integral_part && !has_fractional_part)
-            ss << 0;
-
-        return ss.str();
-    }
-
-    static std::string format_fraction_list(const ExtendedFraction& q) {
-        return std::to_string(q.get_integral_part()) + " " + std::to_string(q.get_n()) + " " +
-               std::to_string(q.get_d());
     }
 
 

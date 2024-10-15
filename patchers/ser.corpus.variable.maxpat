@@ -41,6 +41,18 @@
 		"integercoordinates" : 1,
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-81",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 120.0, 645.0, 84.0, 22.0 ],
+					"text" : "1."
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-74",
 					"maxclass" : "newobj",
 					"numinlets" : 1,
@@ -189,7 +201,7 @@
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
 							"parameter_enum" : [ "val1", "val2" ],
-							"parameter_longname" : "live.text[101]",
+							"parameter_longname" : "live.text[10]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text[36]",
@@ -221,7 +233,7 @@
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
 							"parameter_enum" : [ "val1", "val2" ],
-							"parameter_longname" : "live.text[79]",
+							"parameter_longname" : "live.text[13]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text[36]",
@@ -253,7 +265,7 @@
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
 							"parameter_enum" : [ "val1", "val2" ],
-							"parameter_longname" : "live.text[106]",
+							"parameter_longname" : "live.text[20]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text[36]",
@@ -285,7 +297,7 @@
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
 							"parameter_enum" : [ "val1", "val2" ],
-							"parameter_longname" : "live.text[102]",
+							"parameter_longname" : "live.text[1]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text[36]",
@@ -317,7 +329,7 @@
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
 							"parameter_enum" : [ "val1", "val2" ],
-							"parameter_longname" : "live.text[111]",
+							"parameter_longname" : "live.text[15]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text[36]",
@@ -349,7 +361,7 @@
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
 							"parameter_enum" : [ "val1", "val2" ],
-							"parameter_longname" : "live.text[80]",
+							"parameter_longname" : "live.text[6]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text[36]",
@@ -401,7 +413,7 @@
 							"parameter_enum" : [ "val1", "val2" ],
 							"parameter_initial" : [ 0.0 ],
 							"parameter_initial_enable" : 1,
-							"parameter_longname" : "live.text[77]",
+							"parameter_longname" : "live.text[4]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text[15]",
@@ -437,7 +449,7 @@
 							"parameter_enum" : [ "val1", "val2" ],
 							"parameter_initial" : [ 0.0 ],
 							"parameter_initial_enable" : 1,
-							"parameter_longname" : "live.text[75]",
+							"parameter_longname" : "live.text[16]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text[15]",
@@ -473,7 +485,7 @@
 							"parameter_enum" : [ "val1", "val2" ],
 							"parameter_initial" : [ 0.0 ],
 							"parameter_initial_enable" : 1,
-							"parameter_longname" : "live.text[112]",
+							"parameter_longname" : "live.text[7]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text[15]",
@@ -509,7 +521,7 @@
 							"parameter_enum" : [ "val1", "val2" ],
 							"parameter_initial" : [ 0.0 ],
 							"parameter_initial_enable" : 1,
-							"parameter_longname" : "live.text[108]",
+							"parameter_longname" : "live.text[18]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text[15]",
@@ -545,7 +557,7 @@
 							"parameter_enum" : [ "val1", "val2" ],
 							"parameter_initial" : [ 0 ],
 							"parameter_initial_enable" : 1,
-							"parameter_longname" : "live.text[104]",
+							"parameter_longname" : "live.text[8]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text[15]",
@@ -581,7 +593,7 @@
 							"parameter_enum" : [ "val1", "val2" ],
 							"parameter_initial" : [ 0.0 ],
 							"parameter_initial_enable" : 1,
-							"parameter_longname" : "live.text[113]",
+							"parameter_longname" : "live.text[19]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text[15]",
@@ -617,7 +629,7 @@
 							"parameter_enum" : [ "val1", "val2" ],
 							"parameter_initial" : [ 0.0 ],
 							"parameter_initial_enable" : 1,
-							"parameter_longname" : "live.text[78]",
+							"parameter_longname" : "live.text[9]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text[15]",
@@ -653,7 +665,7 @@
 							"parameter_enum" : [ "val1", "val2" ],
 							"parameter_initial" : [ 0.0 ],
 							"parameter_initial_enable" : 1,
-							"parameter_longname" : "live.text[76]",
+							"parameter_longname" : "live.text[21]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text[15]",
@@ -689,7 +701,7 @@
 							"parameter_enum" : [ "val1", "val2" ],
 							"parameter_initial" : [ 0.0 ],
 							"parameter_initial_enable" : 1,
-							"parameter_longname" : "live.text[81]",
+							"parameter_longname" : "live.text[11]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text[15]",
@@ -725,7 +737,7 @@
 							"parameter_enum" : [ "val1", "val2" ],
 							"parameter_initial" : [ 0.0 ],
 							"parameter_initial_enable" : 1,
-							"parameter_longname" : "live.text[109]",
+							"parameter_longname" : "live.text[2]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text[15]",
@@ -761,7 +773,7 @@
 							"parameter_enum" : [ "val1", "val2" ],
 							"parameter_initial" : [ 1 ],
 							"parameter_initial_enable" : 1,
-							"parameter_longname" : "live.text[105]",
+							"parameter_longname" : "live.text[14]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text[15]",
@@ -797,7 +809,7 @@
 							"parameter_enum" : [ "val1", "val2" ],
 							"parameter_initial" : [ 1 ],
 							"parameter_initial_enable" : 1,
-							"parameter_longname" : "live.text[74]",
+							"parameter_longname" : "live.text[5]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text[15]",
@@ -833,7 +845,7 @@
 							"parameter_enum" : [ "val1", "val2" ],
 							"parameter_initial" : [ 1 ],
 							"parameter_initial_enable" : 1,
-							"parameter_longname" : "live.text[110]",
+							"parameter_longname" : "live.text[17]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text[15]",
@@ -869,7 +881,7 @@
 							"parameter_enum" : [ "val1", "val2" ],
 							"parameter_initial" : [ 0.0 ],
 							"parameter_initial_enable" : 1,
-							"parameter_longname" : "live.text[107]",
+							"parameter_longname" : "live.text[12]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text[15]",
@@ -905,7 +917,7 @@
 							"parameter_enum" : [ "val1", "val2" ],
 							"parameter_initial" : [ 1 ],
 							"parameter_initial_enable" : 1,
-							"parameter_longname" : "live.text[103]",
+							"parameter_longname" : "live.text[3]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.text[15]",
@@ -937,7 +949,7 @@
 							"parameter_enum" : [ "float", "int", "frac" ],
 							"parameter_initial" : [ 0.0 ],
 							"parameter_invisible" : 2,
-							"parameter_longname" : "live.menu[8]",
+							"parameter_longname" : "live.menu[1]",
 							"parameter_mmax" : 2,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.menu",
@@ -1874,9 +1886,9 @@
 						"live.text[7]" : [ 1.0 ],
 						"live.text[8]" : [ 1.0 ],
 						"live.text[9]" : [ 0.0 ],
-						"maximum" : [ 127.0 ],
-						"minimum" : [ 0.0 ],
-						"type" : [ 1.0 ],
+						"maximum" : [ 100.0 ],
+						"minimum" : [ 0.05 ],
+						"type" : [ 2.0 ],
 						"unused" : [ 0.0 ],
 						"unused[1]" : [ 0.0 ],
 						"unused[2]" : [ 0.0 ],
@@ -2958,10 +2970,10 @@
 					"maxclass" : "live.comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 163.0, 576.0, 26.0, 18.0 ],
+					"patching_rect" : [ 163.0, 576.0, 30.0, 18.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 1.0, 5.0, 49.0, 18.0 ],
-					"text" : "105 ",
+					"text" : "1/1",
 					"textjustification" : 1
 				}
 
@@ -2986,7 +2998,7 @@
 ,
 						"valueof" : 						{
 							"parameter_initial" : [ 0.0 ],
-							"parameter_longname" : "live.numbox[25]",
+							"parameter_longname" : "live.numbox[1]",
 							"parameter_mmax" : 1.0,
 							"parameter_modmax" : 1.0,
 							"parameter_modmode" : 4,
@@ -3363,6 +3375,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-161", 0 ],
+					"order" : 1,
 					"source" : [ "obj-17", 0 ]
 				}
 
@@ -3371,6 +3384,14 @@
 				"patchline" : 				{
 					"destination" : [ "obj-56", 0 ],
 					"source" : [ "obj-17", 1 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-81", 1 ],
+					"order" : 0,
+					"source" : [ "obj-17", 0 ]
 				}
 
 			}
