@@ -371,6 +371,12 @@ TEST_CASE("Parsing Lists of lists (Voices)") {
 
     SECTION("Simple list without outer brackets") {
         c74::min::atoms atms{1, 2, 3};
+        auto result = AtomParser::atoms2voices<int>(atms);
+        REQUIRE(result.is_ok());
+        REQUIRE(result->size() == 3);
+        REQUIRE(result.ok()[0] == Voice<int>{1});
+        REQUIRE(result.ok()[1] == Voice<int>{2});
+        REQUIRE(result.ok()[2] == Voice<int>{3});
     }
 
     SECTION("Nested list without outer brackets") {
