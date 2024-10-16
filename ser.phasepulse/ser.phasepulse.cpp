@@ -21,9 +21,9 @@ public:
     MIN_AUTHOR{"Borg"};
     MIN_RELATED{"ser.pulse, ser.oscillator"};
 
-    inlet<> inlet_main{this, "(float/listoflists) cursor position / control messages", "", true};
-    inlet<> inlet_legato{this, "(float/listoflists) legato amount", "", false};
-    inlet<> inlet_durations{this, "(float/listoflists) list of durations", "", false};
+    inlet<> inlet_main{this, "(float/list) cursor position / control messages", "", true};
+    inlet<> inlet_legato{this, "(float/list) legato amount", "", false};
+    inlet<> inlet_durations{this, "(float/list) list of durations", "", false};
 
     outlet<> outlet_main{this, "(int/list) pulses"};
     outlet<> dumpout{this, "(any) dumpout"};
