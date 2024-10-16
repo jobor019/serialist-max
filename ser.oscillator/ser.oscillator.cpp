@@ -22,6 +22,7 @@ public:
 
     inlet<> inlet_main{this, "(any) control messages"};
     inlet<> inlet_period{this, "(float/list) period"};
+    inlet<> inlet_offset{this, "(float/list) offset"};
 
     outlet<> outlet_main{this, "(float/list) oscillator output"};
     outlet<> dumpout{this, "(any) dumpout"};
@@ -191,7 +192,9 @@ public:
 
 
     c74::min::function handle_input = MIN_FUNCTION {
-         if (inlet == 1) {
+        if (inlet == 2) {
+            offset.set(args);
+        } else if (inlet == 1) {
             period.set(args);
         } else {
             this->process(args);
