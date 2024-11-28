@@ -2171,7 +2171,7 @@
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
 					"patching_rect" : [ 581.0, 111.0, 119.0, 22.0 ],
-					"text" : "bis.awaitpatcherargs"
+					"text" : "pyosc.awaitpatcherargs"
 				}
 
 			}
@@ -2184,7 +2184,7 @@
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
 					"patching_rect" : [ 401.0, 111.0, 119.0, 22.0 ],
-					"text" : "bis.awaitpatcherargs"
+					"text" : "pyosc.awaitpatcherargs"
 				}
 
 			}
@@ -2197,7 +2197,7 @@
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
 					"patching_rect" : [ 272.0, 111.0, 119.0, 22.0 ],
-					"text" : "bis.awaitpatcherargs"
+					"text" : "pyosc.awaitpatcherargs"
 				}
 
 			}

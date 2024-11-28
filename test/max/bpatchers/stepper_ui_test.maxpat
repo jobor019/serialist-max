@@ -2879,7 +2879,7 @@
 		}
 ,
 		"dependency_cache" : [ 			{
-				"name" : "bis.awaitpatcherargs.maxpat",
+				"name" : "pyosc.awaitpatcherargs.maxpat",
 				"bootpath" : "~/MaxProjects/Mabstractions/abstraction",
 				"patcherrelativepath" : "../../../../Mabstractions/abstraction",
 				"type" : "JSON",

@@ -193,7 +193,7 @@
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
 					"patching_rect" : [ 440.0, 139.0, 119.0, 22.0 ],
-					"text" : "bis.awaitpatcherargs"
+					"text" : "pyosc.awaitpatcherargs"
 				}
 
 			}

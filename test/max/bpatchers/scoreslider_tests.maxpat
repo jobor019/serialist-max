@@ -780,7 +780,7 @@
 				"type" : "iLaX"
 			}
 , 			{
-				"name" : "bis.awaitpatcherargs.maxpat",
+				"name" : "pyosc.awaitpatcherargs.maxpat",
 				"bootpath" : "~/Mabstractions/abstraction",
 				"patcherrelativepath" : "../../../../../Mabstractions/abstraction",
 				"type" : "JSON",
