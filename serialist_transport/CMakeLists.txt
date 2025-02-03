@@ -17,5 +17,3 @@ set_target_properties(serialist_transport PROPERTIES
     INSTALL_NAME_DIR "@rpath"
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/support"
 )
-
-#set_target_properties(serialist_transport PROPERTIES MACOSX_RPATH ON)
