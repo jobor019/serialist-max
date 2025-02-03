@@ -26,6 +26,9 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.util)
 #add_subdirectory(ser.allocator)
 #add_subdirectory(ser.selector)
 
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/serialist_transport)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.transport)
+
 add_custom_target(all_externals)
 add_dependencies(all_externals
     ser.oscillator
@@ -37,6 +40,7 @@ add_dependencies(all_externals
     ser.playground
     ser.slidermapping
     ser.util
+    ser.transport
     #ser.randpulse
     #ser.allocator
     #ser.selector

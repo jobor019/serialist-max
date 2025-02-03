@@ -1,4 +1,5 @@
 
+#include <serialist_transport.h>
 #include <core/policies/policies.h>
 
 #include "c74_min.h"
@@ -22,9 +23,13 @@ public:
 
 
     message<> bang{this, "bang", "A description", setter{MIN_FUNCTION {
-        if (auto tp = MaxTimePoint::get_time_of(clock.get())) {
-            outlet_main.send(tp->to_atoms());
-        }
+        auto t = SerialistTransport::get_instance().get_time().get_tick();
+        outlet_main.send(t);
+
+
+        // if (auto tp = MaxTimePoint::get_time_of(clock.get())) {
+        //     outlet_main.send(tp->to_atoms());
+        // }
         return {};
     }}};
 

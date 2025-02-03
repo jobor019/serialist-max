@@ -8,7 +8,7 @@
 #include "core/collections/vec.h"
 #include "core/collections/voices.h"
 #include "core/algo/facet.h"
-#include "core/algo/temporal/trigger.h"
+#include "core/temporal/trigger.h"
 #include "core/event.h"
 
 using namespace serialist;
