@@ -598,7 +598,6 @@
 , 							{
 								"patchline" : 								{
 									"destination" : [ "obj-1", 0 ],
-									"disabled" : 1,
 									"hidden" : 1,
 									"source" : [ "obj-2", 0 ]
 								}
@@ -637,7 +636,7 @@
 
 							}
  ],
-						"originid" : "pat-1012"
+						"originid" : "pat-268"
 					}
 ,
 					"patching_rect" : [ 104.0, 21.0, 69.0, 22.0 ],
@@ -1235,7 +1234,6 @@
 , 							{
 								"patchline" : 								{
 									"destination" : [ "obj-1", 0 ],
-									"disabled" : 1,
 									"hidden" : 1,
 									"source" : [ "obj-2", 0 ]
 								}
@@ -1274,7 +1272,7 @@
 
 							}
  ],
-						"originid" : "pat-1028"
+						"originid" : "pat-286"
 					}
 ,
 					"patching_rect" : [ 23.0, 20.0, 59.0, 22.0 ],
@@ -1288,7 +1286,7 @@
 			}
  ],
 		"lines" : [  ],
-		"originid" : "pat-1010",
+		"originid" : "pat-266",
 		"parameters" : 		{
 			"obj-1::obj-1::obj-113" : [ "live.text[272]", "live.text", 0 ],
 			"obj-1::obj-1::obj-40" : [ "live.text", "live.text", 0 ],

@@ -224,6 +224,10 @@ private:
 
         auto time = SerialistTransport::get_instance().get_time();
 
+        if (!time.get_transport_running()) {
+            return;
+        }
+
         m_oscillator.oscillator.update_time(time);
 
         auto output = m_oscillator.oscillator.process();
