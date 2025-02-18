@@ -1,3 +1,4 @@
+#include <serialist_transport.h>
 #include <core/policies/policies.h>
 #include <core/generatives/oscillator.h>
 
@@ -26,10 +27,6 @@ public:
 
     outlet<> outlet_main{this, "(float/list) oscillator output"};
     outlet<> dumpout{this, "(any) dumpout"};
-
-    attribute<symbol> clock{this, Keywords::CLOCK, ""
-                            , title{Titles::CLOCK}
-                            , description{Descriptions::CLOCK}};
 
 
     attribute<bool> enabled{this, Keywords::ENABLED, true
@@ -225,13 +222,9 @@ private:
             return;
         }
 
-        auto time = MaxTimePoint::get_time_point_of(clock.get());
-        if (!time) {
-            cerr << time.err() << endl;
-            return;
-        }
+        auto time = SerialistTransport::get_instance().get_time();
 
-        m_oscillator.oscillator.update_time(*time);
+        m_oscillator.oscillator.update_time(time);
 
         auto output = m_oscillator.oscillator.process();
 
