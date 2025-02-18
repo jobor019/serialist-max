@@ -68,13 +68,44 @@ public:
     }}};
 
 
+    message<> meter{this, "meter", setter{MIN_FUNCTION {
+        if (inlet != 0) {
+            cerr << "invalid message \"meter\" for inlet " << inlet << endl;
+            return {};
+        }
+
+        // Input: "null"
+        if (args.size() == 1 && args[0].type() == message_type::symbol_argument && args[0] == "null") {
+            SerialistTransport::get_instance().set_meter(std::nullopt);
+        }
+
+        // input: [numerator, denominator]
+        else if (args.size() == 2
+            && args[0].type() == message_type::int_argument
+            && args[1].type() == message_type::int_argument) {
+            auto num = static_cast<int>(args[0]);
+            auto denom = static_cast<int>(args[1]);
+            if (num > 0 && denom > 0) {
+                SerialistTransport::get_instance().set_meter(Meter(num, denom));
+            } else {
+                cerr << "numerator and denominator must be positive" << endl;
+            }
+
+        } else {
+            cerr << R"(bad argument for message "meter". Expected "null" or [numerator, denominator])" << endl;
+        }
+
+        return {};
+    }}};
+
+
     message<> bang{this, "bang", setter{MIN_FUNCTION {
         if (inlet != 0) {
             cerr << "invalid message \"bang\" for inlet " << inlet << endl;
             return {};
         }
 
-        auto t = SerialistTransport::get_instance().get_time();
+        auto t = SerialistTransport::get_instance().update_time();
         outlet_active.send(t.get_transport_running());
         outlet_tempo.send(t.get_tempo());
         auto meter = t.get_meter();

@@ -7,9 +7,15 @@ SerialistTransport& SerialistTransport::get_instance() {
 }
 
 
-TimePoint SerialistTransport::get_time() {
+TimePoint SerialistTransport::update_time() {
     std::lock_guard lock{m_mtx};
     return m_transport.update_time();
+}
+
+
+TimePoint SerialistTransport::get_time() {
+    std::lock_guard lock{m_mtx};
+    return m_transport.get_time();
 }
 
 
@@ -40,6 +46,12 @@ TimePoint SerialistTransport::stop() {
 void SerialistTransport::set_tempo(double tempo) {
     std::lock_guard lock{m_mtx};
     m_transport.set_tempo(tempo);
+}
+
+
+void SerialistTransport::set_meter(const std::optional<Meter>& meter) {
+    std::lock_guard lock{m_mtx};
+    m_transport.set_next_meter(meter);
 }
 
 
