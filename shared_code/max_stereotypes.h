@@ -161,6 +161,34 @@ public:
     /**
      * @throws ResultError if parsing fails
      */
+    template<typename StoredType, typename ParseType = StoredType, typename OutputType>
+    static void set_vector_singular(const c74::min::atoms& args, Sequence<OutputType, StoredType>& seq) {
+        auto vec = AtomParser::atoms2vec<ParseType>(args).ok();
+
+        if constexpr (std::is_same_v<ParseType, StoredType>) {
+            seq.set_values(Voices<StoredType>::singular(vec));
+        } else {
+            seq.set_values(Voices<StoredType>::singular(vec.template as_type<StoredType>()));
+        }
+    }
+
+
+    /**
+     * @throws ResultError if parsing fails
+     */
+    template<typename StoredType, typename ParseType, typename OutputType>
+    static void set_vector_singular(const c74::min::atoms& args
+                           , Sequence<OutputType, StoredType>& seq
+                           , const std::function<StoredType(const ParseType&)>& converter) {
+        auto vec = AtomParser::atoms2vec<ParseType>(args).ok();
+        auto voices = Voices<StoredType>::singular(vec.template as_type<StoredType>(converter));
+        seq.set_values(voices);
+    }
+
+
+    /**
+     * @throws ResultError if parsing fails
+     */
     template<typename StoredType, typename OutputType>
     static void set_voices(const c74::min::atoms& args
                            , Sequence<OutputType, StoredType>& seq
@@ -222,6 +250,35 @@ public:
                                , const std::function<StoredType(const ParseType&)>& converter) noexcept {
         try {
             set_vector(args, seq, converter);
+            return true;
+        } catch (ResultError& e) {
+            cerr << e.what() << c74::min::endl;
+            return false;
+        }
+    }
+
+
+    template<typename StoredType, typename ParseType = StoredType, typename OutputType>
+    static bool try_set_vector_singular(const c74::min::atoms& args
+                           , Sequence<OutputType, StoredType>& seq
+                           , c74::min::logger& cerr) noexcept {
+        try {
+            set_vector_singular(args, seq);
+            return true;
+        } catch (ResultError& e) {
+            cerr << e.what() << c74::min::endl;
+            return false;
+        }
+    }
+
+
+    template<typename StoredType, typename ParseType, typename OutputType>
+    static bool try_set_vector_singular(const c74::min::atoms& args
+                               , Sequence<OutputType, StoredType>& seq
+                               , c74::min::logger& cerr
+                               , const std::function<StoredType(const ParseType&)>& converter) noexcept {
+        try {
+            set_vector_singular(args, seq, converter);
             return true;
         } catch (ResultError& e) {
             cerr << e.what() << c74::min::endl;

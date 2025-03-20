@@ -1,3 +1,4 @@
+#include <serialist_transport.h>
 #include <core/policies/policies.h>
 #include <core/generatives/phase_pulsator.h>
 
@@ -11,28 +12,27 @@ using namespace c74::min;
 using namespace serialist;
 
 
-class ser_phasepulse : public c74::min::object<ser_phasepulse> {
-private:
-    PhasePulsatorWrapper<double> m_pulse;
+class ser_phasepulse : public object<ser_phasepulse> {
+    PhasePulsatorWrapper<> m_pulse;
 
 public:
     MIN_DESCRIPTION{"Phasor-based pulse generator"};
     MIN_TAGS{"utilities"};
     MIN_AUTHOR{"Borg"};
-    MIN_RELATED{"ser.pulse, ser.oscillator"};
+    MIN_RELATED{"ser.oscillator, ser.phasemap"};
 
     inlet<> inlet_main{this, "(float/list) cursor position / control messages", "", true};
     inlet<> inlet_legato{this, "(float/list) legato amount", "", false};
-    inlet<> inlet_durations{this, "(float/list) list of durations", "", false};
+    // inlet<> inlet_durations{this, "(float/list) list of durations", "", false};
 
     outlet<> outlet_main{this, "(int/list) pulses"};
     outlet<> dumpout{this, "(any) dumpout"};
 
 
-    attribute<symbol> clock{this, Keywords::CLOCK
-                            , ""
-                            , title{Titles::CLOCK}
-                            , description{Descriptions::CLOCK}};
+    // attribute<symbol> clock{this, Keywords::CLOCK
+    //                         , ""
+    //                         , title{Titles::CLOCK}
+    //                         , description{Descriptions::CLOCK}};
 
 
     attribute<bool> enabled{this, Keywords::ENABLED
@@ -59,7 +59,7 @@ public:
 
 
     attribute<std::vector<double>> legato{this, "legato"
-                                          , Vec<double>::singular(PhasePulsator::DEFAULT_LEGATO).vector()
+                                          , Vec<double>::singular(PhasePulsatorParameters::DEFAULT_LEGATO).vector()
                                           , title{"legato"}
                                           , setter{MIN_FUNCTION {
                 if (AttributeSetters::try_set_vector(args, m_pulse.legato_amount, cerr))
@@ -69,20 +69,20 @@ public:
     };
 
 
-    // Note: As long as there's no meaningful GUI object for handling multiple layers of durations
-    //       (which there is unlikely to ever be), durations should indeed be a single Voice rather than a Voices.
-    //       If we need multiple sequences of durations synced to a single waveform, just use multiple ser.phasepulse.
-    attribute<std::vector<double>> durations{ this, "durations", {0.0}, setter{
-            MIN_FUNCTION {
-                if (AttributeSetters::try_set_vector(args, m_pulse.duration, cerr)) {
-                    return args;
-                }
-                
-                cerr << "bad argument for message \"durations\"" << endl;
-                return durations;
-            }
-        }
-    };
+    // // Note: As long as there's no meaningful GUI object for handling multiple layers of durations
+    // //       (which there is unlikely to ever be), durations should indeed be a single Voice rather than a Voices.
+    // //       If we need multiple sequences of durations synced to a single waveform, just use multiple ser.phasepulse.
+    // attribute<std::vector<double>> durations{ this, "durations", {0.0}, setter{
+    //         MIN_FUNCTION {
+    //             if (AttributeSetters::try_set_vector(args, m_pulse.duration, cerr)) {
+    //                 return args;
+    //             }
+    //
+    //             cerr << "bad argument for message \"durations\"" << endl;
+    //             return durations;
+    //         }
+    //     }
+    // };
 
 
     message<> flush{this, Keywords::FLUSH
@@ -97,10 +97,10 @@ public:
             }
     };
 
-    c74::min::function handle_input = MIN_FUNCTION {
-        if (inlet == 2) {
+    function handle_input = MIN_FUNCTION {
+        /*if (inlet == 2) {
             durations.set(args);
-        } else if (inlet == 1) {
+        } else */ if (inlet == 1) {
             legato.set(args);
         } else {
             process(args);
@@ -121,13 +121,12 @@ private:
         if (auto cursor = AtomParser::atoms2vec<double>(args)) {
             m_pulse.cursor.set_values(Voices<double>::transposed(*cursor));
 
-            auto time = MaxTimePoint::get_time_point_of(clock.get());
-            if (!time) {
-                cerr << *time.err() << endl;
+            auto time = SerialistTransport::get_instance().get_time();
+            if (!time.get_transport_running()) {
                 return;
             }
 
-            m_pulse.pulsator_node.update_time(*time);
+            m_pulse.pulsator_node.update_time(time);
 
             auto outgoing_triggers = m_pulse.pulsator_node.process();
 

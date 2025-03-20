@@ -17,6 +17,7 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.oscillator)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.op)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.pulse)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.phasepulse)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.phasemap)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.makenote)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.interpolator)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.playground)
@@ -35,6 +36,7 @@ add_dependencies(all_externals
     ser.op
     ser.pulse
     ser.phasepulse
+    ser.phasemap
     ser.makenote
     ser.interpolator
     ser.playground
