@@ -6,3 +6,10 @@ max define ser.oscillator bpatcher @name ser.oscillator.ui;
 max define ser.stepper bpatcher @name ser.stepper.ui;
 max define ser.phasepulse bpatcher @name ser.phasepulse.ui;
 max define ser.transport bpatcher @name ser.transport.ui;
+max define ser.scale bpatcher @name ser.addmul.ui;
+
+max define ser.multislider bpatcher @name ser.corpus.multislider;
+max define ser.slider bpatcher @name ser.corpus.variable;
+
+max define ser.multiview bpatcher @name ser.view.multiview;
+max define ser.multiview2 bpatcher @name ser.view.multiview2;
