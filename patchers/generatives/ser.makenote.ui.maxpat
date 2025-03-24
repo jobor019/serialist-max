@@ -1567,7 +1567,7 @@
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
 					"patching_rect" : [ 803.0, 981.0, 81.0, 22.0 ],
-					"text" : "ser.makenote"
+					"text" : "ser.core.makenote"
 				}
 
 			}
