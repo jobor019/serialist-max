@@ -28,20 +28,20 @@ public:
     virtual void set_strategy_pivot(const atoms& args) = 0;
 
 
-    Result<c74::min::atoms> process_trigger(const atoms& args) noexcept {
+    Result<atoms> process_trigger(const atoms& args) noexcept {
         if (auto triggers = AtomParser::atoms2triggers(args, true)) {
             if (Trigger::contains_pulse_on(*triggers)) {
                 m_trigger.set_values(*triggers);
                 return process_internal();
             }
-            return {c74::min::atoms()};
+            return {atoms()};
         } else {
             return triggers.err();
         }
     }
 
 
-    Result<c74::min::atoms> process_cursor(const atoms& args) noexcept {
+    Result<atoms> process_cursor(const atoms& args) noexcept {
         if (auto cursor = AtomParser::atoms2vec<double>(args)) {
             auto cursor_as_voices = Voices<double>::transposed(*cursor);
             m_cursor.set_values(cursor_as_voices);
@@ -58,7 +58,7 @@ public:
 
                 return process_internal();
             }
-            return {c74::min::atoms()};
+            return {atoms()};
         } else {
             return cursor.err();
         }
@@ -110,7 +110,7 @@ public:
 
 
 protected:
-    virtual c74::min::atoms process_internal() = 0;
+    virtual atoms process_internal() = 0;
 
     ParameterHandler m_parameter_handler;
 
@@ -133,13 +133,13 @@ private:
 template<typename StoredType, typename OutputType = Facet>
 class MaxInterpolatorGeneric : public MaxInterpolatorBase {
 public:
-    void set_corpus(const c74::min::atoms& args) override {
+    void set_corpus(const atoms& args) override {
         AttributeSetters::set_voices<StoredType>(args, m_corpus);
 
     }
 
 
-    void set_strategy_pivot(const c74::min::atoms& args) override {
+    void set_strategy_pivot(const atoms& args) override {
         AttributeSetters::set_vector<StoredType>(args, m_strategy_pivot);
     }
 
@@ -153,7 +153,7 @@ public:
 
 
 protected:
-    c74::min::atoms process_internal() override {
+    atoms process_internal() override {
         m_last_update_time += 1.0;
         // Actual time irrelevant, just need a new value for time gating
         m_interpolator.update_time(TimePoint(m_last_update_time));
@@ -178,10 +178,10 @@ private:
 
 // ==============================================================================================
 
-class MaxInterpolatorIntegral : public MaxInterpolatorGeneric<long, Facet> {
+class MaxInterpolatorIntegral : public MaxInterpolatorGeneric<long> {
 };
 
-class MaxInterpolatorFloating : public MaxInterpolatorGeneric<double, Facet> {
+class MaxInterpolatorFloating : public MaxInterpolatorGeneric<double> {
 };
 
 class MaxInterpolatorSymbol : public MaxInterpolatorGeneric<std::string, std::string> {
@@ -201,9 +201,9 @@ public:
     MIN_AUTHOR{"Borg"};
     MIN_RELATED{"ser.pulsator"};
 
-    inlet<> inlet_main{this, "(any) control messages"};
+    inlet<> inlet_main{this, "(any) pulse, control messages"};
+    inlet<> inlet_cursor{this, "(float/list) cursor", "", [this] { return this->cursor_inlet_is_hot(); }};
     inlet<> inlet_corpus{this, "(list/listoflists) corpus", "", false};
-    inlet<> inlet_cursor{this, "(float/list) cursor", "", [this]() { return this->cursor_inlet_is_hot(); }};
 
     outlet<> outlet_main{this, "(float/list) interpolated output"};
     outlet<> dumpout{this, "(any) dumpout"};
@@ -217,9 +217,9 @@ public:
         }
 
         if (auto type_spec = TypeSpecificationStereotypes::atoms2type_specification(args)) {
-            if (*type_spec == c74::min::message_type::int_argument) {
+            if (*type_spec == message_type::int_argument) {
                 m_interpolator = std::make_unique<MaxInterpolatorIntegral>();
-            } else if (*type_spec == c74::min::message_type::float_argument) {
+            } else if (*type_spec == message_type::float_argument) {
                 m_interpolator = std::make_unique<MaxInterpolatorFloating>();
             } else {
                 m_interpolator = std::make_unique<MaxInterpolatorSymbol>();
@@ -279,11 +279,11 @@ public:
     }}};
 
 
-    c74::min::function handle_input = MIN_FUNCTION {
+    function handle_input = MIN_FUNCTION {
         if (inlet == 2) {
-            this->update_cursor(args);
-        } else if (inlet == 1) {
             this->update_corpus(args);
+        } else if (inlet == 1) {
+            this->update_cursor(args);
         } else {
             this->update_triggers(args);
         }

@@ -22,9 +22,17 @@ inline bool is_null(const c74::min::atom& atm) noexcept {
             && static_cast<std::string>(atm) == NULL_STRING);
 }
 
+inline bool is_null(const c74::min::atoms& atms) noexcept {
+    return atms.size() == 1 && is_null(atms.front());
+}
+
 inline bool is_bang(const c74::min::atom& atm) noexcept {
     return (atm.type() == c74::min::message_type::symbol_argument
             && static_cast<std::string>(atm) == "bang");
+}
+
+inline bool is_bang(const c74::min::atoms& atms) noexcept {
+    return atms.size() == 1 && is_bang(atms.front());
 }
 
 template<typename T>
@@ -289,6 +297,10 @@ public:
 
     template<typename T, typename = std::enable_if_t<parsing::is_atom_convertible_v<T>>>
     static Result<Vec<T>> atoms2vec(const c74::min::atoms& atms) noexcept {
+        if (parsing::is_null(atms)) {
+            return Vec<T>();
+        }
+
         auto [begin, end, size] = get_content_edges(atms);
 
         Vec<T> result = Vec<T>::allocated(size);

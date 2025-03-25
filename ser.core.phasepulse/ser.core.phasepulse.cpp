@@ -15,6 +15,8 @@ using namespace serialist;
 class ser_phasepulse : public object<ser_phasepulse> {
     PhasePulsatorWrapper<> m_pulse;
 
+    bool m_transport_active = false;
+
 public:
     MIN_DESCRIPTION{"Phasor-based pulse generator"};
     MIN_TAGS{"utilities"};
@@ -27,12 +29,6 @@ public:
 
     outlet<> outlet_main{this, "(int/list) pulses"};
     outlet<> dumpout{this, "(any) dumpout"};
-
-
-    // attribute<symbol> clock{this, Keywords::CLOCK
-    //                         , ""
-    //                         , title{Titles::CLOCK}
-    //                         , description{Descriptions::CLOCK}};
 
 
     attribute<bool> enabled{this, Keywords::ENABLED
@@ -69,22 +65,6 @@ public:
     };
 
 
-    // // Note: As long as there's no meaningful GUI object for handling multiple layers of durations
-    // //       (which there is unlikely to ever be), durations should indeed be a single Voice rather than a Voices.
-    // //       If we need multiple sequences of durations synced to a single waveform, just use multiple ser.phasepulse.
-    // attribute<std::vector<double>> durations{ this, "durations", {0.0}, setter{
-    //         MIN_FUNCTION {
-    //             if (AttributeSetters::try_set_vector(args, m_pulse.duration, cerr)) {
-    //                 return args;
-    //             }
-    //
-    //             cerr << "bad argument for message \"durations\"" << endl;
-    //             return durations;
-    //         }
-    //     }
-    // };
-
-
     message<> flush{this, Keywords::FLUSH
                     , description{Descriptions::FLUSH}
                     , MIN_FUNCTION {
@@ -92,7 +72,13 @@ public:
                     return {};
                 }
 
-                cwarn << "flush not implemented yet" << endl;
+                // We're not using the `flush` Trigger of the PhasePulsator here, since `process` is only called when
+                // it receives a cursor value, which may not be the case
+                // (cursor disconnected, transport not running, etc.)
+
+                if (auto flushed = m_pulse.pulsator_node.flush(); !flushed.is_empty_like()) {
+                    TriggerStereotypes::output_as_triggers_sorted(flushed, outlet_main, cerr);
+                }
                 return {};
             }
     };
@@ -123,8 +109,10 @@ private:
 
             auto time = SerialistTransport::get_instance().get_time();
             if (!time.get_transport_running()) {
+                m_transport_active = false;
                 return;
             }
+            m_transport_active = true;
 
             m_pulse.pulsator_node.update_time(time);
 
