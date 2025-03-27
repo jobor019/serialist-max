@@ -12,6 +12,7 @@ using namespace c74::min;
 
 class ser_makenote : public object<ser_makenote> {
 private:
+    std::mutex m_mutex;
     MakeNoteWrapper m_make_note;
 
 public:
@@ -29,6 +30,21 @@ public:
 
     outlet<> outlet_main{this, "(list) note_number velocity channel"};
     outlet<> dumpout{this, "(any) dumpout"};
+
+    explicit ser_makenote(const atoms& args = {}) {
+        metro.delay(500);
+    }
+
+    timer<> metro{this, MIN_FUNCTION {
+        if (!SerialistTransport::get_instance().active()) {
+            std::lock_guard lock{m_mutex};
+            auto flushed = m_make_note.make_note_node.flush();
+            EventStereotypes::output_as_events(flushed, outlet_main, std::nullopt, cerr);
+        }
+
+        metro.delay(500);
+        return {};
+    }};
 
 
     attribute<bool> enabled{
@@ -100,12 +116,11 @@ public:
     };
 
 
-    message<> flush{
+    message<threadsafe::no> flush{
             this, Keywords::FLUSH, description{Descriptions::FLUSH}, MIN_FUNCTION {
                 if (inlet != 0) {
                     return {};
                 }
-
                 auto flushed = m_make_note.make_note_node.flush();
                 EventStereotypes::output_as_events(flushed, outlet_main, std::nullopt, cerr);
                 return {};
@@ -130,9 +145,16 @@ private:
 
         m_make_note.trigger.set_values(*triggers);
         m_make_note.make_note_node.update_time(time);
-        auto note_events = m_make_note.make_note_node.process();
-        m_make_note.trigger.set_values(Voices<Trigger>::empty_like());
 
+        // CRITICAL SECTION
+
+        std::unique_lock lock{m_mutex};
+        auto note_events = m_make_note.make_note_node.process();
+        lock.unlock();
+
+        // CRITICAL SECTION END
+
+        m_make_note.trigger.set_values(Voices<Trigger>::empty_like());
 
         EventStereotypes::output_as_events(note_events, outlet_main, std::nullopt, cerr);
     }
