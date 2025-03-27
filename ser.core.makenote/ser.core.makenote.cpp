@@ -1,3 +1,4 @@
+#include <serialist_transport.h>
 #include <core/policies/policies.h>
 #include <core/generatives/make_note.h>
 
@@ -21,15 +22,13 @@ public:
     MIN_AUTHOR{"Borg"};
     MIN_RELATED{""};
 
-    inlet<> inlet_main{this, "(any) control messages / trigger)", "float/listoflists"};
-    inlet<> inlet_note{this, "(int/list) note number", "int/listoflists", false};
-    inlet<> inlet_velocity{this, "(int/list) velocity", "int/listoflists", false};
-    inlet<> inlet_channel{this, "(int/list) channel", "int/listoflists", false};
+    inlet<> inlet_main{this, "(any) trigger", };
+    inlet<> inlet_note{this, "(int/list/listoflists) note number", "", false};
+    inlet<> inlet_velocity{this, "(int/list/listoflists) velocity", "", false};
+    inlet<> inlet_channel{this, "(int/list/listoflists) channel", "", false};
 
     outlet<> outlet_main{this, "(list) note_number velocity channel"};
     outlet<> dumpout{this, "(any) dumpout"};
-
-    attribute<symbol> clock{this, Keywords::CLOCK, "", title{Titles::CLOCK}, description{Descriptions::CLOCK}};
 
 
     attribute<bool> enabled{
@@ -53,38 +52,40 @@ public:
             }
     };
 
-    attribute<std::vector<int> > note{
-            this, "note", Vec<int>::singular(60).vector(), title{"note"}, setter{
-                    MIN_FUNCTION {
-                        if (this->set_note_number(args))
-                            return args;
-                        return note;
-                    }
-            }
-    };
+    // Note: note/velocity/channel are messages rather than attributes since we need to support lists of lists
 
-    attribute<std::vector<int> > velocity{
-            this, "velocity", Vec<int>::singular(100).vector(), title{"velocity"}, setter{
-                    MIN_FUNCTION {
-                        if (this->set_velocity(args))
-                            return args;
-                        return velocity;
-                    }
-            }
-    };
+    message<> note{this, "note", setter{MIN_FUNCTION {
+        if (inlet != 0) {
+            cerr << "invalid message \"note\" for inlet " << inlet << endl;
+            return {};
+        }
 
-    attribute<std::vector<int> > channel{
-            this, "channel", Vec<int>::singular(1).vector(), title{"channel"}, setter{
-                    MIN_FUNCTION {
-                        if (this->set_channel(args))
-                            return args;
-                        return channel;
-                    }
-            }
-    };
+        this->set_note_number(args);
+        return {};
+    }}};
+
+    message<> velocity{this, "velocity", setter{MIN_FUNCTION {
+        if (inlet != 0) {
+            cerr << "invalid message \"velocity\" for inlet " << inlet << endl;
+            return {};
+        }
+
+        this->set_velocity(args);
+        return {};
+    }}};
+
+    message<> channel{this, "channel", setter{MIN_FUNCTION {
+        if (inlet != 0) {
+            cerr << "invalid message \"channel\" for inlet " << inlet << endl;
+            return {};
+        }
+
+        this->set_channel(args);
+        return {};
+    }}};
 
 
-    c74::min::function handle_input = MIN_FUNCTION {
+    function handle_input = MIN_FUNCTION {
         if (inlet == 3) {
             this->set_channel(args);
         } else if (inlet == 2) {
@@ -105,11 +106,13 @@ public:
                     return {};
                 }
 
-                cwarn << "flush not implemented yet" << endl;
+                auto flushed = m_make_note.make_note_node.flush();
+                EventStereotypes::output_as_events(flushed, outlet_main, std::nullopt, cerr);
                 return {};
             }
     };
 
+    // Note: we're NOT supporting bang as an argument as there would be no note_off associated with such a trigger
     message<> list = Messages::list_message(this, handle_input);
     message<> number = Messages::number_message(this, handle_input);
     message<> list_of_list = Messages::list_of_list_message(this, handle_input);
@@ -123,14 +126,10 @@ private:
             return;
         }
 
-        auto time = MaxTimePoint::get_time_point_of(clock.get());
-        if (!time) {
-            cerr << *time.err() << endl;
-            return;
-        }
+        auto time = SerialistTransport::get_instance().get_time();
 
         m_make_note.trigger.set_values(*triggers);
-        m_make_note.make_note_node.update_time(*time);
+        m_make_note.make_note_node.update_time(time);
         auto note_events = m_make_note.make_note_node.process();
         m_make_note.trigger.set_values(Voices<Trigger>::empty_like());
 
@@ -145,12 +144,14 @@ private:
 
 
     bool set_velocity(const atoms& args) {
-        return AttributeSetters::try_set_vector(args, m_make_note.velocity, cerr);
+        // Even if we only support one duration per voice internally, it's important that we allow using
+        // Voices here since that's the only way to provide a null-value (pause) in a particular voice
+        return AttributeSetters::try_set_voices(args, m_make_note.velocity, cerr);
     }
 
 
     bool set_channel(const atoms& args) {
-        return AttributeSetters::try_set_vector(args, m_make_note.channel, cerr);
+        return AttributeSetters::try_set_voices(args, m_make_note.channel, cerr);
     }
 
 

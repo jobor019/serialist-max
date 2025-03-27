@@ -272,6 +272,7 @@ public:
     message<> pivot{this, "pivot", "Set pivot for strategy 'continue'", setter{MIN_FUNCTION {
         if (inlet != 0) {
             cerr << "invalid message \"pivot\" for inlet " << inlet << endl;
+            return {};
         }
 
         this->generic_setter(args, &MaxInterpolatorBase::set_strategy_pivot, {});

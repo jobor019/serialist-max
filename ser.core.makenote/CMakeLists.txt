@@ -12,6 +12,7 @@ add_library(${PROJECT_NAME} MODULE ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME}
         PUBLIC
+        serialist_transport
         serialist::core
         shared_code)
 
@@ -21,6 +22,7 @@ include(${C74_MIN_API_DIR}/test/min-object-unittest.cmake)
 
 target_link_libraries(${TEST_NAME}
         PUBLIC
+        serialist_transport
         serialist::core
         shared_code
 )
