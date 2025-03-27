@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 34.0, 87.0, 2156.0, 1256.0 ],
+		"rect" : [ 2614.0, 87.0, 792.0, 1256.0 ],
 		"openinpresentation" : 1,
 		"gridsize" : [ 15.0, 15.0 ],
 		"integercoordinates" : 1,
@@ -877,7 +877,7 @@
 					"maxclass" : "live.line",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 366.0, 61.0, 5.0, 100.0 ],
+					"patching_rect" : [ 1128.0, 473.0, 5.0, 50.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 0.0, 24.0, 146.0, 10.0 ],
 					"saved_attribute_attributes" : 					{
@@ -1798,7 +1798,7 @@
 
 							}
  ],
-						"originid" : "pat-982"
+						"originid" : "pat-1630"
 					}
 ,
 					"patching_rect" : [ 365.0, 748.0, 71.0, 22.0 ],
@@ -2184,7 +2184,7 @@
 					"maxclass" : "live.comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 359.0, 66.0, 186.0, 21.0 ],
+					"patching_rect" : [ 1148.0, 477.0, 79.0, 21.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 10.0, 2.0, 131.0, 21.0 ],
 					"text" : "Oscillator",
@@ -3067,7 +3067,7 @@
 
 			}
  ],
-		"originid" : "pat-966",
+		"originid" : "pat-1614",
 		"boxgroups" : [ 			{
 				"boxes" : [ "obj-48", "obj-45", "obj-50", "obj-61", "obj-70", "obj-69", "obj-63", "obj-47", "obj-46", "obj-44", "obj-43", "obj-41", "obj-53", "obj-51", "obj-52" ]
 			}

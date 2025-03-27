@@ -49,6 +49,7 @@
 				"box" : 				{
 					"fontname" : "Ableton Sans Medium",
 					"fontsize" : 9.5,
+					"hidden" : 1,
 					"id" : "obj-11",
 					"maxclass" : "comment",
 					"numinlets" : 1,
@@ -66,6 +67,7 @@
 				"box" : 				{
 					"angle" : 270.0,
 					"bgcolor" : [ 0.125490196078431, 0.125490196078431, 0.125490196078431, 0.7 ],
+					"hidden" : 1,
 					"id" : "obj-15",
 					"maxclass" : "panel",
 					"mode" : 0,
@@ -155,10 +157,11 @@
 					"parameter_enable" : 0,
 					"patching_rect" : [ 744.0, 739.0, 23.0, 38.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 11.0, 73.0, 99.0, 52.0 ],
-					"setminmax" : [ 0.0, 7.0 ],
+					"presentation_rect" : [ 11.0, 80.0, 99.0, 35.0 ],
+					"setminmax" : [ 0.0, 1.0 ],
 					"slidercolor" : [ 0.647058823529412, 0.647058823529412, 0.647058823529412, 1.0 ],
-					"spacing" : 1
+					"spacing" : 1,
+					"thickness" : 1
 				}
 
 			}
@@ -280,7 +283,7 @@
 
 							}
  ],
-						"originid" : "pat-1232"
+						"originid" : "pat-1446"
 					}
 ,
 					"patching_rect" : [ 626.0, 272.0, 58.0, 22.0 ],
@@ -317,7 +320,7 @@
 							"parameter_enum" : [ "off", "on" ],
 							"parameter_initial" : [ 1 ],
 							"parameter_initial_enable" : 1,
-							"parameter_longname" : "live.toggle[4]",
+							"parameter_longname" : "live.toggle[7]",
 							"parameter_mmax" : 1,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.toggle",
@@ -466,7 +469,7 @@
 
 							}
  ],
-						"originid" : "pat-1184"
+						"originid" : "pat-1452"
 					}
 ,
 					"patching_rect" : [ 1133.0, 431.0, 53.0, 22.0 ],
@@ -518,7 +521,7 @@
 					"patching_rect" : [ 1133.0, 469.0, 98.0, 21.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 9.0, 2.0, 91.0, 21.0 ],
-					"text" : "Interpolator (f)",
+					"text" : "Interpolator (i)",
 					"textjustification" : 0
 				}
 
@@ -1109,7 +1112,7 @@
 
 							}
  ],
-						"originid" : "pat-1186"
+						"originid" : "pat-1454"
 					}
 ,
 					"patching_rect" : [ 769.0, 653.0, 75.0, 22.0 ],
@@ -1121,7 +1124,7 @@
 				"box" : 				{
 					"bgcolor" : [ 0.2, 0.2, 0.2, 0.0 ],
 					"color" : [ 0.933333333333333, 0.933333333333333, 0.933333333333333, 0.12 ],
-					"columns" : 5,
+					"columns" : 16,
 					"elementcolor" : [ 0.349019607843137, 0.349019607843137, 0.349019607843137, 0.0 ],
 					"id" : "obj-16",
 					"ignoreclick" : 1,
@@ -1270,7 +1273,7 @@
 
 							}
  ],
-						"originid" : "pat-1188"
+						"originid" : "pat-1456"
 					}
 ,
 					"patching_rect" : [ 914.0, 657.0, 71.0, 22.0 ],
@@ -1770,7 +1773,7 @@
 
 							}
  ],
-						"originid" : "pat-1190"
+						"originid" : "pat-1458"
 					}
 ,
 					"patching_rect" : [ 688.0, 653.0, 75.0, 22.0 ],
@@ -1933,7 +1936,7 @@
 
 							}
  ],
-						"originid" : "pat-1192"
+						"originid" : "pat-1460"
 					}
 ,
 					"patching_rect" : [ 528.0, 693.0, 71.0, 22.0 ],
@@ -1944,7 +1947,7 @@
 , 			{
 				"box" : 				{
 					"color" : [ 0.423529411764706, 0.494117647058824, 0.996078431372549, 1.0 ],
-					"columns" : 5,
+					"columns" : 16,
 					"id" : "obj-2",
 					"ignoreclick" : 1,
 					"maxclass" : "matrixctrl",
@@ -2102,7 +2105,7 @@
 
 							}
  ],
-						"originid" : "pat-1194"
+						"originid" : "pat-1462"
 					}
 ,
 					"patching_rect" : [ 427.0, 284.0, 48.0, 22.0 ],
@@ -2234,7 +2237,7 @@
 							"parameter_enum" : [ "cont.", "modulo", "clip", "pass" ],
 							"parameter_initial" : [ 0 ],
 							"parameter_initial_enable" : 1,
-							"parameter_longname" : "live.menu[9]",
+							"parameter_longname" : "live.menu[17]",
 							"parameter_mmax" : 3,
 							"parameter_modmode" : 0,
 							"parameter_shortname" : "live.menu",
@@ -2766,6 +2769,15 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-13", 0 ],
+					"order" : 1,
+					"source" : [ "obj-56", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-53", 0 ],
+					"order" : 0,
 					"source" : [ "obj-56", 0 ]
 				}
 
@@ -2774,13 +2786,6 @@
 				"patchline" : 				{
 					"destination" : [ "obj-63", 0 ],
 					"source" : [ "obj-57", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-53", 0 ],
-					"source" : [ "obj-58", 0 ]
 				}
 
 			}
@@ -2810,13 +2815,6 @@
 				"patchline" : 				{
 					"destination" : [ "obj-2", 0 ],
 					"source" : [ "obj-70", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-53", 0 ],
-					"source" : [ "obj-70", 1 ]
 				}
 
 			}
@@ -2867,7 +2865,7 @@
 
 			}
  ],
-		"originid" : "pat-1178",
+		"originid" : "pat-1444",
 		"boxgroups" : [ 			{
 				"boxes" : [ "obj-15", "obj-2", "obj-53", "obj-16", "obj-34", "obj-47", "obj-52", "obj-11" ]
 			}
