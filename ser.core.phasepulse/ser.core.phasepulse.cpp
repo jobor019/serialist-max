@@ -65,7 +65,7 @@ public:
     };
 
 
-    message<> flush{this, Keywords::FLUSH
+    message<threadsafe::no> flush{this, Keywords::FLUSH
                     , description{Descriptions::FLUSH}
                     , MIN_FUNCTION {
                 if (inlet != 0) {
@@ -89,7 +89,7 @@ public:
         } else */ if (inlet == 1) {
             legato.set(args);
         } else {
-            process(args);
+            this->process(args);
         }
 
         return {};
