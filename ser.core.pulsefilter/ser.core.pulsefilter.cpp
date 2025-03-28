@@ -144,12 +144,12 @@ private:
             return;
         }
 
-        // TODO: There's a slight risk with this implementation: since both the filterstate and the trigger
-        //       triggers output, we may call this function twice with the same transport time, in which case the
-        //       second call will be ignored by the Node. Thus, if the trigger is triggering the second call, it could
-        //       be completely ignored, resulting in lingering pulses, etc.
-
         auto& node = m_pulse_filter.pulse_filter_node;
+
+        // Note: even though we may be calling this twice at almost the same time in case both filter_state and
+        //       trigger updates at the same scheduler cycle, this is still fine. The `serialist::TimeGate` is
+        //       implemented so that Node::process only can be called once per update_time, but since we're calling
+        //       update_time twice in this case, it's fine, and both calls will be processed correctly.
         node.update_time(time);
         auto output = node.process();
 
