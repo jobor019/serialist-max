@@ -7,9 +7,9 @@
 #include "magic_enum.hpp"
 #include "core/collections/vec.h"
 #include "core/collections/voices.h"
-#include "core/algo/facet.h"
-#include "core/temporal/trigger.h"
-#include "core/event.h"
+#include "core/types/facet.h"
+#include "core/types/trigger.h"
+#include "core/types/event.h"
 
 using namespace serialist;
 
@@ -130,26 +130,54 @@ public:
     }
 
 
+    static Result<c74::min::atom> trigger2atom(const Trigger& trigger) {
+        if (trigger.is(Trigger::Type::pulse_on)) {
+            // Pulse on: positive number (one-indexed)
+            return {static_cast<long>(parsing::to_one_index(trigger.get_id()))};
+        } else if (trigger.is(Trigger::Type::pulse_off)) {
+            // Pulse off: negative number (one-indexed)
+            return {-static_cast<long>(parsing::to_one_index(trigger.get_id()))};
+        } else {
+            return Error("Invalid trigger type");
+        }
+    }
+
+    static Result<c74::min::atom> trigger2atom(const std::optional<Trigger>& trigger) {
+        if (trigger) {
+            return trigger2atom(*trigger);
+        }
+        return {parsing::NULL_STRING};
+    }
+
+
+    /** Assumes transposed triggers, i.e. iterative output from Voices<Trigger>.transpose() */
+    static Result<c74::min::atoms> triggers2atoms(const Voice<std::optional<Trigger>>& triggers) {
+        Vec<c74::min::atom> result = Vec<c74::min::atom>::allocated(triggers.size());
+        for (const auto& trigger: triggers) {
+            auto atm = trigger2atom(trigger);
+            if (atm.is_ok()) {
+                result.append(*atm);
+            } else {
+                return atm.err();
+            }
+        }
+        return result.vector();
+    }
+
+    [[deprecated("Use trigger2atom(const std::optional<Trigger>&) instead")]]
     static Result<c74::min::atom> trigger2atom(const Vec<Trigger>& trigger) {
-        if (trigger.empty()) {
+        if (trigger.empty())
             return {parsing::NULL_STRING};
 
-        } else if (trigger.size() == 1) {
-            if (trigger[0].is(Trigger::Type::pulse_on)) {
-                // Pulse on: positive number (one-indexed)
-                return {static_cast<long>(parsing::to_one_index(trigger[0].get_id()))};
-            } else if (trigger[0].is(Trigger::Type::pulse_off)) {
-                // Pulse off: negative number (one-indexed)
-                return {-static_cast<long>(parsing::to_one_index(trigger[0].get_id()))};
-            } else {
-                return Error("Invalid trigger type");
-            }
+        if (trigger.size() == 1) {
+            return trigger2atom(trigger[0]);
         }
 
         return Error("Invalid trigger: cannot parse multiple triggers in a single voice");
     }
 
 
+    [[deprecated("Use triggers2atoms(const Voices<std::optional<Trigger>>&) instead")]]
     static Result<c74::min::atoms> triggers2atoms(const Voices<Trigger>& triggers) {
         Vec<c74::min::atom> result = Vec<c74::min::atom>::allocated(triggers.size());
         for (const auto& trigger: triggers) {
