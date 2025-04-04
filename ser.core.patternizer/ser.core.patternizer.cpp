@@ -137,23 +137,27 @@ public:
 
 private:
     void process(const atoms& atms) {
-        auto triggers = AtomParser::atoms2triggers(atms, false);
-
-        if (!triggers || triggers->is_empty_like()) {
+        if (!SerialistTransport::get_instance().active()) {
             return;
         }
 
-        auto time = SerialistTransport::get_instance().get_time();
+        auto& trigger = m_patternizer.trigger;
 
-        if (!time.get_transport_running()) {
-            return;
+        if (atms.empty()) {
+            // bang received: trigger all voices
+            trigger.set_values(Voices<Trigger>::singular(Trigger::pulse_on()));
+        } else {
+            auto triggers = AtomParser::atoms2triggers(atms, false);
+
+            if (!triggers || triggers->is_empty_like()) {
+                return;
+            }
+
+            trigger.set_values(*triggers);
         }
 
         auto& node = m_patternizer.patternizer_mode;
-        auto& trigger = m_patternizer.trigger;
-
-        trigger.set_values(*triggers);
-        node.update_time(time);
+        node.update_time(SerialistTransport::get_instance().get_time());
         auto output = node.process();
 
         trigger.set_values(Voices<Trigger>::empty_like());
