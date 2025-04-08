@@ -10,7 +10,7 @@
 
 using namespace c74::min;
 
-class ser_pattrnizer : public object<ser_pattrnizer> {
+class ser_patternizer : public object<ser_patternizer> {
 private:
     using PatternizerT = PatternizerDoubleWrapper<>::PatternizerT;
 
@@ -181,4 +181,4 @@ private:
 
 
 
-MIN_EXTERNAL(ser_pattrnizer);
+MIN_EXTERNAL(ser_patternizer);

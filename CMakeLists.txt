@@ -27,6 +27,7 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.core.transport)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.core.patternizer)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.core.pulsefilter)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.core.snh)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.core.random)
 
 
 add_custom_target(all_externals)
@@ -39,6 +40,7 @@ add_dependencies(all_externals
         ser.core.patternizer
         ser.core.pulsefilter
         ser.core.snh
+        ser.core.random
 
 
         ser.phasemap
