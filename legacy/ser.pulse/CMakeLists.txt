@@ -24,3 +24,6 @@ target_link_libraries(${TEST_NAME}
         serialist::core
         shared_code
 )
+
+target_compile_definitions(${PROJECT_NAME} PUBLIC SERIALIST_EPSILON=1e-6)
+target_compile_definitions(${TEST_NAME} PUBLIC SERIALIST_EPSILON=1e-6)

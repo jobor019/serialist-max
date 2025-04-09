@@ -5,9 +5,11 @@
 #include "c74_min.h"
 #include "parsing.h"
 #include "max_timepoint.h"
+#include "policies/epsilon.h"
 
 using namespace c74::min;
 using namespace serialist;
+
 
 
 class ser_playground : public object<ser_playground> {
@@ -23,8 +25,9 @@ public:
 
 
     message<> bang{this, "bang", "A description", setter{MIN_FUNCTION {
-        auto t = SerialistTransport::get_instance().get_time().get_tick();
-        outlet_main.send(t);
+        outlet_main.send(EPSILON);
+        // auto t = SerialistTransport::get_instance().get_time().get_tick();
+        // outlet_main.send(t);
 
 
         // if (auto tp = MaxTimePoint::get_time_of(clock.get())) {
@@ -32,6 +35,13 @@ public:
         // }
         return {};
     }}};
+
+    message<> maxclass_setup { this, "maxclass_setup",
+    MIN_FUNCTION {
+        cout << "epsilon: " << EPSILON << endl;
+        return {};
+    }
+    };
 
 
 

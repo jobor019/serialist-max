@@ -1,4 +1,4 @@
-#include <core/algo/fraction.h>
+#include <core/types/fraction.h>
 #include <core/collections/vec.h>
 #include <core/utility/mapping.h>
 

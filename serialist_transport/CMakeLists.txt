@@ -17,3 +17,5 @@ set_target_properties(serialist_transport PROPERTIES
     INSTALL_NAME_DIR "@rpath"
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/support"
 )
+
+target_compile_definitions(serialist_transport PUBLIC SERIALIST_EPSILON=1e-6)
