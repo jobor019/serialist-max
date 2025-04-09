@@ -2258,7 +2258,7 @@
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
 					"patching_rect" : [ 272.0, 478.0, 131.0, 22.0 ],
-					"text" : "ser.core.interpolator #1"
+					"text" : "ser.interpolator #1"
 				}
 
 			}

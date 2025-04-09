@@ -3077,7 +3077,7 @@
 					"numoutlets" : 8,
 					"outlettype" : [ "", "", "", "", "", "", "", "" ],
 					"patching_rect" : [ 798.0, 319.0, 325.0, 22.0 ],
-					"text" : "ser.core.transport"
+					"text" : "ser.transport"
 				}
 
 			}

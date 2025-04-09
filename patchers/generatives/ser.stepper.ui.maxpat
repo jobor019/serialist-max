@@ -1325,7 +1325,7 @@
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
 					"patching_rect" : [ 170.0, 733.0, 157.0, 22.0 ],
-					"text" : "ser.core.oscillator @mode 2"
+					"text" : "ser.oscillator @mode 2"
 				}
 
 			}

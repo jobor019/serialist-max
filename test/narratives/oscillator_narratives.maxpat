@@ -4217,26 +4217,26 @@
 				"implicit" : 1
 			}
 , 			{
-				"name" : "ser.core.makenote.mxo",
+				"name" : "ser.makenote.mxo",
 				"type" : "iLaX"
 			}
 , 			{
-				"name" : "ser.core.oscillator.mxo",
+				"name" : "ser.oscillator.mxo",
 				"type" : "iLaX"
 			}
 , 			{
-				"name" : "ser.core.phasepulse.mxo",
+				"name" : "ser.phasepulse.mxo",
 				"type" : "iLaX"
 			}
 , 			{
-				"name" : "ser.core.slider.maxpat",
+				"name" : "ser.slider.maxpat",
 				"bootpath" : "~/MaxProjects/serialist-max/patchers/ui",
 				"patcherrelativepath" : "../../patchers/ui",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
-				"name" : "ser.core.transport.mxo",
+				"name" : "ser.transport.mxo",
 				"type" : "iLaX"
 			}
 , 			{

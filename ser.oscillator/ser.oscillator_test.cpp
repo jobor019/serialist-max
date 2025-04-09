@@ -1,5 +1,5 @@
 #include "c74_min_unittest.h"
-#include "ser.core.oscillator.cpp"
+#include "ser.oscillator.cpp"
 
 
 TEST_CASE("object is constructible") {

@@ -1372,7 +1372,7 @@
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
 					"patching_rect" : [ 126.0, 473.0, 170.0, 29.0 ],
-					"text" : "ser.core.phasepulse"
+					"text" : "ser.phasepulse"
 				}
 
 			}

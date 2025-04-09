@@ -789,7 +789,7 @@
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
 									"patching_rect" : [ 133.0, 384.0, 74.0, 22.0 ],
-									"text" : "ser.core.snh"
+									"text" : "ser.snh"
 								}
 
 							}
@@ -1720,22 +1720,22 @@
 				"implicit" : 1
 			}
 , 			{
-				"name" : "ser.core.oscillator.mxo",
+				"name" : "ser.oscillator.mxo",
 				"type" : "iLaX"
 			}
 , 			{
-				"name" : "ser.core.slider.maxpat",
+				"name" : "ser.slider.maxpat",
 				"bootpath" : "~/MaxProjects/serialist-max/patchers/ui",
 				"patcherrelativepath" : "../../patchers/ui",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
-				"name" : "ser.core.snh.mxo",
+				"name" : "ser.snh.mxo",
 				"type" : "iLaX"
 			}
 , 			{
-				"name" : "ser.core.transport.mxo",
+				"name" : "ser.transport.mxo",
 				"type" : "iLaX"
 			}
 , 			{

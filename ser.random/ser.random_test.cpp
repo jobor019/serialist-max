@@ -1,5 +1,5 @@
 #include "c74_min_unittest.h"
-#include "ser.core.random.cpp"
+#include "ser.random.cpp"
 
 
 TEST_CASE("object is constructible") {

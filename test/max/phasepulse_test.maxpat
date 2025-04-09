@@ -1210,7 +1210,7 @@
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
 									"patching_rect" : [ 320.0, 384.5, 116.0, 22.0 ],
-									"text" : "ser.core.phasepulse"
+									"text" : "ser.phasepulse"
 								}
 
 							}
@@ -2443,15 +2443,15 @@
 				"implicit" : 1
 			}
 , 			{
-				"name" : "ser.core.oscillator.mxo",
+				"name" : "ser.oscillator.mxo",
 				"type" : "iLaX"
 			}
 , 			{
-				"name" : "ser.core.phasepulse.mxo",
+				"name" : "ser.phasepulse.mxo",
 				"type" : "iLaX"
 			}
 , 			{
-				"name" : "ser.core.transport.mxo",
+				"name" : "ser.transport.mxo",
 				"type" : "iLaX"
 			}
 , 			{

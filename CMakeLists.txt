@@ -14,15 +14,15 @@ set(C74_MIN_API_DIR ${CMAKE_SOURCE_DIR}/min-api)
 set(C74_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/externals)
 
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.core.interpolator)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.core.makenote)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.core.oscillator)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.core.patternizer)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.core.phasepulse)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.core.pulsefilter)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.core.random)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.core.snh)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.core.transport)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.interpolator)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.makenote)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.oscillator)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.patternizer)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.phasepulse)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.pulsefilter)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.random)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.snh)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.transport)
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.op)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.phasemap)
@@ -35,20 +35,19 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/serialist_transport)
 
 add_custom_target(all_externals)
 add_dependencies(all_externals
-        ser.core.interpolator
-        ser.core.makenote
-        ser.core.oscillator
-        ser.core.patternizer
-        ser.core.phasepulse
-        ser.core.pulsefilter
-        ser.core.random
-        ser.core.snh
-        ser.core.transport
-
+        ser.interpolator
+        ser.makenote
         ser.op
+        ser.oscillator
+        ser.patternizer
         ser.phasemap
+        ser.phasepulse
         ser.playground
+        ser.pulsefilter
+        ser.random
         ser.slidermapping
+        ser.snh
+        ser.transport
         ser.util
 )
 

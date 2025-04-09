@@ -1272,7 +1272,7 @@
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
 									"patching_rect" : [ 797.0, 904.0, 161.0, 22.0 ],
-									"text" : "ser.core.pulsefilter @mode 1"
+									"text" : "ser.pulsefilter @mode 1"
 								}
 
 							}
@@ -1284,7 +1284,7 @@
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
 									"patching_rect" : [ 797.0, 862.0, 161.0, 22.0 ],
-									"text" : "ser.core.pulsefilter @mode 0"
+									"text" : "ser.pulsefilter @mode 0"
 								}
 
 							}
@@ -4025,41 +4025,41 @@
 				"implicit" : 1
 			}
 , 			{
-				"name" : "ser.core.interpolator.mxo",
+				"name" : "ser.interpolator.mxo",
 				"type" : "iLaX"
 			}
 , 			{
-				"name" : "ser.core.makenote.mxo",
+				"name" : "ser.makenote.mxo",
 				"type" : "iLaX"
 			}
 , 			{
-				"name" : "ser.core.multislider.maxpat",
+				"name" : "ser.multislider.maxpat",
 				"bootpath" : "~/MaxProjects/serialist-max/patchers/ui",
 				"patcherrelativepath" : "../../patchers/ui",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
-				"name" : "ser.core.oscillator.mxo",
+				"name" : "ser.oscillator.mxo",
 				"type" : "iLaX"
 			}
 , 			{
-				"name" : "ser.core.phasepulse.mxo",
+				"name" : "ser.phasepulse.mxo",
 				"type" : "iLaX"
 			}
 , 			{
-				"name" : "ser.core.pulsefilter.mxo",
+				"name" : "ser.pulsefilter.mxo",
 				"type" : "iLaX"
 			}
 , 			{
-				"name" : "ser.core.slider.maxpat",
+				"name" : "ser.slider.maxpat",
 				"bootpath" : "~/MaxProjects/serialist-max/patchers/ui",
 				"patcherrelativepath" : "../../patchers/ui",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
-				"name" : "ser.core.transport.mxo",
+				"name" : "ser.transport.mxo",
 				"type" : "iLaX"
 			}
 , 			{

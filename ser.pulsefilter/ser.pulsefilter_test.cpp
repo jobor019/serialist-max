@@ -1,5 +1,5 @@
 #include "c74_min_unittest.h"
-#include "ser.core.pulsefilter.cpp"
+#include "ser.pulsefilter.cpp"
 
 
 TEST_CASE("object is constructible") {

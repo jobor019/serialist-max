@@ -823,7 +823,7 @@
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
 									"patching_rect" : [ 658.0, 673.0, 151.0, 22.0 ],
-									"text" : "ser.core.random @mode 3"
+									"text" : "ser.random @mode 3"
 								}
 
 							}
@@ -1306,7 +1306,7 @@
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
 									"patching_rect" : [ 208.0, 259.0, 95.0, 22.0 ],
-									"text" : "ser.core.random"
+									"text" : "ser.random"
 								}
 
 							}
@@ -2415,30 +2415,30 @@
 				"implicit" : 1
 			}
 , 			{
-				"name" : "ser.core.makenote.mxo",
+				"name" : "ser.makenote.mxo",
 				"type" : "iLaX"
 			}
 , 			{
-				"name" : "ser.core.oscillator.mxo",
+				"name" : "ser.oscillator.mxo",
 				"type" : "iLaX"
 			}
 , 			{
-				"name" : "ser.core.phasepulse.mxo",
+				"name" : "ser.phasepulse.mxo",
 				"type" : "iLaX"
 			}
 , 			{
-				"name" : "ser.core.random.mxo",
+				"name" : "ser.random.mxo",
 				"type" : "iLaX"
 			}
 , 			{
-				"name" : "ser.core.slider.maxpat",
+				"name" : "ser.slider.maxpat",
 				"bootpath" : "~/MaxProjects/serialist-max/patchers/ui",
 				"patcherrelativepath" : "../../patchers/ui",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
-				"name" : "ser.core.transport.mxo",
+				"name" : "ser.transport.mxo",
 				"type" : "iLaX"
 			}
 , 			{

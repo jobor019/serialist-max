@@ -912,7 +912,7 @@
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
 									"patching_rect" : [ 98.0, 524.0, 106.0, 22.0 ],
-									"text" : "ser.core.pulsefilter"
+									"text" : "ser.pulsefilter"
 								}
 
 							}
@@ -1889,30 +1889,30 @@
 				"implicit" : 1
 			}
 , 			{
-				"name" : "ser.core.makenote.mxo",
+				"name" : "ser.makenote.mxo",
 				"type" : "iLaX"
 			}
 , 			{
-				"name" : "ser.core.oscillator.mxo",
+				"name" : "ser.oscillator.mxo",
 				"type" : "iLaX"
 			}
 , 			{
-				"name" : "ser.core.phasepulse.mxo",
+				"name" : "ser.phasepulse.mxo",
 				"type" : "iLaX"
 			}
 , 			{
-				"name" : "ser.core.pulsefilter.mxo",
+				"name" : "ser.pulsefilter.mxo",
 				"type" : "iLaX"
 			}
 , 			{
-				"name" : "ser.core.slider.maxpat",
+				"name" : "ser.slider.maxpat",
 				"bootpath" : "~/MaxProjects/serialist-max/patchers/ui",
 				"patcherrelativepath" : "../../patchers/ui",
 				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{
-				"name" : "ser.core.transport.mxo",
+				"name" : "ser.transport.mxo",
 				"type" : "iLaX"
 			}
 , 			{
