@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 2614.0, 87.0, 792.0, 1256.0 ],
+		"rect" : [ 134.0, 88.0, 792.0, 1256.0 ],
 		"openinpresentation" : 1,
 		"gridsize" : [ 15.0, 15.0 ],
 		"integercoordinates" : 1,
@@ -1348,7 +1348,7 @@
 ,
 					"text" : "transport",
 					"texton" : "free",
-					"varname" : "live.text"
+					"varname" : "mode"
 				}
 
 			}
@@ -1402,7 +1402,6 @@
 					"patching_rect" : [ 1527.0, 315.0, 142.0, 22.0 ],
 					"restore" : 					{
 						"enabled" : [ 1.0 ],
-						"live.text" : [ 0.0 ],
 						"live.text[10]" : [ 0.0 ],
 						"live.text[11]" : [ 0.0 ],
 						"live.text[12]" : [ 0.0 ],
@@ -1418,6 +1417,7 @@
 						"live.text[7]" : [ 1.0 ],
 						"live.text[8]" : [ 1.0 ],
 						"live.text[9]" : [ 0.0 ],
+						"mode" : [ 0.0 ],
 						"offsettype" : [ 0.0 ],
 						"periodtype" : [ 0.0 ],
 						"sync" : [ 0.0 ],
@@ -1798,7 +1798,7 @@
 
 							}
  ],
-						"originid" : "pat-1630"
+						"originid" : "pat-190"
 					}
 ,
 					"patching_rect" : [ 365.0, 748.0, 71.0, 22.0 ],
@@ -3067,7 +3067,7 @@
 
 			}
  ],
-		"originid" : "pat-1614",
+		"originid" : "pat-174",
 		"boxgroups" : [ 			{
 				"boxes" : [ "obj-48", "obj-45", "obj-50", "obj-61", "obj-70", "obj-69", "obj-63", "obj-47", "obj-46", "obj-44", "obj-43", "obj-41", "obj-53", "obj-51", "obj-52" ]
 			}

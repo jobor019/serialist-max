@@ -92,6 +92,15 @@ public:
     }};
 
 
+    attribute<double> explowerbound{this, "explowerbound", RandomHandler::DEFAULT_BROWNIAN_STEP, title{"explowerbound"}, setter{
+        MIN_FUNCTION {
+            if (AttributeSetters::try_set_value(args, m_random.exp_lower_bound, cerr))
+                return args;
+            return explowerbound;
+        }
+    }};
+
+
     message<> quantization{this, "quantization", setter{MIN_FUNCTION {
         if (inlet != 0) {
             cerr << "invalid message \"chord\" for inlet " << inlet << endl;
