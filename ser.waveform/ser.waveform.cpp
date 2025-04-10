@@ -23,6 +23,7 @@ public:
 
     inlet<> inlet_main{this, "(float/list) phase", ""};
     inlet<> inlet_duty{this, "(float/list,  0-1) duty cycle", "", false};
+    inlet<> inlet_curve{this, "(float/list) triangle curve", "", false};
 
     outlet<> outlet_main{this, "(float/list) waveform output"};
     outlet<> dumpout{this, "(any) dumpout"};
@@ -83,7 +84,9 @@ public:
 
 
     function handle_input = MIN_FUNCTION {
-        if (inlet == 1) {
+        if (inlet == 2) {
+            curve.set(args);
+        } else if (inlet == 1) {
             duty.set(args);
         } else {
             this->process(args);
