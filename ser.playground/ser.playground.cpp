@@ -1,11 +1,13 @@
 
 #include <serialist_transport.h>
 #include <core/policies/policies.h>
+#include <types/phase.h>
 
 #include "c74_min.h"
 #include "parsing.h"
 #include "max_timepoint.h"
 #include "policies/epsilon.h"
+#include "types/index.h"
 
 using namespace c74::min;
 using namespace serialist;
@@ -33,6 +35,36 @@ public:
         // if (auto tp = MaxTimePoint::get_time_of(clock.get())) {
         //     outlet_main.send(tp->to_atoms());
         // }
+        return {};
+    }}};
+
+
+    message<> phasemax{this, "phasemax", "A description", setter{MIN_FUNCTION {
+        if (inlet != 0) {
+            cerr << "invalid message \"phasemax\" for inlet " << inlet << endl;
+            return {};
+        }
+
+        outlet_main.send("max", Phase::max());
+        outlet_main.send("wrappoint", Phase::wrap_point());
+
+        return {};
+    }}};
+
+
+    message<> index{this, "index", "A description", setter{MIN_FUNCTION {
+        if (inlet != 0) {
+            cerr << "invalid message \"index\" for inlet " << inlet << endl;
+            return {};
+        }
+
+        if (args.size() == 2 && args[0].type() == message_type::float_argument && args[1].type() == message_type::int_argument) {
+            auto i = Index::index_op(args[0], args[1]);
+            outlet_main.send(static_cast<long>(i));
+        } else {
+            cerr << "invalid message \"index\" for inlet " << inlet << endl;
+        }
+
         return {};
     }}};
 
