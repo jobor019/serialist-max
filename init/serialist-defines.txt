@@ -1,5 +1,5 @@
 max define ser.multislider bpatcher @name ser.corpus.multislider;
 max define ser.slider bpatcher @name ser.slider.ui;
 
-max define ser.multiview bpatcher @name ser.view.multiview;
-max define ser.multiview2 bpatcher @name ser.view.multiview2;
+max define ser.multiview bpatcher @name ser.multiview.ui;
+max define ser.multiview2 bpatcher @name ser.multiview2.ui;

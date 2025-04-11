@@ -736,13 +736,13 @@
 									"lockeddragscroll" : 0,
 									"lockedsize" : 0,
 									"maxclass" : "bpatcher",
-									"name" : "ser.view.multiview.maxpat",
+									"name" : "ser.multiview.ui.maxpat",
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"offset" : [ 0.0, 0.0 ],
 									"outlettype" : [ "", "" ],
 									"patching_rect" : [ 133.0, 423.5, 89.0, 41.0 ],
-									"varname" : "ser.view.multiview",
+									"varname" : "ser.multiview.ui",
 									"viewvisibility" : 1
 								}
 
@@ -1761,7 +1761,7 @@
 				"implicit" : 1
 			}
 , 			{
-				"name" : "ser.view.multiview.maxpat",
+				"name" : "ser.multiview.ui.maxpat",
 				"bootpath" : "~/MaxProjects/serialist-max/patchers/view",
 				"patcherrelativepath" : "../../patchers/view",
 				"type" : "JSON",

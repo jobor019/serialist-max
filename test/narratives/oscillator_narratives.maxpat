@@ -4276,7 +4276,7 @@
 				"implicit" : 1
 			}
 , 			{
-				"name" : "ser.view.multiview2.maxpat",
+				"name" : "ser.multiview2.ui.maxpat",
 				"bootpath" : "~/MaxProjects/serialist-max/patchers/view",
 				"patcherrelativepath" : "../../patchers/view",
 				"type" : "JSON",
