@@ -63,19 +63,19 @@ public:
         }
     };
 
-    attribute<int> strategy{
-        this, "strategy", static_cast<int>(PatternizerT::DEFAULT_STRATEGY), title{"strategy"}, setter{
+    attribute<bool> inverse{
+        this, "inverse", static_cast<int>(PatternizerT::DEFAULT_INVERTED), title{"inverse"}, setter{
             MIN_FUNCTION {
-                if (AttributeSetters::try_set_value(args, m_patternizer.strategy, cerr))
+                if (AttributeSetters::try_set_value(args, m_patternizer.inverse_selection, cerr))
                     return args;
-                return strategy;
+                return inverse;
             }
         }
     };
 
 
     attribute<bool> uses_index{
-        this, "uses index", PatternizerT::DEFAULT_PATTERN_USES_INDEX, title{"uses index"}, setter{
+        this, "index", PatternizerT::DEFAULT_PATTERN_USES_INDEX, title{"uses index"}, setter{
             MIN_FUNCTION {
                 if (AttributeSetters::try_set_value(args, m_patternizer.pattern_uses_index, cerr))
                     return args;
