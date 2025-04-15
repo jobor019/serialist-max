@@ -29,7 +29,7 @@ public:
     outlet<> dumpout{this, "(any) dumpout"};
 
 
-    attribute<bool> enabled{this, Keywords::ENABLED, true
+    attribute<bool> enabled{this, AttributeNames::ENABLED, true
                             , title{Titles::ENABLED}
                             , description{Descriptions::ENABLED}
                             , setter{MIN_FUNCTION {
@@ -40,7 +40,7 @@ public:
     };
 
 
-    attribute<int> voices{this, Keywords::NUM_VOICES, 0
+    attribute<int> voices{this, AttributeNames::NUM_VOICES, 0
                           , title{Titles::NUM_VOICES}
                           , description{Descriptions::ENABLED}
                           , setter{MIN_FUNCTION {

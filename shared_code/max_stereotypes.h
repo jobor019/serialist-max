@@ -8,9 +8,9 @@
 #include "core/generatives/variable.h"
 #include "core/types/event.h"
 
-class Keywords {
+class AttributeNames {
 public:
-    Keywords() = delete;
+    AttributeNames() = delete;
 
     static inline const std::string ENABLED = "enabled";
     static inline const std::string NUM_VOICES = "voices";
@@ -22,6 +22,8 @@ public:
 
     static inline const std::string TYPE_SPEC = "type";
 
+    static inline const std::string AUTO_RESTORE = "autorestore";
+
 };
 
 
@@ -30,13 +32,15 @@ public:
     Titles() = delete;
 
     static inline const c74::min::title ENABLED = "Enabled";
-    static inline const c74::min::title NUM_VOICES = "Number of voices";
+    static inline const c74::min::title NUM_VOICES = "Number of Voices";
     static inline const c74::min::title TRIGGERS = "Triggers";
 
     static inline const c74::min::title CLOCK = "Clock Source";
     static inline const c74::min::title FLUSH = "Flush";
 
     static inline const c74::min::title TYPE_SPEC = "Type Specification";
+
+    static inline const c74::min::title AUTO_RESTORE = "Autorestore";
 };
 
 
@@ -59,6 +63,21 @@ public:
     static inline const c74::min::description FLUSH = "Flush: TODO";
 
     static inline const c74::min::description TYPE_SPEC = "Type Specification (i/f/s)";
+
+    static inline const c74::min::description AUTO_RESTORE = "When enabled, the object will automatically store its state each"
+                                                   " time the patcher is saved, and restore it the next time the"
+                                                   " patcher is loaded.\n\nNote that any attributes explicitly"
+                                                   " provided in the object's box will override the stored state.";
+};
+
+
+// ==============================================================================================
+
+class Categories {
+public:
+    Categories() = delete;
+
+    static inline const c74::min::category STATE = "State";
 };
 
 // ==============================================================================================
@@ -371,7 +390,7 @@ public:
     }
 
 
-    // ==============================================================================================
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     template<typename ObjectType
              , typename SetterFunc = void (ObjectType::*)(const c74::min::atoms&)
@@ -394,6 +413,39 @@ public:
             return current_value;
         }
     }
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+    // Helper: Convert from title format to name format. Example: "Num Voices" => "numvoices"
+    static std::string title_to_name(const std::string& title) {
+        std::string result;
+
+        for (char c : title) {
+            if (c != ' ') {
+                result += static_cast<char>(std::tolower(c));
+            }
+        }
+
+        return result;
+    }
+
+    static c74::min::title name_to_title(const std::string& s) {
+        if (s.empty()) {
+            return "";
+        }
+
+        std::string result = s;
+        result[0] = static_cast<char>(std::toupper(result[0]));
+        return to_title(result);
+    }
+
+    // Poor implementation of c74::min::title does not support passing std::string to its ctor.
+    // Explicitly calling c_str is required, which confuses most linters
+    static c74::min::title to_title(const std::string& s) {
+        return s.c_str();  // NOLINT(*-redundant-string-cstr)
+    }
+
 };
 
 // ==============================================================================================
@@ -563,7 +615,7 @@ public:
         }
 
         if (done_outlet) {
-            done_outlet->send(Keywords::BANG);
+            done_outlet->send(AttributeNames::BANG);
         }
     }
 };

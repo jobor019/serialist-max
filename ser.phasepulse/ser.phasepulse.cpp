@@ -31,7 +31,7 @@ public:
     outlet<> dumpout{this, "(any) dumpout"};
 
 
-    attribute<bool> enabled{this, Keywords::ENABLED
+    attribute<bool> enabled{this, AttributeNames::ENABLED
                             , true
                             , title{Titles::ENABLED}
                             , description{Descriptions::ENABLED}
@@ -42,7 +42,7 @@ public:
             }}
     };
 
-    attribute<int> voices{this, Keywords::NUM_VOICES
+    attribute<int> voices{this, AttributeNames::NUM_VOICES
                           , 0
                           , title{Titles::NUM_VOICES}
                           , description{Descriptions::ENABLED}
@@ -65,7 +65,7 @@ public:
     };
 
 
-    message<threadsafe::no> flush{this, Keywords::FLUSH
+    message<threadsafe::no> flush{this, AttributeNames::FLUSH
                     , description{Descriptions::FLUSH}
                     , MIN_FUNCTION {
                 if (inlet != 0) {

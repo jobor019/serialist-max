@@ -29,7 +29,7 @@ public:
     outlet<> outlet_main{this, "(double/list/listoflists) output", ""};
     outlet<> dumpout{this, "(any) dumpout"};
 
-    attribute<bool> enabled{this, Keywords::ENABLED
+    attribute<bool> enabled{this, AttributeNames::ENABLED
                             , true
                             , title{Titles::ENABLED}
         , description{Descriptions::ENABLED}
@@ -40,7 +40,7 @@ public:
         }}
     };
 
-    attribute<int> voices{this, Keywords::NUM_VOICES
+    attribute<int> voices{this, AttributeNames::NUM_VOICES
                           , 0
                           , title{Titles::NUM_VOICES}
         , description{Descriptions::ENABLED}
@@ -51,8 +51,8 @@ public:
         }}
     };
 
-    attribute<int> mode{
-        this, "mode", static_cast<int>(RandomHandler::DEFAULT_MODE), title{"mode"}, setter{
+    attribute<RandomHandler::Mode> mode{
+        this, "mode", RandomHandler::DEFAULT_MODE, title{"mode"}, setter{
             MIN_FUNCTION {
                 if (AttributeSetters::try_set_value(args, m_random.mode, cerr))
                     return args;

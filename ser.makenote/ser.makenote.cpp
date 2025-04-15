@@ -48,7 +48,7 @@ public:
 
 
     attribute<bool> enabled{
-            this, Keywords::ENABLED, true, title{Titles::ENABLED}, description{Descriptions::ENABLED}, setter{
+            this, AttributeNames::ENABLED, true, title{Titles::ENABLED}, description{Descriptions::ENABLED}, setter{
                     MIN_FUNCTION {
                         if (this->set_enabled(args))
                             return args;
@@ -59,7 +59,7 @@ public:
 
 
     attribute<int> voices{
-            this, Keywords::NUM_VOICES, 0, title{Titles::NUM_VOICES}, description{Descriptions::ENABLED}, setter{
+            this, AttributeNames::NUM_VOICES, 0, title{Titles::NUM_VOICES}, description{Descriptions::ENABLED}, setter{
                     MIN_FUNCTION {
                         if (this->set_num_voices(args))
                             return args;
@@ -117,7 +117,7 @@ public:
 
 
     message<threadsafe::no> flush{
-            this, Keywords::FLUSH, description{Descriptions::FLUSH}, MIN_FUNCTION {
+            this, AttributeNames::FLUSH, description{Descriptions::FLUSH}, MIN_FUNCTION {
                 if (inlet != 0) {
                     return {};
                 }

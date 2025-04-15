@@ -32,7 +32,7 @@ public:
 
 
     attribute<bool> enabled{
-        this, Keywords::ENABLED, true, title{Titles::ENABLED}, description{Descriptions::ENABLED}, setter{
+        this, AttributeNames::ENABLED, true, title{Titles::ENABLED}, description{Descriptions::ENABLED}, setter{
             MIN_FUNCTION {
                 if (AttributeSetters::try_set_value(args, m_patternizer.enabled, cerr))
                     return args;
@@ -41,9 +41,8 @@ public:
         }
     };
 
-
     attribute<int> voices{
-        this, Keywords::NUM_VOICES, 0, title{Titles::NUM_VOICES}, description{Descriptions::ENABLED}, setter{
+        this, AttributeNames::NUM_VOICES, 0, title{Titles::NUM_VOICES}, description{Descriptions::ENABLED}, setter{
             MIN_FUNCTION {
                 if (AttributeSetters::try_set_value(args, m_patternizer.num_voices, cerr))
                     return args;
@@ -64,7 +63,7 @@ public:
     };
 
     attribute<bool> inverse{
-        this, "inverse", static_cast<int>(PatternizerT::DEFAULT_INVERTED), title{"inverse"}, setter{
+        this, "inverse", PatternizerT::DEFAULT_INVERTED, title{"inverse"}, setter{
             MIN_FUNCTION {
                 if (AttributeSetters::try_set_value(args, m_patternizer.inverse_selection, cerr))
                     return args;
@@ -83,7 +82,6 @@ public:
             }
         }
     };
-
 
     attribute<std::vector<double>> octave{
         this, "octave", {12.0}, title{"octave"}, setter{

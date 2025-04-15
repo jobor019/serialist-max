@@ -670,6 +670,25 @@
 						"visible" : 1,
 						"boxes" : [ 							{
 								"box" : 								{
+									"id" : "obj-52",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 3,
+									"outlettype" : [ "", "", "" ],
+									"patching_rect" : [ 1480.0, 681.0, 40.0, 22.0 ],
+									"restore" : [ 0 ],
+									"saved_object_attributes" : 									{
+										"parameter_enable" : 0,
+										"parameter_mappable" : 0
+									}
+,
+									"text" : "pattr",
+									"varname" : "u913002266"
+								}
+
+							}
+, 							{
+								"box" : 								{
 									"id" : "obj-80",
 									"maxclass" : "toggle",
 									"numinlets" : 1,

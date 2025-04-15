@@ -4,6 +4,7 @@ add_library(shared_code
         parsing.h
         result.h
         max_stereotypes.h
-        utils.h)
+        utils.h
+        serialist_attributes.h)
 
 target_include_directories(shared_code INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})

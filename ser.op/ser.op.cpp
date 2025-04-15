@@ -62,7 +62,7 @@ public:
     }
 
     attribute<std::vector<int>> triggers{this
-                                         , Keywords::TRIGGERS
+                                         , AttributeNames::TRIGGERS
                                          , {0}
                                          , title{Titles::TRIGGERS}
                                          , setter{MIN_FUNCTION {
@@ -95,7 +95,7 @@ public:
     };
 
     attribute<int> voices{this
-                          , Keywords::NUM_VOICES
+                          , AttributeNames::NUM_VOICES
                           , 0
                           , title{Titles::NUM_VOICES}
                           , setter{MIN_FUNCTION {
@@ -107,7 +107,7 @@ public:
     };
 
     attribute<symbol> type{this
-                           , Keywords::TYPE_SPEC
+                           , AttributeNames::TYPE_SPEC
                            , "float"
                            , title{Titles::TYPE_SPEC}
                            , description{Descriptions::TYPE_SPEC}

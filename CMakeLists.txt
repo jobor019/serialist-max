@@ -35,10 +35,10 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/serialist_transport)
 
 add_custom_target(all_externals)
 add_dependencies(all_externals
-        ser.interpolator
+#        ser.interpolator
         ser.makenote
         ser.op
-        ser.oscillator
+#        ser.oscillator
         ser.patternizer
         ser.phasemap
         ser.phasepulse
