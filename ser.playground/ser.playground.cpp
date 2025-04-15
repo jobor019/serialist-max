@@ -6,6 +6,8 @@
 #include "c74_min.h"
 #include "parsing.h"
 #include "max_timepoint.h"
+#include "message_stereotypes.h"
+#include "save_state.h"
 #include "serialist_attributes.h"
 #include "generatives/operator.h"
 #include "generatives/oscillator.h"
@@ -84,23 +86,15 @@ public:
 
     vector_attribute<double> period{this, "period", w.period, PaParameters::DEFAULT_PERIOD, cerr};
 
-    message<> setup{this, "setup", "", setter{MIN_FUNCTION {
-        cout << "ser.playground::setup" << endl;
+    message<> setup = Messages::setup_message_with_loadstate(this, [this](LoadState& s) {
+        s >> this->someint >> this->somefloat >> this->somesymbol >> this->somevector >> this->somepseudo;
+    });
 
-        auto saved_state = state();
-        if (saved_state.contains("saved_object_attributes")) {
-            auto persistent_attributes_dict = dict{atom{saved_state.at("saved_object_attributes")}};
-            cout << "persistent stuff..." << endl;
-            if (persistent_attributes_dict.contains("autorestore")) {
-                this->someint.set(saved_state["someint"]);
-                this->somefloat.set(saved_state["somefloat"]);
-                this->somesymbol.set(saved_state["somesymbol"]);
-                this->somevector.set(saved_state["somevector"]);
-                // this->set_voices(saved_state["voices"]);
-            }
-        }
-        return {};
-    }}};
+    // message<> setup{this, "setup", "", setter{MIN_FUNCTION {
+    //     LoadState s{state()};
+    //     s >> this->someint >> this->somefloat >> this->somesymbol >> this->somevector >> this->somepseudo;
+    //     return {};
+    // }}};
 
     message<> bang{this, "bang", "A description", setter{MIN_FUNCTION {
         i += 1;
@@ -111,6 +105,7 @@ public:
     attribute<double> somefloat{ this, "somefloat", 0};
     attribute<symbol> somesymbol{ this, "somesymbol", ""};
     attribute<std::vector<int>> somevector{ this, "somevector", {0}};
+    pseudo_attribute<double> somepseudo{ this, "somepseudo", w.curve, cerr};
 
 
     //
@@ -122,35 +117,31 @@ public:
     //             return autorestore;
     // }}};
 
+    message<> savestate = Messages::savestate_message(this, autorestore.get(), [this](SaveState& s) {
+        s << someint << somefloat << somesymbol << somevector << somepseudo;
+    });
 
-    message<> savestate { this, "savestate",
-    MIN_FUNCTION {
-        cout << "savestate called: ";
-        dict d {args[0]};
-        if (autorestore.get()) {
-            cout << "storing values" << endl;
-            d["my_custom_data"] = static_cast<int>(i);
-            d.insert("someint", someint.get());
-            d.insert("somefloat", somefloat.get());
-            d.insert("somesymbol", somesymbol.get());
-            d.insert("somevector", somevector.get_atoms());
-            // d.insert("voices", m_voices);
+    // message<> savestate{this, "savestate", "", setter{MIN_FUNCTION {
+    //     SaveState s{args, autorestore.get()};
+    //     s << someint << somefloat << somesymbol << somevector << somepseudo;
+    //     return {};
+    // }}};
 
-            auto s = d["numinlets"];
-            if (!s.empty()) {
-                cout << "{found numinlets: " << s << "} ";
-            } else {
-                cout << "{did not find numinlets} ";
-            }
-
-        } else {
-            cout << "(should be clearing state)" << endl;
-            // d.clear();
-        }
-
-        return {};
-    }
-    };
+    // message<> savestate { this, "savestate",
+    // MIN_FUNCTION {
+    //     if (autorestore.get()) {
+    //         SaveState s{args};
+    //         s << someint << somefloat << somesymbol << somevector << somepseudo;
+    //         cout << "stored values" << endl;
+    //
+    //     } else {
+    //         cout << "(should be clearing state)" << endl;
+    //         // d.clear();
+    //     }
+    //
+    //     return {};
+    // }
+    // };
 
 
     message<> phasemax{this, "phasemax", "A description", setter{MIN_FUNCTION {

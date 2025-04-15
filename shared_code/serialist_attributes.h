@@ -9,6 +9,26 @@
 enum class input_format { value, vector, vector_singular, voices };
 
 /**
+ * @brief pseudo-attribute base class for passing pseudo-attributes without template args
+ */
+class pseudo_attribute_base {
+protected:
+    c74::min::atoms m_stored_value;
+    std::string m_name;
+
+public:
+    pseudo_attribute_base(const std::string& name, const c74::min::atoms& value)
+    : m_stored_value{ value }, m_name{ name } {}
+
+    virtual ~pseudo_attribute_base() = default;
+
+    const std::string& name() const { return m_name; }
+    const c74::min::atoms& get_stored_atoms() const { return m_stored_value; }
+
+    virtual void set(const c74::min::atoms& args) = 0;
+};
+
+/**
  * @brief wrapper around a Sequence that may receive nulls and/or lists of lists (Voices<T>), but fundamentally is
  *        a message, not an attribute. Pseudo attributes can be stored with `savestate`, but
  *          - does not have a default value
@@ -18,12 +38,9 @@ enum class input_format { value, vector, vector_singular, voices };
 template<typename StoredType
          , typename OutputType = Facet
          , c74::min::threadsafe threadsafety = c74::min::threadsafe::undefined>
-class pseudo_attribute : public c74::min::message<threadsafety> {
+class pseudo_attribute : public pseudo_attribute_base
+                       , public c74::min::message<threadsafety> {
 private:
-    c74::min::atoms m_stored_value;
-
-    std::string m_name;
-
     Sequence<OutputType, StoredType>& m_target;
     c74::min::logger& m_cerr;
     input_format m_format;
@@ -31,35 +48,39 @@ private:
 
 public:
     pseudo_attribute(c74::min::object_base* an_owner
-        , const std::string& a_name
-        , Sequence<OutputType, StoredType>& target
-        , c74::min::logger& cerr
-        , input_format format = input_format::voices
-        , std::mutex* mutex = nullptr
-        , const c74::min::description& a_description = "")
-        : c74::min::message<threadsafety>(an_owner
+                     , const std::string& a_name
+                     , Sequence<OutputType, StoredType>& target
+                     , c74::min::logger& cerr
+                     , input_format format = input_format::voices
+                     , std::mutex* mutex = nullptr
+                     , const c74::min::description& a_description = "")
+        : pseudo_attribute_base(a_name, c74::min::atoms{})
+        , c74::min::message<threadsafety>(
+            an_owner
             , a_name
             , a_description
             , [this, &a_name, &cerr](const c74::min::atoms& args, const int inlet) {
                 if (inlet != 0) {
-            cerr << "invalid message \"" << a_name << "\" for inlet " << inlet << c74::min::endl;
-            return c74::min::atoms{};
-        }
+                    cerr << "invalid message \"" << a_name << "\" for inlet " << inlet <<
+                            c74::min::endl;
+                    return c74::min::atoms{};
+                }
 
-        this->set(args);
-        return c74::min::atoms{};
-        })
-    , m_name(a_name)
-    , m_target(target)
-    , m_cerr(cerr)
-    , m_format(format)
-    , m_mutex(mutex) {}
+                this->set(args);
+                return c74::min::atoms{};
+            })
+        , m_target(target)
+        , m_cerr(cerr)
+        , m_format(format)
+        , m_mutex(mutex) {}
 
     // Note: messages' setter functions are not invoked when constructed (unlike attributes), and it's therefore
     //       safe to construct a lambda which calls the member function like this
-    void set(const c74::min::atoms& args, bool leading_bracket_stripped = false) {
+    void set(const c74::min::atoms& args) override {
         if (m_format == input_format::voices) {
-            if (AttributeSetters::try_set_voices(args, m_target, m_cerr, leading_bracket_stripped, m_mutex)) {
+            // Note: leading bracket should under no situation be stripped. Messages::list_of_list_message prepends
+            //       the removed bracket, so there should never be any conflict here
+            if (AttributeSetters::try_set_voices(args, m_target, m_cerr, false, m_mutex)) {
                 m_stored_value = args;
             }
             return;
@@ -202,7 +223,7 @@ public:
 // ==============================================================================================
 
 // While macro definitions generally are undesirable, this is the only way to create specialized stereotypes
-// for attributes since the attribute move constructor is deleted, and we therefore cannot provide
+// for attributes since the attribute class' move constructor is deleted, and we therefore cannot provide
 // custom constructors or factory methods
 
 
