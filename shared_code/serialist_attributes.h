@@ -2,8 +2,8 @@
 #ifndef SERIALIST_MAX_SERIALIST_ATTRIBUTES_H
 #define SERIALIST_MAX_SERIALIST_ATTRIBUTES_H
 
+#include "attribute_setters.h"
 #include "c74_min_api.h"
-#include "max_stereotypes.h"
 
 
 enum class input_format { value, vector, vector_singular, voices };
@@ -45,15 +45,17 @@ private:
     c74::min::logger& m_cerr;
     input_format m_format;
     std::mutex* m_mutex;
+    std::optional<std::function<void()>> m_post_setter_function;
 
 public:
     pseudo_attribute(c74::min::object_base* an_owner
                      , const std::string& a_name
                      , Sequence<OutputType, StoredType>& target
                      , c74::min::logger& cerr
+                     , const c74::min::description& a_description = ""
                      , input_format format = input_format::voices
                      , std::mutex* mutex = nullptr
-                     , const c74::min::description& a_description = "")
+                     , std::optional<std::function<void()>> post_setter_function = std::nullopt)
         : pseudo_attribute_base(a_name, c74::min::atoms{})
         , c74::min::message<threadsafety>(
             an_owner
@@ -72,7 +74,8 @@ public:
         , m_target(target)
         , m_cerr(cerr)
         , m_format(format)
-        , m_mutex(mutex) {}
+        , m_mutex(mutex)
+        , m_post_setter_function(std::move(post_setter_function)) {}
 
     // Note: messages' setter functions are not invoked when constructed (unlike attributes), and it's therefore
     //       safe to construct a lambda which calls the member function like this
@@ -82,6 +85,7 @@ public:
             //       the removed bracket, so there should never be any conflict here
             if (AttributeSetters::try_set_voices(args, m_target, m_cerr, false, m_mutex)) {
                 m_stored_value = args;
+                invoke_post_setter_function();
             }
             return;
         }
@@ -89,6 +93,7 @@ public:
         if (m_format == input_format::vector) {
             if (AttributeSetters::try_set_vector(args, m_target, m_cerr, m_mutex)) {
                 this->m_stored_value = args;
+                invoke_post_setter_function();
             }
             return;
         }
@@ -96,6 +101,7 @@ public:
         if (m_format == input_format::vector_singular) {
             if (AttributeSetters::try_set_vector_singular(args, m_target, m_cerr, m_mutex)) {
                 this->m_stored_value = args;
+                invoke_post_setter_function();
             }
             return ;
         }
@@ -103,6 +109,7 @@ public:
         if (m_format == input_format::value) {
             if (AttributeSetters::try_set_value(args, m_target, m_cerr, m_mutex)) {
                 this->m_stored_value = args;
+                invoke_post_setter_function();
             }
             return;
         }
@@ -112,6 +119,13 @@ public:
 
     const c74::min::atoms& get_atoms() const {
         return m_stored_value;
+    }
+
+private:
+    void invoke_post_setter_function() const {
+        if (m_post_setter_function) {
+            (*m_post_setter_function)();
+        }
     }
 };
 
@@ -149,8 +163,6 @@ public:
             , a_default_value
             , a_title.empty() ? AttributeSetters::name_to_title(a_name) : AttributeSetters::to_title(a_title)
             , c74::min::setter{[this, &target, &cerr, mutex](const c74::min::atoms& atms, const int) {
-                cerr << "size :" << atms.size() << " (not an error)" << c74::min::endl;
-
                 if (AttributeSetters::try_set_value(atms, target, cerr, mutex)) {
                     return atms;
                 }
@@ -203,8 +215,6 @@ public:
             , std::vector<MaxType>{a_default_value}
             , a_title.empty() ? AttributeSetters::name_to_title(a_name) : AttributeSetters::to_title(a_title)
             , c74::min::setter{[this, &target, &cerr, mutex](const c74::min::atoms& atms, const int) {
-                cerr << "size :" << atms.size() << " (not an error)" << c74::min::endl;
-
                 if (AttributeSetters::try_set_vector(atms, target, cerr, mutex)) {
                     return atms;
                 }
@@ -254,6 +264,7 @@ public:
                                 , Titles::AUTO_RESTORE \
                                 , saved{true} \
                                 , Categories::STATE \
+                                , Descriptions::AUTO_RESTORE \
                                 , setter{ \
     MIN_FUNCTION { \
         if (args.size() == 1 && args[0].type() == message_type::int_argument) { \

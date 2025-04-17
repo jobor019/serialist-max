@@ -4,8 +4,6 @@
 #include "c74_min_api.h"
 #include "result.h"
 #include "parsing.h"
-#include "core/generatives/sequence.h"
-#include "core/generatives/variable.h"
 #include "core/types/event.h"
 
 class AttributeNames {
@@ -51,24 +49,109 @@ public:
     Descriptions() = delete;
 
     static inline const c74::min::description DEPENDS_ON_INLET = "Function depends on inlet";
-    static inline const c74::min::description DEPENDS_ON_INLET_LOL = "(list of lists) Function depends on inlet";
+    static inline const c74::min::description DEPENDS_ON_INLET_MULTILIST = "(multilist) Function depends on inlet";
 
-    static inline const c74::min::description ENABLED = "Toggles the object's active mode. "
-            "When the active attribute is set to 0, "
-            "the object will not output anything when triggered";
+    static inline const c74::min::description ENABLED = "(bool) Toggles the object's active state. "
+            "When set to 0, the object will not output anything when triggered";
 
-    static inline const c74::min::description NUM_VOICES = "Num Voices: TODO"; // TODO
+    static inline const c74::min::description NUM_VOICES = "(int) Num Voices: TODO"; // TODO
 
-    static inline const c74::min::description CLOCK = "Set clock source";
     static inline const c74::min::description FLUSH = "Flush: TODO";
 
-    static inline const c74::min::description TYPE_SPEC = "Type Specification (i/f/s)";
-
-    static inline const c74::min::description AUTO_RESTORE = "When enabled, the object will automatically store its state each"
+    static inline const c74::min::description AUTO_RESTORE = "(bool) Save the object's state with the patcher."
+                                                   " When enabled, the object will automatically store its state each"
                                                    " time the patcher is saved, and restore it the next time the"
                                                    " patcher is loaded.\n\nNote that any attributes explicitly"
                                                    " provided in the object's box will override the stored state.";
+
+
+    static c74::min::description to_description(const std::string& s) {
+        return s.c_str(); // NOLINT(*-redundant-string-cstr)
+    }
 };
+
+// ==============================================================================================
+
+
+enum class Types { number, index, trigger };
+
+enum class Containers { value, voice, voices };
+
+
+class Inlets {
+public:
+    Inlets() = delete;
+
+    static inline const std::string NUMBER_TYPE = "number";
+    static inline const std::string INDEX_TYPE = "index";
+    static inline const std::string TRIGGER_TYPE = "trigger";
+
+    static inline const std::string VALUE_CONTAINER; // never actually used
+    static inline const std::string VOICE_CONTAINER = "list";
+    static inline const std::string VOICES_CONTAINER = "multilist";
+
+    static inline const std::string DUMPOUT = "(any) dumpout";
+
+    static std::string type_to_string(Types type) {
+        switch (type) {
+            case Types::number:
+                return NUMBER_TYPE;
+            case Types::index:
+                return INDEX_TYPE;
+            case Types::trigger:
+                return TRIGGER_TYPE;
+        }
+        throw std::invalid_argument("unknown type");
+    }
+
+    static std::string container_to_string(Containers container) {
+        switch (container) {
+            case Containers::value:
+                return VALUE_CONTAINER;
+            case Containers::voice:
+                return VOICE_CONTAINER;
+            case Containers::voices:
+                return VOICES_CONTAINER;
+        }
+        throw std::invalid_argument("unknown container");
+    }
+
+    static std::string type_spec(Types type, Containers container) {
+        if (container == Containers::value) {
+            return type_to_string(type);
+        }
+        return container_to_string(container) + ": " + type_to_string(type);
+    }
+
+    static c74::min::description info(Types t, Containers c, const std::string& description) {
+        std::stringstream ss;
+        ss << "(" << type_spec(t, c) << ") " << description;
+        return Descriptions::to_description(ss.str());
+    }
+
+    static c74::min::description value(Types t, const std::string& description) {
+        return info(t, Containers::value, description);
+    }
+
+    static c74::min::description voice(Types t, const std::string& description) {
+        return info(t, Containers::voice, description);
+    }
+
+    static c74::min::description voices(Types t, const std::string& description) {
+        return info(t, Containers::voices, description);
+    }
+};
+
+
+// ==============================================================================================
+
+class Pseudo {
+public:
+    Pseudo() = delete;
+
+
+};
+
 
 
 // ==============================================================================================
@@ -113,339 +196,6 @@ public:
     static std::string format(const std::string& error_message, const std::string& class_name) {
         return "ser." + class_name + ": " + error_message;
     }
-};
-
-
-// ==============================================================================================
-
-
-class AttributeSetters {
-public:
-    AttributeSetters() = delete;
-
-    /**
-     * @throws ResultError if parsing fails
-     */
-    template<typename StoredType, typename ParseType = StoredType, typename OutputType>
-    static void set_value(const c74::min::atoms& args
-                          , Variable<OutputType
-                                     , StoredType>& variable
-                          , std::mutex* mutex = nullptr) {
-        auto v = AtomParser::atoms2value<ParseType>(args).ok();
-
-        std::unique_lock<std::mutex> lock;
-        if (mutex) {
-            // ReSharper disable once CppDFAUnusedValue
-            lock = std::unique_lock(*mutex);
-        }
-
-        if constexpr (std::is_same_v<ParseType, StoredType>) {
-            variable.set_value(v);
-        } else {
-            variable.set_value(static_cast<StoredType>(v));
-        }
-    }
-
-
-    /**
-     * @throws ResultError if parsing fails
-     */
-    template<typename StoredType, typename ParseType = StoredType, typename OutputType>
-    static void set_value(const c74::min::atoms& args
-        , Sequence<OutputType
-        , StoredType>& seq
-        , std::mutex* mutex = nullptr) {
-        auto v = AtomParser::atoms2value<ParseType>(args).ok();
-
-        std::unique_lock<std::mutex> lock;
-        if (mutex) {
-            // ReSharper disable once CppDFAUnusedValue
-            lock = std::unique_lock(*mutex);
-        }
-
-        if constexpr (std::is_same_v<ParseType, StoredType>) {
-            seq.set_values(v);
-        } else {
-            seq.set_values(static_cast<StoredType>(v));
-        }
-    }
-
-
-    /**
-     * @throws ResultError if parsing fails
-     */
-    template<typename StoredType, typename ParseType = StoredType, typename OutputType>
-    static void set_vector(const c74::min::atoms& args
-        , Sequence<OutputType, StoredType>& seq
-        , std::mutex* mutex = nullptr) {
-        auto vec = AtomParser::atoms2vec<ParseType>(args).ok();
-
-        std::unique_lock<std::mutex> lock;
-        if (mutex) {
-            // ReSharper disable once CppDFAUnusedValue
-            lock = std::unique_lock(*mutex);
-        }
-
-        if constexpr (std::is_same_v<ParseType, StoredType>) {
-            seq.set_values(Voices<StoredType>::transposed(vec));
-        } else {
-            seq.set_values(Voices<StoredType>::transposed(vec.template as_type<StoredType>()));
-        }
-    }
-
-
-    /**
-     * @throws ResultError if parsing fails
-     */
-    template<typename StoredType, typename ParseType, typename OutputType>
-    static void set_vector(const c74::min::atoms& args
-                           , Sequence<OutputType, StoredType>& seq
-                           , const std::function<StoredType(const ParseType&)>& converter
-                           , std::mutex* mutex = nullptr) {
-        auto vec = AtomParser::atoms2vec<ParseType>(args).ok();
-        auto voices = Voices<StoredType>::transposed(vec.template as_type<StoredType>(converter));
-
-        std::unique_lock<std::mutex> lock;
-        if (mutex) {
-            // ReSharper disable once CppDFAUnusedValue
-            lock = std::unique_lock(*mutex);
-        }
-
-        seq.set_values(voices);
-    }
-
-
-    /**
-     * @throws ResultError if parsing fails
-     */
-    template<typename StoredType, typename ParseType = StoredType, typename OutputType>
-    static void set_vector_singular(const c74::min::atoms& args
-        , Sequence<OutputType
-        , StoredType>& seq
-        , std::mutex* mutex = nullptr) {
-        auto vec = AtomParser::atoms2vec<ParseType>(args).ok();
-
-        std::unique_lock<std::mutex> lock;
-        if (mutex) {
-            // ReSharper disable once CppDFAUnusedValue
-            lock = std::unique_lock(*mutex);
-        }
-
-        if constexpr (std::is_same_v<ParseType, StoredType>) {
-            seq.set_values(Voices<StoredType>::singular(vec));
-        } else {
-            seq.set_values(Voices<StoredType>::singular(vec.template as_type<StoredType>()));
-        }
-    }
-
-
-    /**
-     * @throws ResultError if parsing fails
-     */
-    template<typename StoredType, typename ParseType, typename OutputType>
-    static void set_vector_singular(const c74::min::atoms& args
-                                    , Sequence<OutputType, StoredType>& seq
-                                    , const std::function<StoredType(const ParseType&)>& converter
-                                    , std::mutex* mutex = nullptr) {
-        auto vec = AtomParser::atoms2vec<ParseType>(args).ok();
-        auto voices = Voices<StoredType>::singular(vec.template as_type<StoredType>(converter));
-
-        std::unique_lock<std::mutex> lock;
-        if (mutex) {
-            // ReSharper disable once CppDFAUnusedValue
-            lock = std::unique_lock(*mutex);
-        }
-
-        seq.set_values(voices);
-    }
-
-
-    /**
-     * @throws ResultError if parsing fails
-     */
-    template<typename StoredType, typename OutputType>
-    static void set_voices(const c74::min::atoms& args
-                           , Sequence<OutputType, StoredType>& seq
-                           , bool leading_bracket_stripped = false
-                           , std::mutex* mutex = nullptr) {
-        auto voices = AtomParser::atoms2voices<StoredType>(args, leading_bracket_stripped).ok();
-
-        std::unique_lock<std::mutex> lock;
-        if (mutex) {
-            // ReSharper disable once CppDFAUnusedValue
-            lock = std::unique_lock(*mutex);
-        }
-
-        seq.set_values(voices);
-    }
-
-
-    // ==============================================================================================
-
-    template<typename StoredType, typename ParseType = StoredType, typename OutputType>
-    static bool try_set_value(const c74::min::atoms& args
-                              , Variable<OutputType, StoredType>& variable
-                              , c74::min::logger& cerr
-                              , std::mutex* mutex = nullptr) noexcept {
-        try {
-            set_value(args, variable, mutex);
-            return true;
-        } catch (ResultError& e) {
-            cerr << e.what() << c74::min::endl;
-            return false;
-        }
-    }
-
-
-    template<typename StoredType, typename ParseType = StoredType, typename OutputType>
-    static bool try_set_value(const c74::min::atoms& args
-                              , Sequence<OutputType, StoredType>& seq
-                              , c74::min::logger& cerr
-                              , std::mutex* mutex = nullptr) noexcept {
-        try {
-            set_value(args, seq, mutex);
-            return true;
-        } catch (ResultError& e) {
-            cerr << e.what() << c74::min::endl;
-            return false;
-        }
-    }
-
-
-    template<typename StoredType, typename ParseType = StoredType, typename OutputType>
-    static bool try_set_vector(const c74::min::atoms& args
-                               , Sequence<OutputType, StoredType>& seq
-                               , c74::min::logger& cerr
-                               , std::mutex* mutex = nullptr) noexcept {
-        try {
-            set_vector(args, seq, mutex);
-            return true;
-        } catch (ResultError& e) {
-            cerr << e.what() << c74::min::endl;
-            return false;
-        }
-    }
-
-
-    template<typename StoredType, typename ParseType, typename OutputType>
-    static bool try_set_vector(const c74::min::atoms& args
-                               , Sequence<OutputType, StoredType>& seq
-                               , c74::min::logger& cerr
-                               , const std::function<StoredType(const ParseType&)>& converter
-                               , std::mutex* mutex = nullptr) noexcept {
-        try {
-            set_vector(args, seq, converter, mutex);
-            return true;
-        } catch (ResultError& e) {
-            cerr << e.what() << c74::min::endl;
-            return false;
-        }
-    }
-
-
-    template<typename StoredType, typename ParseType = StoredType, typename OutputType>
-    static bool try_set_vector_singular(const c74::min::atoms& args
-                                        , Sequence<OutputType, StoredType>& seq
-                                        , c74::min::logger& cerr
-                                        , std::mutex* mutex = nullptr) noexcept {
-        try {
-            set_vector_singular(args, seq, mutex);
-            return true;
-        } catch (ResultError& e) {
-            cerr << e.what() << c74::min::endl;
-            return false;
-        }
-    }
-
-
-    template<typename StoredType, typename ParseType, typename OutputType>
-    static bool try_set_vector_singular(const c74::min::atoms& args
-                                        , Sequence<OutputType, StoredType>& seq
-                                        , c74::min::logger& cerr
-                                        , const std::function<StoredType(const ParseType&)>& converter
-                                        , std::mutex* mutex = nullptr) noexcept {
-        try {
-            set_vector_singular(args, seq, converter, mutex);
-            return true;
-        } catch (ResultError& e) {
-            cerr << e.what() << c74::min::endl;
-            return false;
-        }
-    }
-
-
-    template<typename StoredType, typename OutputType>
-    static bool try_set_voices(const c74::min::atoms& args
-                               , Sequence<OutputType, StoredType>& seq
-                               , c74::min::logger& cerr
-                               , bool leading_bracket_stripped = false
-                               , std::mutex* mutex = nullptr) noexcept {
-        try {
-            set_voices(args, seq, leading_bracket_stripped, mutex);
-            return true;
-        } catch (ResultError& e) {
-            cerr << e.what() << c74::min::endl;
-            return false;
-        }
-    }
-
-
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    template<typename ObjectType
-             , typename SetterFunc = void (ObjectType::*)(const c74::min::atoms&)
-             , typename = std::enable_if_t<std::is_member_function_pointer_v<SetterFunc>>>
-    static const c74::min::atoms& try_call_external_setter(std::unique_ptr<ObjectType>& obj_ptr
-                                                           , SetterFunc setter_func
-                                                           , const c74::min::atoms& new_value
-                                                           , const c74::min::atoms& current_value
-                                                           , c74::min::logger& cerr) noexcept {
-        if (!obj_ptr) {
-            // object not yet constructed: set max attribute to new value without updating object
-            return new_value;
-        }
-
-        try {
-            (obj_ptr.get()->*setter_func)(new_value);
-            return new_value;
-        } catch (ResultError& e) {
-            cerr << e.what() << c74::min::endl;
-            return current_value;
-        }
-    }
-
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-    // Helper: Convert from title format to name format. Example: "Num Voices" => "numvoices"
-    static std::string title_to_name(const std::string& title) {
-        std::string result;
-
-        for (char c : title) {
-            if (c != ' ') {
-                result += static_cast<char>(std::tolower(c));
-            }
-        }
-
-        return result;
-    }
-
-    static c74::min::title name_to_title(const std::string& s) {
-        if (s.empty()) {
-            return "";
-        }
-
-        std::string result = s;
-        result[0] = static_cast<char>(std::toupper(result[0]));
-        return to_title(result);
-    }
-
-    // Poor implementation of c74::min::title does not support passing std::string to its ctor.
-    // Explicitly calling c_str is required, which confuses most linters
-    static c74::min::title to_title(const std::string& s) {
-        return s.c_str();  // NOLINT(*-redundant-string-cstr)
-    }
-
 };
 
 

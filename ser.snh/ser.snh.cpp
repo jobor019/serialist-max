@@ -6,6 +6,8 @@
 #include "parsing.h"
 #include "max_stereotypes.h"
 #include "max_timepoint.h"
+#include "message_stereotypes.h"
+#include "serialist_attributes.h"
 
 
 using namespace c74::min;
@@ -15,64 +17,43 @@ class ser_snh : public object<ser_snh> {
 private:
     SampleAndHoldWrapper<> m_snh;
 
+    static const inline auto HOLD_DESCRIPTION = Inlets::voice(Types::number, "Set hold state (non-zero = open)");
+
 public:
     MIN_DESCRIPTION{""};
     MIN_TAGS{""};
     MIN_AUTHOR{"Borg"};
     MIN_RELATED{"ser.phasepulse, ser.oscillator"};
 
-    inlet<> inlet_main{this, "(float/list/listoflists) voices to hold", ""};
-    inlet<> inlet_hold{this, "(float/list) hold state", ""};
+    inlet<> inlet_main{this, Inlets::voices(Types::number, "values to sample and hold")};
+    inlet<> inlet_hold{this, HOLD_DESCRIPTION, "", true};
 
-    outlet<> outlet_main{this, "(int/list) output"};
-    outlet<> dumpout{this, "(any) dumpout"};
+    outlet<> outlet_main{this, Inlets::voices(Types::number, "sampled and held output")};
+    outlet<> dumpout{this, Inlets::DUMPOUT};
 
+    SER_ENABLED_ATTRIBUTE(m_snh.enabled, nullptr);
+    SER_NUM_VOICES_ATTRIBUTE(m_snh.num_voices, nullptr);
+    SER_AUTO_RESTORE_ATTRIBUTE();
 
-    attribute<bool> enabled{this, AttributeNames::ENABLED
-                           , true
-                           , title{Titles::ENABLED}
-        , description{Descriptions::ENABLED}
-        , setter{MIN_FUNCTION {
-            if (AttributeSetters::try_set_value(args, m_snh.enabled, cerr))
-                return args;
-            return enabled;
-        }}
-    };
+    pseudo_attribute<double> hold{this, "hold", m_snh.hold_state, cerr
+        , HOLD_DESCRIPTION
+        , input_format::vector , nullptr , [this] { this->process(); } };
 
-    attribute<int> voices{this, AttributeNames::NUM_VOICES
-                          , 0
-                          , title{Titles::NUM_VOICES}
-        , description{Descriptions::ENABLED}
-        , setter{MIN_FUNCTION {
-            if (AttributeSetters::try_set_value(args, m_snh.num_voices, cerr))
-                return args;
-            return voices;
-        }}
-    };
+    message<> setup = Messages::setup_message_with_loadstate(this, [this](LoadState& s) {
+        s >> enabled >> voices >> hold;
+    });
 
-
-    message<> lhs{this, "lhs", MIN_FUNCTION {
-        this->set_lhs(args);
-        this->process();
-        return {};
-    }};
-
-    message<> hold{this, "hold"
-        , MIN_FUNCTION {
-            this->set_hold(args);
-            return {};
-    }};
-
+    message<> savestate = Messages::savestate_message(this, autorestore, [this](SaveState& s) {
+        s << enabled << voices << hold;
+    });
 
 
     function handle_input = MIN_FUNCTION {
         if (inlet == 1) {
-            this->set_hold(args);
+            hold.set(args);
         } else {
-            this->set_lhs(args);
+            this->process_input(args);
         }
-        this->process();
-
         return {};
     };
 
@@ -83,12 +64,10 @@ public:
     message<> anything = Messages::anything_message(this, handle_input);
 
 private:
-    void set_hold(const atoms& args) {
-        AttributeSetters::try_set_vector(args, m_snh.hold_state, cerr);
-    }
-
-    void set_lhs(const atoms& args) {
-        AttributeSetters::try_set_vector(args, m_snh.input_value, cerr);
+    void process_input(const atoms& args) {
+        if (AttributeSetters::try_set_voices(args, m_snh.input_value, cerr)) {
+            process();
+        }
     }
 
     void process() {

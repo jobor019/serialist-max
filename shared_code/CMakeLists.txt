@@ -7,6 +7,7 @@ add_library(shared_code
         utils.h
         serialist_attributes.h
         save_state.h
-        message_stereotypes.h)
+        message_stereotypes.h
+        attribute_setters.h)
 
 target_include_directories(shared_code INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})

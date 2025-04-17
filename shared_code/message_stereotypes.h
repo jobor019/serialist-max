@@ -42,7 +42,7 @@ public:
     static c74::min::message<> list_of_list_message(
         c74::min::object_base* obj
         , const c74::min::function& handle_input
-        , const c74::min::description& description = Descriptions::DEPENDS_ON_INLET_LOL
+        , const c74::min::description& description = Descriptions::DEPENDS_ON_INLET_MULTILIST
     ) noexcept {
         return c74::min::message<>{obj
                                    , "["
@@ -72,14 +72,14 @@ public:
 
     static c74::min::message<> setup_message_with_loadstate(
         c74::min::object_base* obj
-        , const LoadState::Getter& handle_input) {
+        , std::function<void(LoadState&)> handle_input) {
         return c74::min::message<>{
             obj
             , "setup"
             , ""
-            , c74::min::setter{[obj, &handle_input](const c74::min::atoms&, const int) {
+            , c74::min::setter{[obj, f = std::move(handle_input)](const c74::min::atoms&, const int) {
                     LoadState s{obj->state()};
-                    handle_input(s);
+                    f(s);
                     return c74::min::atoms{};
             }}
         };
@@ -87,15 +87,15 @@ public:
 
     static c74::min::message<> savestate_message(
         c74::min::object_base* obj
-        , bool should_save_state
-        , const SaveState::Setter& handle_input) {
+        , c74::min::attribute<bool>& autorestore_obj
+        , SaveState::Setter handle_input) {
         return c74::min::message<>{
             obj
             , "savestate"
             , ""
-            , c74::min::setter{[obj, &should_save_state, &handle_input](const c74::min::atoms& atms, const int) {
-                SaveState s{atms, should_save_state};
-                handle_input(s);
+            , c74::min::setter{[&autorestore_obj, f = std::move(handle_input)](const c74::min::atoms& atms, const int) {
+                SaveState s{atms, autorestore_obj.get()};
+                f(s);
                 return c74::min::atoms{};
             }}
         };
