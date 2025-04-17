@@ -73,7 +73,7 @@ public:
 // ==============================================================================================
 
 
-enum class Types { number, index, trigger };
+enum class Types { number, index, trigger, pulse };
 
 enum class Containers { value, voice, voices };
 
@@ -85,6 +85,7 @@ public:
     static inline const std::string NUMBER_TYPE = "number";
     static inline const std::string INDEX_TYPE = "index";
     static inline const std::string TRIGGER_TYPE = "trigger";
+    static inline const std::string PULSE_TYPE = "pulse";
 
     static inline const std::string VALUE_CONTAINER; // never actually used
     static inline const std::string VOICE_CONTAINER = "list";
@@ -100,6 +101,8 @@ public:
                 return INDEX_TYPE;
             case Types::trigger:
                 return TRIGGER_TYPE;
+            case Types::pulse:
+                return PULSE_TYPE;
         }
         throw std::invalid_argument("unknown type");
     }
@@ -127,6 +130,14 @@ public:
         std::stringstream ss;
         ss << "(" << type_spec(t, c) << ") " << description;
         return Descriptions::to_description(ss.str());
+    }
+
+    static c74::min::description trigger_info(const std::string& description) {
+        return info(Types::trigger, Containers::voices, description); // trigger are always Voices<Trigger>
+    }
+
+    static c74::min::description pulse_info(const std::string& description) {
+        return info(Types::pulse, Containers::voices, description); // pulses are always Voices<Trigger>
     }
 
     static c74::min::description value(Types t, const std::string& description) {
