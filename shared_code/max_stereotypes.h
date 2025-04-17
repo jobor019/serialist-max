@@ -64,6 +64,11 @@ public:
                                                    " patcher is loaded.\n\nNote that any attributes explicitly"
                                                    " provided in the object's box will override the stored state.";
 
+    static inline const c74::min::description INLET_TRIGGERS = "(list) Trigger inputs."
+                                                   " Define a list of inputs that will automatically trigger output"
+                                                   " (i.e. adding an input to this list will make the inlet hot)."
+                                                   " Setting the attribute value to -1 will cause all inlets to be hot";
+
 
     static c74::min::description to_description(const std::string& s) {
         return s.c_str(); // NOLINT(*-redundant-string-cstr)

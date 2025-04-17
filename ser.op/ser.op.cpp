@@ -2,9 +2,12 @@
 #include <core/generatives/operator.h>
 
 #include "c74_min.h"
+#include "attribute_setters.h"
+#include "inlet_triggers.h"
 #include "parsing.h"
 #include "max_stereotypes.h"
-
+#include "message_stereotypes.h"
+#include "serialist_attributes.h"
 
 
 using namespace c74::min;
@@ -13,10 +16,11 @@ using namespace serialist;
 class ser_op : public object<ser_op> {
 private:
     OperatorWrapper<double> m_op;
-    bool m_lhs_is_hot = true;
-    bool m_rhs_is_hot = false;
+    InletTriggerHandler<2> m_inlet_triggers{true, false};
+    std::optional<atom> m_initial_rhs_value = std::nullopt;
 
-    c74::min::message_type m_output_type = c74::min::message_type::float_argument;
+    static const inline auto LHS_DESCRIPTION = Inlets::voices(Types::number, "Left operand");
+    static const inline auto RHS_DESCRIPTION = Inlets::voices(Types::number, "Right operand");
 
 public:
     MIN_DESCRIPTION{"Multi-channel unary and binary operators"};
@@ -24,16 +28,17 @@ public:
     MIN_AUTHOR{"Borg"};
     MIN_RELATED{"ser.oscillator"};
 
-    inlet<> inlet_lhs{this, "left operand", "float/listoflists", [this]() { return lhs_is_hot(); }};
-    inlet<> inlet_rhs{this, "right operand", "float/listoflists", [this]() { return rhs_is_hot(); }};
-    outlet<> outlet_main{this, "result", "float/listoflists"};
-    outlet<> dumpout{this, "(any) dumpout"};
+    inlet<> inlet_lhs{this, LHS_DESCRIPTION, "", [this]() { return lhs_is_hot(); }};
+    inlet<> inlet_rhs{this, RHS_DESCRIPTION, "", [this]() { return rhs_is_hot(); }};
+    outlet<> outlet_main{this, Inlets::voices(Types::number, "Operation result")};
+    outlet<> dumpout{this, Inlets::DUMPOUT};
 
     static const inline std::string CLASS_NAME = "ser.op";
 
     explicit ser_op(const atoms& args = {}) {
         if (args.empty()) {
             error(ErrorMessages::missing_argument(CLASS_NAME, "<operator> [inital_value]"));
+
         } else {
             if (auto mode_str = AtomParser::atom2value<std::string>(args[0])) {
                 try {
@@ -49,80 +54,73 @@ public:
 
         if (args.size() >= 2) {
             if (auto rhs = AtomParser::atom2value<double>(args[1])) {
-                m_op.rhs.set_values(*rhs);
+                m_initial_rhs_value = args[1]; // internal object updated in `setup`
             } else {
                 error(CLASS_NAME + ": the second argument must be a number");
             }
         }
 
         if (args.size() > 2) {
-            // TODO: Not sure if this->classname() is defined at this point!!!
             cwarn << ErrorMessages::extra_argument(CLASS_NAME) << endl;
         }
     }
 
+    SER_ENABLED_ATTRIBUTE(m_op.enabled, nullptr);
+    SER_NUM_VOICES_ATTRIBUTE(m_op.num_voices, nullptr);
+    SER_AUTO_RESTORE_ATTRIBUTE();
+
     attribute<std::vector<int>> triggers{this
                                          , AttributeNames::TRIGGERS
                                          , {0}
-                                         , title{Titles::TRIGGERS}
+                                         , Titles::TRIGGERS
+                                         , Descriptions::INLET_TRIGGERS
                                          , setter{MIN_FUNCTION {
-                auto v = AtomParser::atoms2vec<int>(args);
-                if (v) {
-                    m_lhs_is_hot = v->contains(0);
-                    m_rhs_is_hot = v->contains(1);
+                if (m_inlet_triggers.try_set_triggers_from_index_list(args, cerr)) {
                     return args;
-                } else {
-                    cerr << v.err() << endl;
-                    return triggers;
                 }
-            }}};
+                return triggers;
+    }}};
 
-    c74::min::function handle_input = MIN_FUNCTION {
-        if (inlet == 0) {
-            if (AttributeSetters::try_set_voices<double>(args, m_op.lhs, cerr)) {
-                if (lhs_is_hot()) {
-                    process();
-                }
-            }
-        } else if (inlet == 1) {
-            if (AttributeSetters::try_set_voices<double>(args, m_op.rhs, cerr)) {
-                if (rhs_is_hot()) {
-                    process();
-                }
-            }
+
+    pseudo_attribute<double> lhs{this, "lhs", m_op.lhs, cerr
+        , LHS_DESCRIPTION
+        , input_format::voices, nullptr, [this] { process_if(lhs_is_hot()); }};
+
+
+    pseudo_attribute<double> rhs{this, "rhs", m_op.rhs, cerr
+        , RHS_DESCRIPTION
+        , input_format::voices, nullptr, [this] { process_if(rhs_is_hot()); }};
+
+
+    message<> setup{this, "setup", setter{MIN_FUNCTION {
+        LoadState s{state()};
+        s >> enabled >> voices >> triggers >> lhs; // rhs: see lines below
+
+        if (m_initial_rhs_value) {
+            rhs.set(atoms{*m_initial_rhs_value}); // If explicit arg provided, use this value rather than stored value
+        } else {
+            s >> rhs; // otherwise load state, if applicable
+        }
+        return {};
+    }}};
+
+
+    message<> savestate = Messages::savestate_message(this, autorestore, [this](SaveState& s) {
+        s << enabled << voices << triggers << lhs << rhs;
+    });
+
+
+    function handle_input = MIN_FUNCTION {
+        if (inlet == 1) {
+            rhs.set(args);
+        } else if (inlet == 0) {
+            lhs.set(args);
         }
         return {};
     };
 
-    attribute<int> voices{this
-                          , AttributeNames::NUM_VOICES
-                          , 0
-                          , title{Titles::NUM_VOICES}
-                          , setter{MIN_FUNCTION {
-                if (AttributeSetters::try_set_value<std::size_t, int>(args, m_op.num_voices, cerr)) {
-                    return args;
-                }
-                return voices;
-            }}
-    };
 
-    attribute<symbol> type{this
-                           , AttributeNames::TYPE_SPEC
-                           , "float"
-                           , title{Titles::TYPE_SPEC}
-                           , description{Descriptions::TYPE_SPEC}
-                           , setter{MIN_FUNCTION {
-                if (auto type_spec = TypeSpecificationStereotypes::atoms2type_specification(args)) {
-                    m_output_type = *type_spec;
-                    return args;
-                } else {
-                    cerr << ErrorMessages::format(*type_spec.err(), CLASS_NAME) << endl;
-                }
-                return type;
-            }}
-    };
-
-    message<> bang{this, "bang", MIN_FUNCTION {
+    message<> bang{this, "bang", description{"Trigger last operation again"}, MIN_FUNCTION {
         process();
         return {};
     }};
@@ -133,30 +131,20 @@ public:
     message<> anything = Messages::anything_message(this, handle_input);
 
 private:
+    void process_if(bool check) {
+        if (check)
+            process();
+    }
+
+
     void process() {
         m_op.operator_node.update_time(TimePoint());
         auto output = m_op.operator_node.process();
-        c74::min::atoms formatted_atoms;
-        if (m_output_type == c74::min::message_type::int_argument) {
-            formatted_atoms = AtomFormatter::voices2atoms<long>(output);
-        } else if (m_output_type == c74::min::message_type::float_argument) {
-            formatted_atoms = AtomFormatter::voices2atoms<double>(output);
-        } else {
-            formatted_atoms = AtomFormatter::voices2atoms<std::string>(
-                    output.as_type<std::string>([](const Facet& v) {
-                        return std::to_string(static_cast<long>(v));
-                    }));
-        }
-        outlet_main.send(formatted_atoms);
+        outlet_main.send(AtomFormatter::voices2atoms<double>(output));
     }
 
-    bool lhs_is_hot() const {
-        return m_lhs_is_hot;
-    }
-
-    bool rhs_is_hot() const {
-        return m_rhs_is_hot;
-    }
+    bool lhs_is_hot() const { return m_inlet_triggers.is_hot(0); }
+    bool rhs_is_hot() const { return m_inlet_triggers.is_hot(1); }
 
 };
 

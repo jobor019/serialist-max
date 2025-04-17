@@ -86,15 +86,16 @@ public:
 
     vector_attribute<double> period{this, "period", w.period, PaParameters::DEFAULT_PERIOD, cerr};
 
-    message<> setup = Messages::setup_message_with_loadstate(this, [this](LoadState& s) {
-        s >> this->someint >> this->somefloat >> this->somesymbol >> this->somevector >> this->somepseudo;
-    });
-
-    // message<> setup{this, "setup", "", setter{MIN_FUNCTION {
-    //     LoadState s{state()};
+    // message<> setup = Messages::setup_message_with_loadstate(this, [this](LoadState& s) {
     //     s >> this->someint >> this->somefloat >> this->somesymbol >> this->somevector >> this->somepseudo;
-    //     return {};
-    // }}};
+    // });
+
+    message<> setup{this, "setup", "", setter{MIN_FUNCTION {
+        cout << "setup args size: " << args.size() << endl;
+        LoadState s{state()};
+        s >> this->someint >> this->somefloat >> this->somesymbol >> this->somevector >> this->somepseudo;
+        return {};
+    }}};
 
     message<> bang{this, "bang", "A description", setter{MIN_FUNCTION {
         i += 1;
@@ -117,7 +118,7 @@ public:
     //             return autorestore;
     // }}};
 
-    message<> savestate = Messages::savestate_message(this, autorestore.get(), [this](SaveState& s) {
+    message<> savestate = Messages::savestate_message(this, autorestore, [this](SaveState& s) {
         s << someint << somefloat << somesymbol << somevector << somepseudo;
     });
 
