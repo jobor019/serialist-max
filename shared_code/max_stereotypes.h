@@ -78,7 +78,7 @@ public:
 // ==============================================================================================
 
 
-enum class Types { number, index, trigger, pulse };
+enum class Types { number, index, phase, trigger, pulse };
 
 enum class Containers { value, voice, voices };
 
@@ -89,6 +89,7 @@ public:
 
     static inline const std::string NUMBER_TYPE = "number";
     static inline const std::string INDEX_TYPE = "index";
+    static inline const std::string PHASE_TYPE = "phase";
     static inline const std::string TRIGGER_TYPE = "trigger";
     static inline const std::string PULSE_TYPE = "pulse";
 
@@ -104,6 +105,8 @@ public:
                 return NUMBER_TYPE;
             case Types::index:
                 return INDEX_TYPE;
+            case Types::phase:
+                return PHASE_TYPE;
             case Types::trigger:
                 return TRIGGER_TYPE;
             case Types::pulse:

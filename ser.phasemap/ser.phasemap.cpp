@@ -6,15 +6,15 @@
 #include "parsing.h"
 #include "max_stereotypes.h"
 #include "max_timepoint.h"
+#include "message_stereotypes.h"
+#include "serialist_attributes.h"
 
 
 using namespace c74::min;
 using namespace serialist;
 
-using namespace c74::min;
 
-
-class ser_phasemap : public c74::min::object<ser_phasemap> {
+class ser_phasemap : public object<ser_phasemap> {
 private:
     PhaseMapWrapper<> m_phasemap;
 
@@ -24,45 +24,28 @@ public:
     MIN_AUTHOR{"Borg"};
     MIN_RELATED{"ser.oscillator, ser.phasepulse"};
 
-    inlet<> inlet_main{this, "(float/list) cursor position / control messages", "", true};
-    inlet<> inlet_durations{this, "(float/list) durations", "", false};
+    inlet<> inlet_main{this, Inlets::voice(Types::phase, "Input phase to map")};
+    inlet<> inlet_durations{this, Inlets::voice(Types::phase, "Durations as fractions of incoming phase"), "", false};
 
-    outlet<> outlet_main{this, "output", ""}; // TODO
-    outlet<> dumpout{this, "(any) dumpout"};
+    outlet<> outlet_main{this, Inlets::voice(Types::phase, "Mapped phase")};
+    outlet<> dumpout{this, Inlets::DUMPOUT};
 
+    SER_ENABLED_ATTRIBUTE(m_phasemap.enabled, nullptr);
+    SER_NUM_VOICES_ATTRIBUTE(m_phasemap.num_voices, nullptr);
+    SER_AUTO_RESTORE_ATTRIBUTE();
 
-    attribute<bool> enabled{this, AttributeNames::ENABLED
-                        , true
-                        , title{Titles::ENABLED}
-        , description{Descriptions::ENABLED}
-        , setter{MIN_FUNCTION {
-            if (AttributeSetters::try_set_value(args, m_phasemap.enabled, cerr))
-                return args;
-            return enabled;
-        }}
-    };
-
-    attribute<int> voices{this, AttributeNames::NUM_VOICES
-                          , 0
-                          , title{Titles::NUM_VOICES}
-        , description{Descriptions::ENABLED}
-        , setter{MIN_FUNCTION {
-            if (AttributeSetters::try_set_value(args, m_phasemap.num_voices, cerr))
-                return args;
-            return voices;
-        }}
-    };
+    vector_attribute<double> durations{this, "durations", m_phasemap.durations, PhaseMap::DEFAULT_DURATION, cerr};
 
 
-    attribute<std::vector<double>> durations{this, "durations"
-                                          , Vec<double>::singular(PhaseMap::DEFAULT_DURATION).vector()
-                                          , title{"durations"}
-        , setter{MIN_FUNCTION {
-            if (AttributeSetters::try_set_vector_singular(args, m_phasemap.durations, cerr))
-                return args;
-            return durations;
-        }}
-    };
+    message<> setup = Messages::setup_message_with_loadstate(this, [this](LoadState& s) {
+        s >> enabled >> voices >> durations;
+    });
+
+
+    message<> savestate = Messages::savestate_message(this, autorestore, [this](SaveState& s) {
+        s << enabled << voices << durations;
+    });
+
 
     function handle_input = MIN_FUNCTION {
         if (inlet == 1) {
@@ -75,7 +58,6 @@ public:
     };
 
 
-    message<> bang = Messages::bang_message(this, handle_input);
     message<> list = Messages::list_message(this, handle_input);
     message<> number = Messages::number_message(this, handle_input);
     message<> list_of_list = Messages::list_of_list_message(this, handle_input);
@@ -101,7 +83,6 @@ private:
 
         } else {
             cerr << cursor.err().message() << endl;
-            return;
         }
     }
 
