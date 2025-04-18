@@ -32,6 +32,7 @@ public:
         , m_should_save_state{should_save_state} {}
 
 
+    // Note: this will only store anything if autorestore is true
     friend SaveState& operator<<(SaveState& s, const pseudo_attribute_base& attr) {
         s.store(attr.name(), attr.get_stored_atoms());
         return s;

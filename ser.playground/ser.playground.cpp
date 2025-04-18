@@ -78,6 +78,8 @@ public:
     inlet<> inlet_main{this, "(any) control messages"};
     outlet<> outlet_main{this, "(float/list) pulse output"};
 
+    // MIN_FLAGS{behavior_flags::nobox};
+
     SER_ENABLED_ATTRIBUTE(w.enabled, &m_mutex);
     SER_NUM_VOICES_ATTRIBUTE(w.num_voices, &m_mutex);
     SER_AUTO_RESTORE_ATTRIBUTE();

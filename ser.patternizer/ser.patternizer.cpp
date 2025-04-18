@@ -3,9 +3,11 @@
 #include <core/generatives/patternizer.h>
 
 #include "c74_min.h"
+#include "inlet_triggers.h"
 #include "parsing.h"
 #include "max_stereotypes.h"
 #include "max_timepoint.h"
+#include "message_stereotypes.h"
 
 
 using namespace c74::min;
@@ -14,8 +16,17 @@ class ser_patternizer : public object<ser_patternizer> {
 private:
     using PatternizerT = PatternizerDoubleWrapper<>::PatternizerT;
 
+    static const inline auto PATTERN_DESCRIPTION = Inlets::voices(Types::number, "Set pattern to use");
+    static const inline auto CHORD_DESCRIPTION = Inlets::voices(Types::number, "Set chord(s) to apply pattern to");
+
+    static constexpr std::size_t TRIGGER_INLET = 0;
+    static constexpr std::size_t PATTERN_INLET = 1;
+    static constexpr std::size_t CHORD_INLET = 2;
+
     // for now, we'll only support the default / facet patternizer
     PatternizerDoubleWrapper<> m_patternizer;
+
+    InletTriggerHandler<3> m_inlet_triggers{true, false, false};
 
 public:
     MIN_DESCRIPTION{""};
@@ -23,84 +34,80 @@ public:
     MIN_AUTHOR{"Borg"};
     MIN_RELATED{"ser.interpolator"};
 
-    inlet<> inlet_main{this, "(any) trigger",  "", true};
-    inlet<> inlet_pattern{this, "(float/list/listoflists) pattern", "", false};
-    inlet<> inlet_chord{this, "(float/list/listoflists) chord", "", false};
+    inlet<> inlet_main{this, Inlets::trigger_info("Trigger output"), "", [this] { return is_hot(TRIGGER_INLET); }};
+    inlet<> inlet_pattern{this, PATTERN_DESCRIPTION, "", [this] { return is_hot(PATTERN_INLET); }};
+    inlet<> inlet_chord{this, CHORD_DESCRIPTION, "", [this] { return is_hot(CHORD_INLET); }};
 
-    outlet<> outlet_main{this, "(float/list/listoflists) chord output"};
-    outlet<> dumpout{this, "(any) dumpout"};
+    outlet<> outlet_main{this, Inlets::voices(Types::number, "Pattern output")};
+    outlet<> dumpout{this, Inlets::DUMPOUT};
 
+    SER_ENABLED_ATTRIBUTE(m_patternizer.enabled, nullptr);
+    SER_NUM_VOICES_ATTRIBUTE(m_patternizer.num_voices, nullptr);
+    SER_AUTO_RESTORE_ATTRIBUTE();
 
-    attribute<bool> enabled{
-        this, AttributeNames::ENABLED, true, title{Titles::ENABLED}, description{Descriptions::ENABLED}, setter{
-            MIN_FUNCTION {
-                if (AttributeSetters::try_set_value(args, m_patternizer.enabled, cerr))
-                    return args;
-                return enabled;
+    attribute<std::vector<int>> triggers{this
+                                      , AttributeNames::TRIGGERS
+                                      , {0}
+        , Titles::TRIGGERS
+        , Descriptions::INLET_TRIGGERS
+        , setter{MIN_FUNCTION {
+            if (m_inlet_triggers.try_set_triggers_from_index_list(args, cerr)) {
+                return args;
             }
-        }
-    };
+            return triggers;
+        }}};
 
-    attribute<int> voices{
-        this, AttributeNames::NUM_VOICES, 0, title{Titles::NUM_VOICES}, description{Descriptions::ENABLED}, setter{
-            MIN_FUNCTION {
-                if (AttributeSetters::try_set_value(args, m_patternizer.num_voices, cerr))
-                    return args;
-                return voices;
+
+    value_attribute<PatternizerT::Mode> mode{this, "mode", m_patternizer.mode, PatternizerT::DEFAULT_MODE, cerr};
+
+
+    value_attribute<bool> inverse{this, "inverse", m_patternizer.inverse, PatternizerT::DEFAULT_INVERTED, cerr
+    , "", nullptr, description{"Invert the pattern"}};
+
+
+    value_attribute<bool> uses_index{this, "index", m_patternizer.pattern_uses_index, PatternizerT::DEFAULT_PATTERN_USES_INDEX, cerr
+        , title{"Use Index"}, nullptr, description{"Treat pattern values as indices (1) or phase-like values (0)."
+                                          " When the values are phase-like, the provided pattern will always map to"
+                                          " range 0-1 (end exclusive), and the octave will always correspond to integer"
+                                          " values of the input (e.g. 1.0 is first octave, 2.0 second octave, ...).\n\n"
+                                          "When the values are indices, the input will be treated as integers, e.g."
+                                          " 0 corresponds to first element in pattern, 1 to second element, etc."}};
+
+
+    vector_attribute<double> octave{this, "octave", m_patternizer.octave, {12.0}, cerr
+    , "", nullptr, description{"Set the octave to use in mode \"cont\""}};
+
+
+    pseudo_attribute<double> chord{this, "chord", m_patternizer.chord, cerr, CHORD_DESCRIPTION
+        , input_format::voices, nullptr, [this] {
+            if (is_hot(CHORD_INLET)) {
+                process(InletTriggerHandler<>::triggers_like(m_patternizer.chord.get_values()));
             }
+
+        }};
+
+    pseudo_attribute<double> pattern{this, "pattern", m_patternizer.pattern, cerr, PATTERN_DESCRIPTION
+    , input_format::voices, nullptr, [this] {
+        if (is_hot(PATTERN_INLET)) {
+            process(InletTriggerHandler<>::triggers_like(m_patternizer.pattern.get_values()));
         }
-    };
+    }};
 
+    message<> setup = Messages::setup_message_with_loadstate(this, [this](LoadState& s) {
+        s >> enabled >> voices >> triggers >> mode >> inverse >> uses_index >> octave >> pattern >> chord;
+    });
 
-    attribute<int> mode{
-        this, "mode", static_cast<int>(PatternizerT::DEFAULT_MODE), title{"mode"}, setter{
-            MIN_FUNCTION {
-                if (AttributeSetters::try_set_value(args, m_patternizer.mode, cerr))
-                    return args;
-                return mode;
-            }
-        }
-    };
-
-    attribute<bool> inverse{
-        this, "inverse", PatternizerT::DEFAULT_INVERTED, title{"inverse"}, setter{
-            MIN_FUNCTION {
-                if (AttributeSetters::try_set_value(args, m_patternizer.inverse_selection, cerr))
-                    return args;
-                return inverse;
-            }
-        }
-    };
-
-
-    attribute<bool> uses_index{
-        this, "index", PatternizerT::DEFAULT_PATTERN_USES_INDEX, title{"uses index"}, setter{
-            MIN_FUNCTION {
-                if (AttributeSetters::try_set_value(args, m_patternizer.pattern_uses_index, cerr))
-                    return args;
-                return uses_index;
-            }
-        }
-    };
-
-    attribute<std::vector<double>> octave{
-        this, "octave", {12.0}, title{"octave"}, setter{
-            MIN_FUNCTION {
-                if (AttributeSetters::try_set_vector(args, m_patternizer.octave, cerr))
-                    return args;
-                return octave;
-            }
-        }
-    };
-
+    message<> savestate = Messages::savestate_message(this, autorestore, [this](SaveState& s) {
+        s << enabled << voices << triggers << mode << inverse << uses_index << octave << pattern << chord;
+    });
 
     function handle_input = MIN_FUNCTION {
         if (inlet == 2) {
-            this->set_chord(args);
+            chord.set(args);
         } else if (inlet == 1) {
-            this->set_pattern(args);
-        } else {
-            this->process(args);
+            pattern.set(args);
+        } else if (is_hot(TRIGGER_INLET)) {
+            process(args);
         }
         return {};
     };
@@ -112,38 +119,15 @@ public:
     message<> anything = Messages::anything_message(this, handle_input);
 
 
-    message<> chord{this, "chord", setter{MIN_FUNCTION {
-        if (inlet != 0) {
-            cerr << "invalid message \"chord\" for inlet " << inlet << endl;
-            return {};
-        }
-
-        this->set_chord(args);
-        return {};
-    }}};
-
-
-    message<> pattern{this, "pattern", setter{MIN_FUNCTION {
-        if (inlet != 0) {
-            cerr << "invalid message \"pattern\" for inlet " << inlet << endl;
-            return {};
-        }
-
-        this->set_pattern(args);
-        return {};
-    }}};
-
 private:
     void process(const atoms& atms) {
         if (!SerialistTransport::get_instance().active()) {
             return;
         }
 
-        auto& trigger = m_patternizer.trigger;
-
         if (atms.empty()) {
             // bang received: trigger all voices
-            trigger.set_values(Voices<Trigger>::singular(Trigger::pulse_on()));
+            process(Voices<Trigger>::singular(Trigger::pulse_on()));
         } else {
             auto triggers = AtomParser::atoms2triggers(atms, false);
 
@@ -151,8 +135,19 @@ private:
                 return;
             }
 
-            trigger.set_values(*triggers);
+            process(*triggers);
         }
+    }
+
+
+    void process(const Voices<Trigger>& triggers) {
+        if (!SerialistTransport::get_instance().active()) {
+            return;
+        }
+
+        auto& trigger = m_patternizer.trigger;
+        trigger.set_values(triggers);
+
 
         auto& node = m_patternizer.patternizer_mode;
         node.update_time(SerialistTransport::get_instance().get_time());
@@ -165,15 +160,9 @@ private:
     }
 
 
-    bool set_chord(const atoms& atms) {
-        return AttributeSetters::try_set_voices(atms, m_patternizer.chord, cerr);
+    bool is_hot(std::size_t i) const {
+        return m_inlet_triggers.is_hot(i);
     }
-
-    bool set_pattern(const atoms& atms) {
-        return AttributeSetters::try_set_voices(atms, m_patternizer.pattern, cerr);
-    }
-
-
 };
 
 

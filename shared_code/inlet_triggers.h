@@ -6,7 +6,7 @@
 #include "c74_min_api.h"
 #include "parsing.h"
 
-template<std::size_t N>
+template<std::size_t N = 2>
 class InletTriggerHandler {
 public:
     static constexpr int ALL_HOT = -1;
@@ -16,6 +16,16 @@ public:
     InletTriggerHandler(std::initializer_list<bool> initial) {
         assert(initial.size() == N);
         std::copy(initial.begin(), initial.end(), m_is_hot.begin());
+    }
+
+
+    template<typename T>
+    static Voices<Trigger> triggers_like(const Voices<T>& v) {
+        if (v.is_empty_like()) {
+            return Voices<Trigger>::empty_like();
+        }
+
+        return Voices<Trigger>::repeated(Trigger::without_id(Trigger::Type::pulse_on), v.size());
     }
 
     bool try_set_triggers_from_index_list(const c74::min::atoms& index_list, c74::min::logger& cerr) {
