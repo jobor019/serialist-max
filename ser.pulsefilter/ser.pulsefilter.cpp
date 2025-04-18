@@ -6,6 +6,8 @@
 #include "parsing.h"
 #include "max_stereotypes.h"
 #include "max_timepoint.h"
+#include "message_stereotypes.h"
+#include "serialist_attributes.h"
 
 
 using namespace c74::min;
@@ -15,82 +17,50 @@ class ser_pulsefilter : public object<ser_pulsefilter> {
 private:
     PulseFilterWrapper<> m_pulse_filter;
 
+    static const inline auto STATE_DESCRIPTION = Inlets::voice(Types::number, "Set filter state (non-zero = open)");
+
 public:
     MIN_DESCRIPTION{""};
     MIN_TAGS{""};
     MIN_AUTHOR{"Borg"};
     MIN_RELATED{"ser.phasepulse, ser.makenote"};
 
-    inlet<> inlet_main{this, "(any) trigger", ""};
-    inlet<> inlet_filter_state{this, "(float/list) filter state", ""};
+    inlet<> inlet_main{this, Inlets::pulse_info("Pulses to filter/sustain")};
+    inlet<> inlet_filter_state{this, STATE_DESCRIPTION};
 
-    outlet<> outlet_main{this, "(int/list) pulses"};
-    outlet<> dumpout{this, "(any) dumpout"};
+    outlet<> outlet_main{this, Inlets::pulse_info("filtered/sustained pulses")};
+    outlet<> dumpout{this, Inlets::DUMPOUT};
 
+    SER_ENABLED_ATTRIBUTE(m_pulse_filter.enabled, nullptr);
+    SER_NUM_VOICES_ATTRIBUTE(m_pulse_filter.num_voices, nullptr);
+    SER_AUTO_RESTORE_ATTRIBUTE();
 
-    attribute<bool> enabled{this, AttributeNames::ENABLED
-                           , true
-                           , title{Titles::ENABLED}
-        , description{Descriptions::ENABLED}
-        , setter{MIN_FUNCTION {
-            if (AttributeSetters::try_set_value(args, m_pulse_filter.enabled, cerr))
-                return args;
-            return enabled;
-        }}
-    };
+    value_attribute<PulseFilter::Mode> mode{this, "mode", m_pulse_filter.mode, PulseFilter::DEFAULT_MODE, cerr};
 
-    attribute<int> voices{this, AttributeNames::NUM_VOICES
-                          , 0
-                          , title{Titles::NUM_VOICES}
-        , description{Descriptions::ENABLED}
-        , setter{MIN_FUNCTION {
-            if (AttributeSetters::try_set_value(args, m_pulse_filter.num_voices, cerr))
-                return args;
-            return voices;
-        }}
-    };
+    value_attribute<bool> immediate{this, "immediate", m_pulse_filter.immediate, PulseFilter::DEFAULT_IMMEDIATE_VALUE, cerr,
+    "", nullptr, description{"Set immediate mode on/off."
+                             " In immediate mode, the filter state is updated as soon as the filter is opened/closed."
+                             " More specifically, when enabled:\n"
+                             "   - In mode \"sustain\": output pulse offs immediately when the filter is opened\n"
+                             "   - In mode \"pause\": output pulse offs immediately when the filter is closed\n\n"
+                             " When disabled:\n"
+                             "   - In mode \"sustain\": output all held pulse offs on next incoming pulse off\n"
+                             "   - In mode \"pause\": don't output anything on close, let matching pulse offs pass"
+                             " through normally while closed"}};
+
+    pseudo_attribute<double> filterstate{this, "filterstate", m_pulse_filter.filter_state, cerr
+    , STATE_DESCRIPTION, input_format::vector, nullptr, [this] { process(); }};
 
 
-    attribute<int> mode{this, "mode"
-                          , static_cast<int>(PulseFilter::DEFAULT_MODE)
-                          , title{"Mode"}
-        , setter{MIN_FUNCTION {
-            if (AttributeSetters::try_set_value(args, m_pulse_filter.mode, cerr))
-                return args;
-            return voices;
-        }}
-    };
+    message<> setup = Messages::setup_message_with_loadstate(this, [this](LoadState& s) {
+        s >> enabled >> voices >> mode >> immediate >> filterstate;
+    });
+    message<> savestate = Messages::savestate_message(this, autorestore, [this](SaveState& s) {
+        s << enabled << voices << mode << immediate << filterstate;
+    });
 
 
-    attribute<bool> immediate{this, "immediate"
-                          , PulseFilter::DEFAULT_IMMEDIATE_VALUE
-                          , title{"Immediate"}
-        , setter{MIN_FUNCTION {
-            if (AttributeSetters::try_set_value(args, m_pulse_filter.immediate, cerr))
-                return args;
-            return voices;
-        }}
-    };
-
-
-
-    message<> filterstate{this, "filterstate"
-        , MIN_FUNCTION {
-            this->set_filter_state(args);
-            this->process();
-            return {};
-    }};
-
-
-    message<> trigger{this, "trigger", MIN_FUNCTION {
-        this->set_trigger(args);
-        this->process();
-        return {};
-    }};
-
-
-    message<threadsafe::no> flush{this, AttributeNames::FLUSH
-                    , description{Descriptions::FLUSH}
+    message<threadsafe::no> flush{this, AttributeNames::FLUSH, description{Descriptions::FLUSH}
         , MIN_FUNCTION {
             if (inlet != 0) {
                 return {};
@@ -110,12 +80,10 @@ public:
 
     function handle_input = MIN_FUNCTION {
         if (inlet == 1) {
-            this->set_filter_state(args);
+            filterstate.set(args);
         } else {
-            this->set_trigger(args);
+            process_trigger(args);
         }
-        this->process();
-
         return {};
     };
 
@@ -126,17 +94,16 @@ public:
     message<> anything = Messages::anything_message(this, handle_input);
 
 private:
-    void set_filter_state(const atoms& args) {
-        AttributeSetters::try_set_vector(args, m_pulse_filter.filter_state, cerr);
-    }
 
-    void set_trigger(const atoms& args) {
+    void process_trigger(const atoms& args) {
         if (auto triggers = AtomParser::atoms2triggers(args)) {
             m_pulse_filter.trigger.set_values(*triggers);
+            process();
         } else {
             cerr << "doesn't understand " << args[0] << endl;
         }
     }
+
 
     void process() {
         auto time = SerialistTransport::get_instance().get_time();
@@ -157,8 +124,6 @@ private:
 
         TriggerStereotypes::output_as_triggers_sorted(output, outlet_main, cerr);
     }
-
-
 };
 
 
