@@ -48,6 +48,9 @@ private:
     std::optional<std::function<void()>> m_post_setter_function;
 
 public:
+    // Note: pseudo_attribute is NOT safe to use for classes that has unique_ptr-owned owned Sequence/Variable.
+    //       While the message will never be invoked before the min::object's constructor, the pseudo_attribute will
+    //       be constructed before the min::object's constructor, and the referenced `target` will therefore be invalid.
     pseudo_attribute(c74::min::object_base* an_owner
                      , const std::string& a_name
                      , Sequence<OutputType, StoredType>& target
@@ -78,7 +81,7 @@ public:
         , m_post_setter_function(std::move(post_setter_function)) {}
 
     // Note: messages' setter functions are not invoked when constructed (unlike attributes), and it's therefore
-    //       safe to construct a lambda which calls the member function like this
+    //       safe to construct a lambda which calls the member function like this.
     void set(const c74::min::atoms& args) override {
         if (m_format == input_format::voices) {
             // Note: leading bracket should under no situation be stripped. Messages::list_of_list_message prepends

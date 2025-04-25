@@ -24,6 +24,7 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.phasepulse)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.playground)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.pulsefilter)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.random)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.router)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.slidermapping)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.snh)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.transport)
@@ -45,6 +46,7 @@ add_dependencies(all_externals
         ser.playground
         ser.pulsefilter
         ser.random
+        ser.router
         ser.slidermapping
         ser.snh
         ser.transport

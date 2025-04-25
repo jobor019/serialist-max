@@ -65,13 +65,9 @@ public:
     , "", nullptr, description{"Invert the pattern"}};
 
 
-    value_attribute<bool> uses_index{this, "index", m_patternizer.pattern_uses_index, PatternizerT::DEFAULT_PATTERN_USES_INDEX, cerr
-        , title{"Use Index"}, nullptr, description{"Treat pattern values as indices (1) or phase-like values (0)."
-                                          " When the values are phase-like, the provided pattern will always map to"
-                                          " range 0-1 (end exclusive), and the octave will always correspond to integer"
-                                          " values of the input (e.g. 1.0 is first octave, 2.0 second octave, ...).\n\n"
-                                          "When the values are indices, the input will be treated as integers, e.g."
-                                          " 0 corresponds to first element in pattern, 1 to second element, etc."}};
+    value_attribute<bool> uses_index{this, AttributeNames::USE_INDEX
+        , m_patternizer.pattern_uses_index, PatternizerT::DEFAULT_PATTERN_USES_INDEX, cerr
+        , Titles::USE_INDEX, nullptr, Descriptions::USE_INDEX_WITH_OCTAVES};
 
 
     vector_attribute<double> octave{this, "octave", m_patternizer.octave, {12.0}, cerr

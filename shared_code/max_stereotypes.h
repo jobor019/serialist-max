@@ -14,6 +14,8 @@ public:
     static inline const std::string NUM_VOICES = "voices";
     static inline const std::string TRIGGERS = "triggers";
 
+    static inline const std::string USE_INDEX = "index";
+
     static inline const std::string CLOCK = "clock";
     static inline const std::string FLUSH = "flush";
     static inline const std::string BANG = "bang";
@@ -32,6 +34,8 @@ public:
     static inline const c74::min::title ENABLED = "Enabled";
     static inline const c74::min::title NUM_VOICES = "Number of Voices";
     static inline const c74::min::title TRIGGERS = "Triggers";
+
+    static inline const c74::min::title USE_INDEX = "Use Index";
 
     static inline const c74::min::title CLOCK = "Clock Source";
     static inline const c74::min::title FLUSH = "Flush";
@@ -59,15 +63,32 @@ public:
     static inline const c74::min::description FLUSH = "Flush: TODO";
 
     static inline const c74::min::description AUTO_RESTORE = "(bool) Save the object's state with the patcher."
-                                                   " When enabled, the object will automatically store its state each"
-                                                   " time the patcher is saved, and restore it the next time the"
-                                                   " patcher is loaded.\n\nNote that any attributes explicitly"
-                                                   " provided in the object's box will override the stored state.";
+            " When enabled, the object will automatically store its state each"
+            " time the patcher is saved, and restore it the next time the"
+            " patcher is loaded.\n\nNote that any attributes explicitly"
+            " provided in the object's box will override the stored state.";
 
     static inline const c74::min::description INLET_TRIGGERS = "(list) Trigger inputs."
-                                                   " Define a list of inputs that will automatically trigger output"
-                                                   " (i.e. adding an input to this list will make the inlet hot)."
-                                                   " Setting the attribute value to -1 will cause all inlets to be hot";
+            " Define a list of inputs that will automatically trigger output"
+            " (i.e. adding an input to this list will make the inlet hot)."
+            " Setting the attribute value to -1 will cause all inlets to be hot";
+
+    static inline const c74::min::description USE_INDEX_WITH_OCTAVES{
+        "Treat input values as indices (1) or phase-like values (0)."
+        " When the values are phase-like, the inputs will be treated as phase values"
+        " in range 0-1 (end exclusive), and the octave will always correspond to integer"
+        " values of the input (e.g. 1.0 is first octave, 2.0 second octave, ...).\n\n"
+        "When the values are indices, the input will be treated as integers, e.g."
+        " 0 corresponds to first element, 1 to second element, etc."
+    };
+
+    static inline const c74::min::description USE_INDEX_WITHOUT_OCTAVE{
+        "Treat input values as indices (1) or phase-like values (0)."
+        " When the values are phase-like, the inputs will be treated as phase values"
+        " in range 0-1 (end exclusive).\n\n"
+        "When the values are indices, the input will be treated as integers, e.g."
+        " 0 corresponds to first element, 1 to second element, etc."
+    };
 
 
     static c74::min::description to_description(const std::string& s) {
