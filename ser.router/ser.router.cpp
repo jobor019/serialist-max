@@ -12,15 +12,155 @@
 using namespace c74::min;
 using namespace serialist;
 
+
+// ==============================================================================================
+
+class MaxRouterBase {
+public:
+    using Keys = RouterNode<Facet>::Keys;
+
+    MaxRouterBase() = default;
+    virtual ~MaxRouterBase() = default;
+    MaxRouterBase(const MaxRouterBase&) = delete;
+    MaxRouterBase& operator=(const MaxRouterBase&) = delete;
+    MaxRouterBase(MaxRouterBase&&) = default;
+    MaxRouterBase& operator=(MaxRouterBase&&) = default;
+
+    virtual bool set_input(std::size_t inlet_index, const atoms& args, logger& cerr) = 0;
+    virtual void process(std::vector<std::unique_ptr<outlet<>>>& outlets, logger& cerr) = 0;
+
+
+    ParameterHandler ph;
+
+    Sequence<Facet, double> routing_map{Keys::ROUTING_MAP, ph};
+    Variable<Facet, RouterMode> mode{Keys::MODE, ph, RouterDefaults::MODE};
+    Variable<Facet, bool> uses_index{Keys::USES_INDEX, ph, RouterDefaults::USE_INDEX};
+    Variable<Facet, FlushMode> flush_mode{Keys::FLUSH_MODE, ph, RouterDefaults::FLUSH_MODE};
+
+    Variable<Facet, bool> enabled{param::properties::enabled, ph, true};
+};
+
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+class MaxFacetRouter : public MaxRouterBase {
+public:
+    using SequenceType = Sequence<Facet, double>;
+
+    MaxFacetRouter(std::size_t num_inlets, std::size_t num_outlets)
+        : m_inlets(WrapperUtils::create_inputs<SequenceType>(num_inlets, ph))
+        , m_router_node(Keys::CLASS_NAME
+                      , ph
+                      , num_outlets
+                      , WrapperUtils::cast_inputs<Facet, SequenceType>(m_inlets)
+                      , &routing_map
+                      , &mode
+                      , &uses_index
+                      , &flush_mode
+                      , &enabled) {}
+
+
+    bool set_input(std::size_t inlet_index, const atoms& args, logger& cerr) override {
+        assert(inlet_index < m_inlets.size());
+
+        if (auto input = AtomParser::atoms2voices<double>(args); input.is_ok()) {
+            m_inlets[inlet_index]->set_values(*input);
+            return true;
+        } else {
+            cerr << input.err().message() << endl;
+            return false;
+        }
+    }
+
+
+    void process(std::vector<std::unique_ptr<outlet<>>>& outlets, logger&) override {
+        m_router_node.update_time(SerialistTransport::get_instance().get_time());
+        auto output = m_router_node.process();
+
+        assert(output.size() == outlets.size());
+
+        for (std::size_t i = 0; i < output.size(); ++i) {
+            // no need to reindex here: first index in output corresponds to first index in outlets
+            outlets[i]->send(AtomFormatter::voices2atoms<double>(output[i]));
+        }
+    }
+
+private:
+    Vec<std::unique_ptr<SequenceType>> m_inlets;
+    RouterNode<Facet> m_router_node;
+};
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+class MaxPulseRouter : public MaxRouterBase {
+public:
+    using SequenceType = Sequence<Trigger>;
+
+    MaxPulseRouter(std::size_t num_inlets, std::size_t num_outlets)
+        : m_inlets(WrapperUtils::create_inputs<SequenceType>(num_inlets, ph))
+        , m_router_node(Keys::CLASS_NAME
+                      , ph
+                      , num_outlets
+                      , WrapperUtils::cast_inputs<Trigger, SequenceType>(m_inlets)
+                      , &routing_map
+                      , &mode
+                      , &uses_index
+                      , &flush_mode
+                      , &enabled) {}
+
+
+    bool set_input(std::size_t inlet_index, const atoms& args, logger& cerr) override {
+        assert(inlet_index < m_inlets.size());
+
+        if (auto input = AtomParser::atoms2triggers(args); input.is_ok()) {
+            m_inlets[inlet_index]->set_values(*input);
+            return true;
+        } else {
+            cerr << input.err().message() << endl;
+            return false;
+        }
+    }
+
+
+    void process(std::vector<std::unique_ptr<outlet<>>>& outlets, logger& cerr) override {
+        m_router_node.update_time(SerialistTransport::get_instance().get_time());
+        auto output = m_router_node.process();
+
+        assert(output.size() == outlets.size());
+
+        for (std::size_t i = 0; i < output.size(); ++i) {
+            // no need to reindex here: first index in output corresponds to first index in outlets
+            TriggerStereotypes::output_as_triggers_sorted(output[i], *outlets[i], cerr);
+        }
+
+        clear_inlets();
+    }
+
+private:
+    void clear_inlets() {
+        for (auto& inlet : m_inlets) {
+            inlet->set_values(Voices<Trigger>::empty_like());
+        }
+    }
+
+    Vec<std::unique_ptr<SequenceType>> m_inlets;
+    RouterNode<Trigger> m_router_node;
+};
+
+
+// ==============================================================================================
+
 struct RouterDescriptions {
     const static inline description MODE{"Mode TODO"};
     const static inline description MAPPING{"Router Control TODO"};
 };
 
 
+// ==============================================================================================
+
 class ser_router : public object<ser_router> {
 private:
-    std::unique_ptr<RouterFacetWrapper> m_router;
+    std::unique_ptr<MaxRouterBase> m_router;
     Types m_type = Types::number;
 
     static const inline std::string CLASS_NAME = "ser.router";
@@ -58,10 +198,11 @@ public:
             create_router_outlets(num_outlets, *is_pulse);
 
             if (*is_pulse) {
-                error("pulses not supported yet");
+                m_type = Types::pulse;
+                m_router = std::make_unique<MaxPulseRouter>(num_inlets, num_outlets);
             } else {
                 m_type = Types::number;
-                m_router = std::make_unique<RouterFacetWrapper>(num_inlets, num_outlets);
+                m_router = std::make_unique<MaxFacetRouter>(num_inlets, num_outlets);
             }
         }
     }
@@ -99,17 +240,12 @@ public:
 
 
     // Can't use value_attribute here since we need to check for instantiation and mode validity
-    attribute<router::Mode> mode{
-        this
-        , "mode"
-        , router::Defaults::MODE
-        , RouterDescriptions::MODE
-        , setter{
+    attribute<RouterMode> mode{ this, "mode", RouterDefaults::MODE, RouterDescriptions::MODE, setter{
             MIN_FUNCTION {
                 if (!instantiated())
                     return mode;
 
-                if (auto v = AtomParser::atoms2value<router::Mode>(args)) {
+                if (auto v = AtomParser::atoms2value<RouterMode>(args)) {
                     if (validate_mode(*v)) {
                         m_router->mode.set_value(*v);
                         return args;
@@ -127,12 +263,8 @@ public:
 
 
     // Can't use value_attribute here since we need to check for instantiation
-    attribute<bool> index{
-        this
-        , AttributeNames::USE_INDEX
-        , router::Defaults::USE_INDEX
-        , Descriptions::USE_INDEX_WITHOUT_OCTAVE
-        , setter{
+    attribute<bool> index{this, AttributeNames::USE_INDEX, RouterDefaults::USE_INDEX
+        ,Descriptions::USE_INDEX_WITHOUT_OCTAVE, setter{
             MIN_FUNCTION {
                 if (!instantiated())
                     return index;
@@ -155,15 +287,6 @@ public:
     message<> savestate = Messages::savestate_message(this, autorestore, [this](SaveState& s) {
         s << enabled << mode << index;
     });
-
-
-    // // pseudo_attribute is safe here, we'll never call this unless ctor has been invoked successfully
-    // pseudo_attribute<double> mapping{this, "mapping", m_router->routing_map, cerr
-    //     , RouterDescriptions::MAPPING, input_format::voices, nullptr, [this] {
-    //         if (mapping_trigger.get()) {
-    //             process();
-    //         }
-    //     }};
 
 
     function handle_input = MIN_FUNCTION {
@@ -203,17 +326,8 @@ private:
         assert(inlet != 0); // inlet 0 is for mapping
         assert(instantiated());
 
-        inlet -= 1; // convert to 0-indexed
-
-        // TODO: This won't work for pulses
-
-        if (auto input = AtomParser::atoms2voices<double>(args); input.is_ok()) {
-            m_router->set_input(inlet, input.ok());
-            return true;
-        } else {
-            cerr << input.err().message() << endl;
-            return false;
-        }
+        // inlet: converted to 0-index
+        return m_router->set_input(inlet - 1, args, cerr);
     }
 
     void process() {
@@ -223,18 +337,7 @@ private:
             return;
         }
 
-        auto& node = m_router->router_node;
-        node.update_time(SerialistTransport::get_instance().get_time());
-        auto output = node.process();
-
-        assert(output.size() == num_outlets());
-
-        for (std::size_t i = 0; i < output.size(); ++i) {
-            // no need to reindex here: first index in output corresponds to first index in outlets
-            m_outlets[i]->send(AtomFormatter::voices2atoms<double>(output[i]));
-        }
-
-        // TODO: If pulse, don't forget to clear all inlets here!
+        m_router->process(m_outlets, cerr);
     }
 
 
@@ -313,10 +416,10 @@ private:
     }
 
 
-    bool validate_mode(router::Mode mode) {
+    bool validate_mode(RouterMode mode) {
         auto mode_str = static_cast<std::string>(magic_enum::enum_name(mode));
 
-        if (mode == router::Mode::through) {
+        if (mode == RouterMode::through) {
             if (num_inlets() != num_outlets()) {
                 try_warn("number of inlets and outlets should equal for through mode. "
                          "Extra inlets and outlets will be ignored");
@@ -324,7 +427,7 @@ private:
             return true;
         }
 
-        if (mode == router::Mode::merge || mode == router::Mode::mix) {
+        if (mode == RouterMode::merge || mode == RouterMode::mix) {
             if (num_inlets() == 1) {
                 cerr << "at least 2 inlets are required for " << mode_str << " mode" << endl;
                 return false;
@@ -336,7 +439,7 @@ private:
             return true;
         }
 
-        if (mode == router::Mode::split || mode == router::Mode::distribute) {
+        if (mode == RouterMode::split || mode == RouterMode::distribute) {
             if (num_outlets() == 1) {
                 cerr << "at least 2 outlets are required for " << mode_str << " mode" << endl;
                 return false;

@@ -264,53 +264,6 @@ public:
         }
     }
 
-
-    // static void output_as_triggers_sorted(const Voices<Trigger>& triggers
-    //                                       , c74::min::outlet<>& pulse_on_outlet
-    //                                       , c74::min::outlet<>& pulse_off_outlets
-    //                                       , c74::min::logger& cerr) {
-    //     if (triggers.is_empty_like()) {
-    //         return;
-    //     }
-    //
-    //     auto [pulse_ons, pulse_offs] = triggers.partition([](const auto& trigger) {
-    //         return trigger.is(Trigger::Type::pulse_on);
-    //     });
-    //
-    //     if (!pulse_offs.is_empty_like()) {
-    //         if (auto parsed = AtomFormatter::triggers2atoms(pulse_offs)) {
-    //             pulse_off_outlets.send(*parsed);
-    //         } else {
-    //             cerr << parsed.err().message() << c74::min::endl;
-    //         }
-    //     }
-    //
-    //     if (!pulse_ons.is_empty_like()) {
-    //         if (auto parsed = AtomFormatter::triggers2atoms(pulse_ons)) {
-    //             pulse_on_outlet.send(*parsed);
-    //         } else {
-    //             cerr << parsed.err().message() << c74::min::endl;
-    //         }
-    //     }
-    // }
-
-private:
-    // /** returns a Vec of the same size as the voice with the maximum number of triggers,
-    //  *     with each contained Voice having the same size as the input Voices
-    //  */
-    // Vec<Voice<std::optional<Trigger>>> transpose(const Voices<Trigger>& triggers) {
-    //
-    //
-    //     std::size_t max_length = 0;
-    //     for (const auto& voice: triggers) {
-    //         if (voice.size() > max_length) {
-    //             max_length = voice.size();
-    //         }
-    //     }
-    //
-    //     auto transposed = Vec<Voice<std::optional<Trigger>>>::allocated(max_length);
-    // }
-
 };
 
 
