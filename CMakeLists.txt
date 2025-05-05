@@ -14,7 +14,7 @@ set(C74_MIN_API_DIR ${CMAKE_SOURCE_DIR}/min-api)
 set(C74_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/externals)
 
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.interpolator)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.interpolate)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.makenote)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.op)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.oscillator)
@@ -36,7 +36,7 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/serialist_transport)
 
 add_custom_target(all_externals)
 add_dependencies(all_externals
-#        ser.interpolator
+        ser.interpolate
         ser.makenote
         ser.op
 #        ser.oscillator

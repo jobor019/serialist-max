@@ -1,5 +1,5 @@
 #include "c74_min_unittest.h"
-#include "ser.interpolator.cpp"
+#include "ser.interpolate.cpp"
 
 
 TEST_CASE("object produces correct output") {
