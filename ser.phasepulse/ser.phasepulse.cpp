@@ -1,11 +1,14 @@
 #include <serialist_transport.h>
 #include <core/policies/policies.h>
+
 #include <core/generatives/phase_pulsator.h>
 
 #include "c74_min.h"
 #include "parsing.h"
 #include "max_stereotypes.h"
 #include "max_timepoint.h"
+#include "attribute_setters.h"
+#include "message_stereotypes.h"
 
 
 using namespace c74::min;

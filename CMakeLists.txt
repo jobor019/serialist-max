@@ -18,7 +18,7 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.interpolate)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.lowpass)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.makenote)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.op)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.oscillator)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.phase)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.patternizer)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.phasemap)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.phasepulse)
@@ -41,8 +41,8 @@ add_dependencies(all_externals
         ser.lowpass
         ser.makenote
         ser.op
-#        ser.oscillator
         ser.patternizer
+        ser.phase
         ser.phasemap
         ser.phasepulse
         ser.playground

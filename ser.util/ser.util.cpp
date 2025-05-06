@@ -3,6 +3,7 @@
 #include "c74_min.h"
 #include "parsing.h"
 #include "max_stereotypes.h"
+#include "message_stereotypes.h"
 
 using namespace c74::min;
 using namespace serialist;
