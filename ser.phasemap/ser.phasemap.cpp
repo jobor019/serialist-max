@@ -34,7 +34,7 @@ public:
     SER_NUM_VOICES_ATTRIBUTE(m_phasemap.num_voices, nullptr);
     SER_AUTO_RESTORE_ATTRIBUTE();
 
-    vector_attribute<double> durations{this, "durations", m_phasemap.durations, PhaseMap::DEFAULT_DURATION, cerr};
+    pseudo_attribute<double> durations{this, "durations", m_phasemap.durations, cerr};
 
 
     message<> setup = Messages::setup_message_with_loadstate(this, [this](LoadState& s) {
