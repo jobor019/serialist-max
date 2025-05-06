@@ -19,10 +19,10 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.lowpass)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.makenote)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.op)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.phase)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.patternizer)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.pattern)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.phasemap)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.phasepulse)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.playground)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.pulse)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.pulsefilter)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.random)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.router)
@@ -41,11 +41,11 @@ add_dependencies(all_externals
         ser.lowpass
         ser.makenote
         ser.op
-        ser.patternizer
+        ser.pattern
         ser.phase
         ser.phasemap
-        ser.phasepulse
         ser.playground
+        ser.pulse
         ser.pulsefilter
         ser.random
         ser.router

@@ -12,7 +12,7 @@
 
 using namespace c74::min;
 
-class ser_patternizer : public object<ser_patternizer> {
+class ser_pattern : public object<ser_pattern> {
 private:
     using PatternizerT = PatternizerDoubleWrapper<>::PatternizerT;
 
@@ -32,7 +32,7 @@ public:
     MIN_DESCRIPTION{""};
     MIN_TAGS{"utilities"};
     MIN_AUTHOR{"Borg"};
-    MIN_RELATED{"ser.interpolator"};
+    MIN_RELATED{"ser.interpolate"};
 
     inlet<> inlet_main{this, Inlets::trigger_info("Trigger output"), "", [this] { return is_hot(TRIGGER_INLET); }};
     inlet<> inlet_pattern{this, PATTERN_DESCRIPTION, "", [this] { return is_hot(PATTERN_INLET); }};
@@ -164,4 +164,4 @@ private:
 
 
 
-MIN_EXTERNAL(ser_patternizer);
+MIN_EXTERNAL(ser_pattern);
