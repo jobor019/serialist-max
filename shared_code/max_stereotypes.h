@@ -91,8 +91,19 @@ public:
     };
 
 
+    static inline const c74::min::description POLL_INTERVAL{
+        "Set the rate in milliseconds at which the object triggers new output,"
+        " or @pollinterval 0 to trigger the object manually."
+    };
+
+
     static c74::min::description to_description(const std::string& s) {
         return s.c_str(); // NOLINT(*-redundant-string-cstr)
+    }
+
+
+    static c74::min::description append(const c74::min::description& d, const std::string& s) {
+        return to_description(d + s);
     }
 };
 

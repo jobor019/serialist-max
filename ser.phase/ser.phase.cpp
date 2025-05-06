@@ -17,9 +17,16 @@ class ser_phase : public object<ser_phase> {
 private:
     PhaseWrapper<> m_phase;
     std::mutex m_mutex;
+    std::atomic<int> m_poll_interval{1}; // accessing poll_interval.get() directly on timer thread is probably UB?
 
     static const inline auto PERIOD_DESCRIPTION = Inlets::voices(Types::number, "Set period");
     static const inline auto OFFSET_DESCRIPTION = Inlets::voices(Types::number, "Set offset");
+
+    static const inline auto POLL_INTERVAL_DESCR = Descriptions::append(
+        Descriptions::POLL_INTERVAL,
+        " \nNote that when the mode is set to \"triggered\", polling is always disabled."
+    );
+
 
 public:
     MIN_DESCRIPTION{"Multi-channel phase accumulator"};
@@ -43,12 +50,15 @@ public:
 
     timer<> metro { this, MIN_FUNCTION {
         // In terms of thread safety, it's probably better to continuously poll the timer and perform this check
-        // rather than starting and stopping the timer from different threads
-        if (mode.get() != PaMode::triggered) {
+        // rather than attempting to start and stop the timer from different threads
+        if (m_poll_interval > 0 && mode.get() != PaMode::triggered) {
             process({});
+
+            metro.delay(m_poll_interval);
+            return {};
         }
 
-        metro.delay(poll_interval.get());
+        metro.delay(1.0);
         return {};
     }
     };
@@ -65,10 +75,13 @@ public:
 
     vector_attribute<double> step_size{this, "stepsize", m_phase.step_size, PaParameters::DEFAULT_STEP_SIZE, cerr, "", &m_mutex};
 
-    attribute<int> poll_interval{ this, "pollinterval", 1, setter{
+    attribute<int> poll_interval{ this, "pollinterval", 1, POLL_INTERVAL_DESCR, setter{
             MIN_FUNCTION {
                 if (auto v = AtomParser::atoms2value<int>(args)) {
-					return {std::max(0, *v)};
+                    auto clipped_value = std::max(0, *v);
+                    m_poll_interval = clipped_value;
+					return {clipped_value};
+
 				} else {
 				    cerr << v.err().message() << endl;
 				}
