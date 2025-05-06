@@ -215,7 +215,7 @@ public:
         : c74::min::attribute<std::vector<MaxType>, threadsafety>(
             an_owner
             , a_name
-            , std::vector<MaxType>{a_default_value}
+            , std::vector<MaxType>{static_cast<MaxType>(a_default_value)}
             , a_title.empty() ? AttributeSetters::name_to_title(a_name) : AttributeSetters::to_title(a_title)
             , c74::min::setter{[this, &target, &cerr, mutex](const c74::min::atoms& atms, const int) {
                 if (AttributeSetters::try_set_vector(atms, target, cerr, mutex)) {

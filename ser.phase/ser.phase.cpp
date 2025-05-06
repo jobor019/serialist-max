@@ -19,8 +19,8 @@ private:
     std::mutex m_mutex;
     std::atomic<int> m_poll_interval{1}; // accessing poll_interval.get() directly on timer thread is probably UB?
 
-    static const inline auto PERIOD_DESCRIPTION = Inlets::voices(Types::number, "Set period");
-    static const inline auto OFFSET_DESCRIPTION = Inlets::voices(Types::number, "Set offset");
+    static const inline auto PERIOD_DESCRIPTION = Inlets::voice(Types::number, "Set period");
+    static const inline auto OFFSET_DESCRIPTION = Inlets::voice(Types::number, "Set offset");
 
     static const inline auto POLL_INTERVAL_DESCR = Descriptions::append(
         Descriptions::POLL_INTERVAL,
@@ -40,12 +40,12 @@ public:
     inlet<> inlet_period{this, PERIOD_DESCRIPTION};
     inlet<> inlet_offset{this, OFFSET_DESCRIPTION};
 
-    outlet<> outlet_main{this, Inlets::voices(Types::phase, "Phase output")};
+    outlet<> outlet_main{this, Inlets::voice(Types::phase, "Phase output")};
     outlet<> dumpout{this, Inlets::DUMPOUT};
 
 
-    SER_ENABLED_ATTRIBUTE(m_phase.enabled, nullptr);
-    SER_NUM_VOICES_ATTRIBUTE(m_phase.num_voices, nullptr);
+    SER_ENABLED_ATTRIBUTE(m_phase.enabled, &m_mutex);
+    SER_NUM_VOICES_ATTRIBUTE(m_phase.num_voices, &m_mutex);
     SER_AUTO_RESTORE_ATTRIBUTE();
 
     timer<> metro { this, MIN_FUNCTION {
