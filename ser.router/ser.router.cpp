@@ -337,7 +337,14 @@ private:
             return;
         }
 
+        auto t1 = std::chrono::high_resolution_clock::now();
+
         m_router->process(m_outlets, cerr);
+
+        auto t2 = std::chrono::high_resolution_clock::now();
+
+        std::cout << std::chrono::duration_cast<std::chrono::microseconds>(t2-t1).count() << " usec\n";
+
     }
 
 

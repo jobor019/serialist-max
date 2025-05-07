@@ -1,3 +1,4 @@
+
 #include <serialist_transport.h>
 #include <core/policies/policies.h>
 #include <core/generatives/operator.h>
@@ -6,6 +7,8 @@
 #include "parsing.h"
 #include "max_stereotypes.h"
 #include "generatives/waveform.h"
+#include "message_stereotypes.h"
+#include "serialist_attributes.h"
 
 
 using namespace c74::min;
@@ -16,71 +19,35 @@ private:
     WaveformWrapper<> m_waveform;
 
 public:
-    MIN_DESCRIPTION{"Phase-based waveform generator"};
+    MIN_DESCRIPTION{"Phase-based waveform function"};
     MIN_TAGS{"utilities"};
     MIN_AUTHOR{"Borg"};
-    MIN_RELATED{"ser.oscillator, ser.random"};
+    MIN_RELATED{"ser.phase, ser.random"};
 
-    inlet<> inlet_main{this, "(float/list) phase", ""};
-    inlet<> inlet_duty{this, "(float/list,  0-1) duty cycle", "", false};
-    inlet<> inlet_curve{this, "(float/list) triangle curve", "", false};
+    inlet<> inlet_main{this, Inlets::voice(Types::phase, "position in waveform")};
+    inlet<> inlet_duty{this, Inlets::voice(Types::phase, "duty cycle")};
+    inlet<> inlet_curve{this, Inlets::voice(Types::number, "triangle curve")};
 
-    outlet<> outlet_main{this, "(float/list) waveform output"};
-    outlet<> dumpout{this, "(any) dumpout"};
+    outlet<> outlet_main{this, Inlets::voice(Types::phase, "waveform output")};
+    outlet<> dumpout{this, Inlets::DUMPOUT};
 
-    attribute<bool> enabled{this, AttributeNames::ENABLED, true
-                        , title{Titles::ENABLED}
-        , description{Descriptions::ENABLED}
-        , setter{MIN_FUNCTION {
-            if (AttributeSetters::try_set_value<bool>(args, m_waveform.enabled, cerr))
-                return args;
-            return enabled;
-        }}
-    };
+    SER_ENABLED_ATTRIBUTE(m_waveform.enabled, nullptr);
+    SER_NUM_VOICES_ATTRIBUTE(m_waveform.num_voices, nullptr);
+    SER_AUTO_RESTORE_ATTRIBUTE();
 
+    vector_attribute<Waveform::Mode> mode{this, "mode", m_waveform.mode, Waveform::DEFAULT_MODE, cerr};
 
-    attribute<int> voices{this, AttributeNames::NUM_VOICES, 0
-                          , title{Titles::NUM_VOICES}
-        , description{Descriptions::ENABLED}
-        , setter{MIN_FUNCTION {
-            if (AttributeSetters::try_set_value<std::size_t, int>(args, m_waveform.num_voices, cerr))
-                return args;
-            return voices;
-        }}
-    };
+    vector_attribute<double> duty{this, "duty", m_waveform.duty, Waveform::DEFAULT_DUTY, cerr};
 
+    vector_attribute<double> curve{this, "curve", m_waveform.curve, Waveform::DEFAULT_CURVE, cerr};
 
-    attribute<std::vector<int>> mode{this, "mode", {static_cast<int>(Waveform::DEFAULT_MODE)}
-                    , title{"Mode"}
-        , description{""}
-        , setter{MIN_FUNCTION {
-            if (AttributeSetters::try_set_vector(args, m_waveform.mode, cerr))
-                return args;
-            return mode;
-        }}
-    };
+    message<> setup = Messages::setup_message_with_loadstate(this, [this](LoadState& s) {
+        s >> enabled >> voices >> duty >> curve;
+    });
 
-
-    attribute<std::vector<double>> duty{this, "duty", {Waveform::DEFAULT_DUTY}
-        , title{"Duty"}
-        , description{""}
-        , setter{MIN_FUNCTION {
-            if (AttributeSetters::try_set_vector(args, m_waveform.duty, cerr))
-                return args;
-            return duty;
-        }}
-    };
-
-
-    attribute<std::vector<double>> curve{this, "curve", {Waveform::DEFAULT_CURVE}
-        , title{"Curve"}
-        , description{""}
-        , setter{MIN_FUNCTION {
-            if (AttributeSetters::try_set_vector(args, m_waveform.curve, cerr))
-                return args;
-            return curve;
-        }}
-    };
+    message<> savestate = Messages::savestate_message(this, autorestore, [this](SaveState& s) {
+        s << enabled << voices << duty << curve;
+    });
 
 
     function handle_input = MIN_FUNCTION {
@@ -89,7 +56,7 @@ public:
         } else if (inlet == 1) {
             duty.set(args);
         } else {
-            this->process(args);
+            process(args);
         }
         return {};
     };
@@ -101,7 +68,7 @@ public:
 
 private:
     void process(const atoms& args) {
-        // Note: ser.waveform doesn't need a trigger, it can always trigger on receiving a phase
+        // Note: ser.waveform doesn't need a trigger, it should always trigger on receiving a phase
 
         if (!AttributeSetters::try_set_vector(args, m_waveform.phase, cerr)) {
             return;
