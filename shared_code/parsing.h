@@ -266,7 +266,14 @@ public:
             if (atm.type() == c74::min::message_type::int_argument
                 || atm.type() == c74::min::message_type::float_argument) {
                 return {static_cast<int>(atm) > 0};
+                }
+        } else if constexpr (std::is_unsigned_v<T>) {
+            if (atm.type() == c74::min::message_type::float_argument
+                || atm.type() == c74::min::message_type::int_argument) {
+                // static_cast<std::size_t>(-1) is valid and yields std::numeric_limits<std::size_t>. Not what we want.
+                return {static_cast<T>(std::max(0L, static_cast<long>(atm)))};
             }
+
         } else if constexpr (std::is_arithmetic_v<T>) {
             if (atm.type() == c74::min::message_type::float_argument
                 || atm.type() == c74::min::message_type::int_argument) {
