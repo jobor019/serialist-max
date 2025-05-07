@@ -288,7 +288,7 @@
 					"lockeddragscroll" : 0,
 					"lockedsize" : 0,
 					"maxclass" : "bpatcher",
-					"name" : "ser.oscillator.ui.maxpat",
+					"name" : "ser.phase.ui.maxpat",
 					"numinlets" : 2,
 					"numoutlets" : 3,
 					"offset" : [ 0.0, 0.0 ],
@@ -359,7 +359,7 @@
 					"lockeddragscroll" : 0,
 					"lockedsize" : 0,
 					"maxclass" : "bpatcher",
-					"name" : "ser.interpolator.ui.maxpat",
+					"name" : "ser.interpolate.ui.maxpat",
 					"numinlets" : 3,
 					"numoutlets" : 3,
 					"offset" : [ 0.0, 0.0 ],
@@ -794,11 +794,11 @@
 				"implicit" : 1
 			}
 , 			{
-				"name" : "ser.interpolator.mxo",
+				"name" : "ser.interpolate.mxo",
 				"type" : "iLaX"
 			}
 , 			{
-				"name" : "ser.interpolator.ui.maxpat",
+				"name" : "ser.interpolate.ui.maxpat",
 				"bootpath" : "~/CLionProjects/serialist-max/patchers",
 				"patcherrelativepath" : "../../../patchers",
 				"type" : "JSON",
@@ -809,11 +809,11 @@
 				"type" : "iLaX"
 			}
 , 			{
-				"name" : "ser.oscillator.mxo",
+				"name" : "ser.phase.mxo",
 				"type" : "iLaX"
 			}
 , 			{
-				"name" : "ser.oscillator.ui.maxpat",
+				"name" : "ser.phase.ui.maxpat",
 				"bootpath" : "~/CLionProjects/serialist-max/patchers",
 				"patcherrelativepath" : "../../../patchers",
 				"type" : "JSON",

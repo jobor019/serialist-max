@@ -25,7 +25,7 @@ public:
     MIN_DESCRIPTION{"One-pole filter for temporally unevenly sampled signals"};
     MIN_TAGS{"utilities"};
     MIN_AUTHOR{"Borg"};
-    MIN_RELATED{"ser.oscillator"};
+    MIN_RELATED{"ser.phase"};
 
     inlet<> inlet_main{this, Inlets::voice(Types::number, "Input to filter")};
     inlet<> inlet_tau{this, TAU_DESCRIPTION, "", false};

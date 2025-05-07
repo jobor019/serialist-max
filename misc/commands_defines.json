@@ -51,7 +51,7 @@
         "args": []
     },
     "oscillator" : {
-        "object": "ser.oscillator.ui",
+        "object": "ser.phase.ui",
         "key": "w",
         "description": "oscillator",
         "is_bpatcher" : true,
@@ -80,21 +80,21 @@
     },
 
     "interpolator_i" : {
-        "object": "ser.interpolator.ui",
+        "object": "ser.interpolate.ui",
         "key": "r",
         "description": "interpolator_i",
         "is_bpatcher" : true,
         "args": ["i"]
     },
     "interpolator_f" : {
-        "object": "ser.interpolator.ui",
+        "object": "ser.interpolate.ui",
         "key": "R",
         "description": "interpolator_f",
         "is_bpatcher" : true,
         "args": ["f"]
     },
     "multiview" : {
-        "object": "ser.multiview",
+        "object": "ser.scope",
         "key": "z",
         "description": "multiview",
         "is_bpatcher" : true,

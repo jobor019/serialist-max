@@ -714,13 +714,13 @@
 									"lockeddragscroll" : 0,
 									"lockedsize" : 0,
 									"maxclass" : "bpatcher",
-									"name" : "ser.oscillator.ui.maxpat",
+									"name" : "ser.phase.ui.maxpat",
 									"numinlets" : 3,
 									"numoutlets" : 3,
 									"offset" : [ 0.0, 0.0 ],
 									"outlettype" : [ "", "", "" ],
 									"patching_rect" : [ 308.0, 146.0, 146.0, 161.0 ],
-									"varname" : "ser.oscillator.ui[1]",
+									"varname" : "ser.phase.ui[1]",
 									"viewvisibility" : 1
 								}
 
@@ -736,13 +736,13 @@
 									"lockeddragscroll" : 0,
 									"lockedsize" : 0,
 									"maxclass" : "bpatcher",
-									"name" : "ser.multiview.ui.maxpat",
+									"name" : "ser.scope.ui.maxpat",
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"offset" : [ 0.0, 0.0 ],
 									"outlettype" : [ "", "" ],
 									"patching_rect" : [ 133.0, 423.5, 89.0, 41.0 ],
-									"varname" : "ser.multiview.ui",
+									"varname" : "ser.scope.ui",
 									"viewvisibility" : 1
 								}
 
@@ -770,13 +770,13 @@
 									"lockeddragscroll" : 0,
 									"lockedsize" : 0,
 									"maxclass" : "bpatcher",
-									"name" : "ser.oscillator.ui.maxpat",
+									"name" : "ser.phase.ui.maxpat",
 									"numinlets" : 3,
 									"numoutlets" : 3,
 									"offset" : [ 0.0, 0.0 ],
 									"outlettype" : [ "", "", "" ],
 									"patching_rect" : [ 133.0, 146.0, 146.0, 161.0 ],
-									"varname" : "ser.oscillator.ui",
+									"varname" : "ser.phase.ui",
 									"viewvisibility" : 1
 								}
 
@@ -1720,7 +1720,7 @@
 				"implicit" : 1
 			}
 , 			{
-				"name" : "ser.oscillator.mxo",
+				"name" : "ser.phase.mxo",
 				"type" : "iLaX"
 			}
 , 			{
@@ -1743,7 +1743,7 @@
 				"type" : "iLaX"
 			}
 , 			{
-				"name" : "ser.oscillator.ui.maxpat",
+				"name" : "ser.phase.ui.maxpat",
 				"bootpath" : "~/MaxProjects/serialist-max/patchers/generatives",
 				"patcherrelativepath" : "../../patchers/generatives",
 				"type" : "JSON",
@@ -1761,7 +1761,7 @@
 				"implicit" : 1
 			}
 , 			{
-				"name" : "ser.multiview.ui.maxpat",
+				"name" : "ser.scope.ui.maxpat",
 				"bootpath" : "~/MaxProjects/serialist-max/patchers/view",
 				"patcherrelativepath" : "../../patchers/view",
 				"type" : "JSON",

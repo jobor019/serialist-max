@@ -1593,7 +1593,7 @@
 				"type" : "iLaX"
 			}
 , 			{
-				"name" : "ser.oscillator.mxo",
+				"name" : "ser.phase.mxo",
 				"type" : "iLaX"
 			}
 , 			{

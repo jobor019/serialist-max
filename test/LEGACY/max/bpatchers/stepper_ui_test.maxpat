@@ -157,13 +157,13 @@
 					"lockeddragscroll" : 0,
 					"lockedsize" : 0,
 					"maxclass" : "bpatcher",
-					"name" : "ser.oscillator.ui.maxpat",
+					"name" : "ser.phase.ui.maxpat",
 					"numinlets" : 2,
 					"numoutlets" : 3,
 					"offset" : [ 0.0, 0.0 ],
 					"outlettype" : [ "", "", "" ],
 					"patching_rect" : [ 805.0, 672.0, 128.0, 128.0 ],
-					"varname" : "ser.oscillator.ui",
+					"varname" : "ser.phase.ui",
 					"viewvisibility" : 1
 				}
 
@@ -2915,11 +2915,11 @@
 				"type" : "iLaX"
 			}
 , 			{
-				"name" : "ser.oscillator.mxo",
+				"name" : "ser.phase.mxo",
 				"type" : "iLaX"
 			}
 , 			{
-				"name" : "ser.oscillator.ui.maxpat",
+				"name" : "ser.phase.ui.maxpat",
 				"bootpath" : "~/MaxProjects/serialist-max/patchers",
 				"patcherrelativepath" : "../../../patchers",
 				"type" : "JSON",

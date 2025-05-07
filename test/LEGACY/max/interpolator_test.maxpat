@@ -80,7 +80,7 @@
 					"numinlets" : 0,
 					"numoutlets" : 0,
 					"patching_rect" : [ 81.0, 222.0, 104.0, 22.0 ],
-					"text" : "ser.interpolator 11"
+					"text" : "ser.interpolate 11"
 				}
 
 			}
@@ -91,7 +91,7 @@
 					"numinlets" : 0,
 					"numoutlets" : 0,
 					"patching_rect" : [ 81.0, 193.0, 114.0, 22.0 ],
-					"text" : "ser.interpolator asdf"
+					"text" : "ser.interpolate asdf"
 				}
 
 			}
@@ -127,7 +127,7 @@
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
 					"patching_rect" : [ 81.0, 283.0, 148.0, 22.0 ],
-					"text" : "ser.interpolator i extra_arg"
+					"text" : "ser.interpolate i extra_arg"
 				}
 
 			}
@@ -212,7 +212,7 @@
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
 					"patching_rect" : [ 435.0, 611.0, 177.0, 22.0 ],
-					"text" : "ser.interpolator f @autotrigger 1"
+					"text" : "ser.interpolate f @autotrigger 1"
 				}
 
 			}
@@ -322,7 +322,7 @@
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
 					"patching_rect" : [ 735.0, 668.0, 180.0, 22.0 ],
-					"text" : "ser.interpolator s @autotrigger 1"
+					"text" : "ser.interpolate s @autotrigger 1"
 				}
 
 			}
@@ -737,7 +737,7 @@
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
 					"patching_rect" : [ 1072.0, 457.0, 94.0, 22.0 ],
-					"text" : "ser.interpolator i"
+					"text" : "ser.interpolate i"
 				}
 
 			}
@@ -748,7 +748,7 @@
 					"numinlets" : 0,
 					"numoutlets" : 0,
 					"patching_rect" : [ 81.0, 162.0, 88.0, 22.0 ],
-					"text" : "ser.interpolator"
+					"text" : "ser.interpolate"
 				}
 
 			}
@@ -1083,7 +1083,7 @@
 		}
 ,
 		"dependency_cache" : [ 			{
-				"name" : "ser.interpolator.mxo",
+				"name" : "ser.interpolate.mxo",
 				"type" : "iLaX"
 			}
  ],

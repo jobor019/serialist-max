@@ -26,7 +26,7 @@ public:
     MIN_DESCRIPTION{"Multi-channel unary and binary operators"};
     MIN_TAGS{"utilities"};
     MIN_AUTHOR{"Borg"};
-    MIN_RELATED{"ser.oscillator"};
+    MIN_RELATED{"ser.phase"};
 
     inlet<> inlet_lhs{this, LHS_DESCRIPTION, "", [this]() { return lhs_is_hot(); }};
     inlet<> inlet_rhs{this, RHS_DESCRIPTION, "", [this]() { return rhs_is_hot(); }};

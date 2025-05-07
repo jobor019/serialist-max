@@ -1402,7 +1402,7 @@
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
 									"patching_rect" : [ 96.5, 651.0, 131.0, 22.0 ],
-									"text" : "ser.oscillator @mode 0"
+									"text" : "ser.phase @mode 0"
 								}
 
 							}
@@ -2800,7 +2800,7 @@
 				"implicit" : 1
 			}
 , 			{
-				"name" : "ser.oscillator.mxo",
+				"name" : "ser.phase.mxo",
 				"type" : "iLaX"
 			}
 , 			{

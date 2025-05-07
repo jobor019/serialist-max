@@ -1016,7 +1016,7 @@
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
 									"patching_rect" : [ 160.0, 439.0, 111.0, 22.0 ],
-									"text" : "ser.patternizer"
+									"text" : "ser.pattern"
 								}
 
 							}
@@ -1937,7 +1937,7 @@
 				"implicit" : 1
 			}
 , 			{
-				"name" : "ser.patternizer.mxo",
+				"name" : "ser.pattern.mxo",
 				"type" : "iLaX"
 			}
 , 			{

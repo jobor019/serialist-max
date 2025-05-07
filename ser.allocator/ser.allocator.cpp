@@ -38,7 +38,7 @@ public:
     MIN_DESCRIPTION{"Multi-channel pitch material allocator"};
     MIN_TAGS{"utilities"};
     MIN_AUTHOR{"Borg"};
-    MIN_RELATED{"ser.oscillator, ser.randpulse"};
+    MIN_RELATED{"ser.phase, ser.randpulse"};
 
     inlet<> inlet_main{this, "(any) control messages"};
     inlet<> inlet_pitches{this, "(list) enabled pitch classes"};

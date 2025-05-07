@@ -340,7 +340,7 @@
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
 									"patching_rect" : [ 50.0, 193.0, 210.0, 22.0 ],
-									"text" : "ser.oscillator @mode 2 @stepsize 0.5"
+									"text" : "ser.phase @mode 2 @stepsize 0.5"
 								}
 
 							}
@@ -925,13 +925,13 @@
 					"lockeddragscroll" : 0,
 					"lockedsize" : 0,
 					"maxclass" : "bpatcher",
-					"name" : "ser.multiview.maxpat",
+					"name" : "ser.scope.maxpat",
 					"numinlets" : 1,
 					"numoutlets" : 2,
 					"offset" : [ 0.0, 0.0 ],
 					"outlettype" : [ "", "" ],
 					"patching_rect" : [ 781.0, 341.0, 105.0, 52.0 ],
-					"varname" : "ser.multiview",
+					"varname" : "ser.scope",
 					"viewvisibility" : 1
 				}
 
@@ -1661,7 +1661,7 @@
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
 					"patching_rect" : [ 516.0, 336.0, 75.0, 22.0 ],
-					"text" : "ser.oscillator"
+					"text" : "ser.phase"
 				}
 
 			}
@@ -2667,7 +2667,7 @@
 				"type" : "iLaX"
 			}
 , 			{
-				"name" : "ser.multiview.maxpat",
+				"name" : "ser.scope.maxpat",
 				"bootpath" : "~/MaxProjects/serialist-max/patchers",
 				"patcherrelativepath" : "../../patchers",
 				"type" : "JSON",
@@ -2678,7 +2678,7 @@
 				"type" : "iLaX"
 			}
 , 			{
-				"name" : "ser.oscillator.mxo",
+				"name" : "ser.phase.mxo",
 				"type" : "iLaX"
 			}
 , 			{

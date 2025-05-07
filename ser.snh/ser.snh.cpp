@@ -23,7 +23,7 @@ public:
     MIN_DESCRIPTION{"Multi-channel Sample & hold"};
     MIN_TAGS{""};
     MIN_AUTHOR{"Borg"};
-    MIN_RELATED{"ser.phasepulse, ser.oscillator"};
+    MIN_RELATED{"ser.phasepulse, ser.phase"};
 
     inlet<> inlet_main{this, Inlets::voices(Types::number, "values to sample and hold")};
     inlet<> inlet_hold{this, HOLD_DESCRIPTION, "", true};

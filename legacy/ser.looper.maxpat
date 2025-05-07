@@ -176,7 +176,7 @@
 					"lockeddragscroll" : 0,
 					"lockedsize" : 0,
 					"maxclass" : "bpatcher",
-					"name" : "ser.interpolator.ui.maxpat",
+					"name" : "ser.interpolate.ui.maxpat",
 					"numinlets" : 3,
 					"numoutlets" : 3,
 					"offset" : [ 0.0, 0.0 ],
@@ -184,7 +184,7 @@
 					"patching_rect" : [ 106.0, 305.67901611328125, 128.0, 128.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 3.0, 107.0, 138.0, 128.0 ],
-					"varname" : "ser.interpolator.ui",
+					"varname" : "ser.interpolate.ui",
 					"viewvisibility" : 1
 				}
 

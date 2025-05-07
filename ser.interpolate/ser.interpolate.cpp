@@ -34,7 +34,7 @@ public:
     MIN_DESCRIPTION{"Multi-channel memory interpolator"};
     MIN_TAGS{"utilities"};
     MIN_AUTHOR{"Borg"};
-    MIN_RELATED{"ser.pulsator, ser.oscillator, ser.pattern"};
+    MIN_RELATED{"ser.pulsator, ser.phase, ser.pattern"};
 
     inlet<> inlet_main{this, Inlets::trigger_info("Trigger output"), "", [this] { return is_hot(TRIGGER_INLET); }};
     inlet<> inlet_cursor{this, CURSOR_DESCRIPTION, "", [this] { return is_hot(CURSOR_INLET); }};

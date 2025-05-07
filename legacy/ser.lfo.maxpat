@@ -258,7 +258,7 @@
 					"lockeddragscroll" : 0,
 					"lockedsize" : 0,
 					"maxclass" : "bpatcher",
-					"name" : "ser.multiview.maxpat",
+					"name" : "ser.scope.maxpat",
 					"numinlets" : 1,
 					"numoutlets" : 2,
 					"offset" : [ 0.0, 0.0 ],
@@ -266,7 +266,7 @@
 					"patching_rect" : [ 504.0, 595.0, 96.0, 56.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 7.25, 125.5, 98.5, 45.5 ],
-					"varname" : "ser.multiview",
+					"varname" : "ser.scope",
 					"viewvisibility" : 1
 				}
 
@@ -283,7 +283,7 @@
 					"lockeddragscroll" : 0,
 					"lockedsize" : 0,
 					"maxclass" : "bpatcher",
-					"name" : "ser.multiview2.maxpat",
+					"name" : "ser.scope2.maxpat",
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"offset" : [ 0.0, 0.0 ],
@@ -459,7 +459,7 @@
 					"lockeddragscroll" : 0,
 					"lockedsize" : 0,
 					"maxclass" : "bpatcher",
-					"name" : "ser.oscillator.ui.maxpat",
+					"name" : "ser.phase.ui.maxpat",
 					"numinlets" : 2,
 					"numoutlets" : 3,
 					"offset" : [ 0.0, 0.0 ],
@@ -467,7 +467,7 @@
 					"patching_rect" : [ 548.0, 283.0, 120.0, 92.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 0.0, 0.0, 120.0, 92.0 ],
-					"varname" : "ser.oscillator.ui",
+					"varname" : "ser.phase.ui",
 					"viewvisibility" : 1
 				}
 

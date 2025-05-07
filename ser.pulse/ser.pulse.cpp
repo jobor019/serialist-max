@@ -24,7 +24,7 @@ public:
     MIN_DESCRIPTION{"Phasor-based pulse generator"};
     MIN_TAGS{"utilities"};
     MIN_AUTHOR{"Borg"};
-    MIN_RELATED{"ser.oscillator, ser.phasemap"};
+    MIN_RELATED{"ser.phase, ser.phasemap"};
 
     inlet<> inlet_main{this, "(float/list) cursor position / control messages", "", true};
     inlet<> inlet_legato{this, "(float/list) legato amount", "", false};

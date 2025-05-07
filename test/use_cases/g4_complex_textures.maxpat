@@ -1347,13 +1347,13 @@
 									"lockeddragscroll" : 0,
 									"lockedsize" : 0,
 									"maxclass" : "bpatcher",
-									"name" : "ser.oscillator.ui.maxpat",
+									"name" : "ser.phase.ui.maxpat",
 									"numinlets" : 3,
 									"numoutlets" : 3,
 									"offset" : [ 0.0, 0.0 ],
 									"outlettype" : [ "", "", "" ],
 									"patching_rect" : [ 835.0, 359.0, 146.0, 161.0 ],
-									"varname" : "ser.oscillator.ui[2]",
+									"varname" : "ser.phase.ui[2]",
 									"viewvisibility" : 1
 								}
 
@@ -1621,13 +1621,13 @@
 									"lockeddragscroll" : 0,
 									"lockedsize" : 0,
 									"maxclass" : "bpatcher",
-									"name" : "ser.oscillator.ui.maxpat",
+									"name" : "ser.phase.ui.maxpat",
 									"numinlets" : 3,
 									"numoutlets" : 3,
 									"offset" : [ 0.0, 0.0 ],
 									"outlettype" : [ "", "", "" ],
 									"patching_rect" : [ 1078.0, 162.5, 146.0, 161.0 ],
-									"varname" : "ser.oscillator.ui[1]",
+									"varname" : "ser.phase.ui[1]",
 									"viewvisibility" : 1
 								}
 
@@ -1644,13 +1644,13 @@
 									"lockeddragscroll" : 0,
 									"lockedsize" : 0,
 									"maxclass" : "bpatcher",
-									"name" : "ser.interpolator.ui.maxpat",
+									"name" : "ser.interpolate.ui.maxpat",
 									"numinlets" : 3,
 									"numoutlets" : 3,
 									"offset" : [ 0.0, 0.0 ],
 									"outlettype" : [ "", "", "" ],
 									"patching_rect" : [ 1078.0, 651.0, 154.0, 139.0 ],
-									"varname" : "ser.interpolator.ui",
+									"varname" : "ser.interpolate.ui",
 									"viewvisibility" : 1
 								}
 
@@ -1873,13 +1873,13 @@
 									"lockeddragscroll" : 0,
 									"lockedsize" : 0,
 									"maxclass" : "bpatcher",
-									"name" : "ser.oscillator.ui.maxpat",
+									"name" : "ser.phase.ui.maxpat",
 									"numinlets" : 3,
 									"numoutlets" : 3,
 									"offset" : [ 0.0, 0.0 ],
 									"outlettype" : [ "", "", "" ],
 									"patching_rect" : [ 757.0, 192.0, 146.0, 161.0 ],
-									"varname" : "ser.oscillator.ui",
+									"varname" : "ser.phase.ui",
 									"viewvisibility" : 1
 								}
 
@@ -4025,7 +4025,7 @@
 				"implicit" : 1
 			}
 , 			{
-				"name" : "ser.interpolator.mxo",
+				"name" : "ser.interpolate.mxo",
 				"type" : "iLaX"
 			}
 , 			{
@@ -4040,7 +4040,7 @@
 				"implicit" : 1
 			}
 , 			{
-				"name" : "ser.oscillator.mxo",
+				"name" : "ser.phase.mxo",
 				"type" : "iLaX"
 			}
 , 			{
@@ -4063,7 +4063,7 @@
 				"type" : "iLaX"
 			}
 , 			{
-				"name" : "ser.interpolator.ui.maxpat",
+				"name" : "ser.interpolate.ui.maxpat",
 				"bootpath" : "~/MaxProjects/serialist-max/patchers/generatives",
 				"patcherrelativepath" : "../../patchers/generatives",
 				"type" : "JSON",
@@ -4081,7 +4081,7 @@
 				"type" : "iLaX"
 			}
 , 			{
-				"name" : "ser.oscillator.ui.maxpat",
+				"name" : "ser.phase.ui.maxpat",
 				"bootpath" : "~/MaxProjects/serialist-max/patchers/generatives",
 				"patcherrelativepath" : "../../patchers/generatives",
 				"type" : "JSON",
@@ -4124,7 +4124,7 @@
 				"implicit" : 1
 			}
 , 			{
-				"name" : "ser.multiview2.ui.maxpat",
+				"name" : "ser.scope2.ui.maxpat",
 				"bootpath" : "~/MaxProjects/serialist-max/patchers/view",
 				"patcherrelativepath" : "../../patchers/view",
 				"type" : "JSON",

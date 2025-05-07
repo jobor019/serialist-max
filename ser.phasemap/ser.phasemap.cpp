@@ -22,7 +22,7 @@ public:
     MIN_DESCRIPTION{"Map a single long phase to several shorter phases"};
     MIN_TAGS{"utilities"};
     MIN_AUTHOR{"Borg"};
-    MIN_RELATED{"ser.oscillator, ser.phasepulse"};
+    MIN_RELATED{"ser.phase, ser.phasepulse"};
 
     inlet<> inlet_main{this, Inlets::voice(Types::phase, "Input phase to map")};
     inlet<> inlet_durations{this, Inlets::voice(Types::phase, "Durations as fractions of incoming phase"), "", false};

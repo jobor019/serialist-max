@@ -22,7 +22,7 @@ public:
     MIN_DESCRIPTION{"Pulse generator"};
     MIN_TAGS{"utilities"};
     MIN_AUTHOR{"Borg"};
-    MIN_RELATED{"ser.oscillator"};
+    MIN_RELATED{"ser.phase"};
 
     inlet<> inlet_main{this, "(any) control messages / trigger)", "float/listoflists"};
     inlet<> inlet_duration{this, "(float/list) duration", "float/listoflists", false};

@@ -1548,7 +1548,7 @@
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
 					"patching_rect" : [ 806.0, 451.0, 75.0, 22.0 ],
-					"text" : "ser.oscillator"
+					"text" : "ser.phase"
 				}
 
 			}
@@ -2248,7 +2248,7 @@
 		}
 ,
 		"dependency_cache" : [ 			{
-				"name" : "ser.oscillator.mxo",
+				"name" : "ser.phase.mxo",
 				"type" : "iLaX"
 			}
  ],
