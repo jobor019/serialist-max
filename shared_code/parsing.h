@@ -282,6 +282,7 @@ private:
 
 class AtomParser {
 public:
+    using AtomIterator = c74::min::atoms::const_iterator;
 
     AtomParser() = delete;
 
@@ -409,7 +410,7 @@ public:
         while (it != end) {
             if (*it == "[") {
                 ++it;
-                if (auto inner = parse_inner<T>(it, atms)) {
+                if (auto inner = parse_inner<T>(it, end)) {
                     output.append(std::move(*inner));
                 } else {
                     return inner.err();
@@ -453,7 +454,7 @@ public:
 
 
 private:
-    static std::tuple<c74::min::atoms::const_iterator, c74::min::atoms::const_iterator, std::size_t>
+    static std::tuple<AtomIterator, AtomIterator, std::size_t>
     get_content_edges(const c74::min::atoms& atms, bool leading_bracket_stripped = false) noexcept {
         if (is_list_of_lists(atms, leading_bracket_stripped)) {
             return {atms.begin() + 1 - static_cast<long>(leading_bracket_stripped), atms.end() - 1, atms.size() - 2};
@@ -464,9 +465,9 @@ private:
 
 
     template<typename T, typename = std::enable_if_t<parsing::is_atom_convertible_v<T>>>
-    static Result<Voice<T>> parse_inner(c74::min::atoms::const_iterator& it, const c74::min::atoms& input) noexcept {
+    static Result<Voice<T>> parse_inner(AtomIterator& it, AtomIterator& end) noexcept {
         Voice<T> output;
-        while (it != input.end()) {
+        while (it != end) {
             if (*it == "[" || parsing::is_null(*it)) {
                 return Error("Cannot parse nested lists");
             } else if (*it == "]") {

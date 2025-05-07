@@ -262,6 +262,7 @@ inline std::unique_ptr<UtilityOperator> string2operator(const std::string& s, co
         return ZipOperator::parse(args);
 
     throw std::domain_error("Invalid mode " + s);
+
 }
 
 
