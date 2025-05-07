@@ -20,7 +20,7 @@ private:
     static const inline auto HOLD_DESCRIPTION = Inlets::voice(Types::number, "Set hold state (non-zero = open)");
 
 public:
-    MIN_DESCRIPTION{"Sample & hold"};
+    MIN_DESCRIPTION{"Multi-channel Sample & hold"};
     MIN_TAGS{""};
     MIN_AUTHOR{"Borg"};
     MIN_RELATED{"ser.phasepulse, ser.oscillator"};

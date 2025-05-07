@@ -15,8 +15,8 @@ using namespace serialist;
 
 class ser_op : public object<ser_op> {
 private:
-    OperatorWrapper<double> m_op;
-    InletTriggerHandler<2> m_inlet_triggers{true, false};
+    OperatorWrapper<> m_op;
+    InletTriggerHandler m_inlet_triggers{true, false};
     std::optional<atom> m_initial_rhs_value = std::nullopt;
 
     static const inline auto LHS_DESCRIPTION = Inlets::voices(Types::number, "Left operand");

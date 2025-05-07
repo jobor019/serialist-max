@@ -27,7 +27,7 @@ private:
     // for now, we'll only support the default / facet interpolator
     InterpolatorDoubleWrapper<> m_interpolator;
 
-    InletTriggerHandler<3> m_inlet_triggers{true, false, false};
+    InletTriggerHandler m_inlet_triggers{true, false, false};
 
 
 public:
@@ -75,7 +75,7 @@ public:
     pseudo_attribute<double> corpus{this, "corpus", m_interpolator.corpus, cerr, CORPUS_DESCRIPTION
       , input_format::voices, nullptr, [this] {
           if (is_hot(CORPUS_INLET)) {
-              process(InletTriggerHandler<>::triggers_like(m_interpolator.corpus.get_values()));
+              process(InletTriggerHandler::triggers_like(m_interpolator.corpus.get_values()));
           }
 
     }};
@@ -115,7 +115,7 @@ private:
         if (set_cursor(args)) {
             bool trigger_output = is_hot(CURSOR_INLET);
             if (trigger_output) {
-                process(InletTriggerHandler<>::triggers_like(m_interpolator.cursor.get_values()));
+                process(InletTriggerHandler::triggers_like(m_interpolator.cursor.get_values()));
             }
 
             send_cursor(trigger_output);

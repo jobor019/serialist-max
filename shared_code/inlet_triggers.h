@@ -6,16 +6,24 @@
 #include "c74_min_api.h"
 #include "parsing.h"
 
-template<std::size_t N = 2>
 class InletTriggerHandler {
 public:
     static constexpr int ALL_HOT = -1;
 
-    explicit InletTriggerHandler(std::array<bool, N> initial) : m_is_hot(initial) {}
+    explicit InletTriggerHandler(std::size_t num_inlets) {
+        assert(num_inlets > 0);
+        // Default: first is hot, rest is cold
+        m_is_hot = Vec<bool>::zeros(num_inlets);
+        m_is_hot[0] = true;
+    }
 
-    InletTriggerHandler(std::initializer_list<bool> initial) {
-        assert(initial.size() == N);
-        std::copy(initial.begin(), initial.end(), m_is_hot.begin());
+    explicit InletTriggerHandler(const Vec<bool>& initial) : m_is_hot(initial) {
+        // size cannot be changed after initialization. Therefore, at least one inlet is required
+        assert(!initial.empty());
+    }
+
+    InletTriggerHandler(std::initializer_list<bool> initial) : m_is_hot{initial} {
+        assert(initial.size() > 0);
     }
 
 
@@ -48,7 +56,9 @@ public:
 
             set_all_as_cold();
             for (const auto& index : *r) {
-                m_is_hot[index] = true;
+                if (index < m_is_hot.size()) {
+                    m_is_hot[index] = true;
+                }
             }
         }
         return r;
@@ -59,21 +69,24 @@ public:
     }
 
 
-    bool is_hot(std::size_t index) const { return m_is_hot[index]; }
+    bool is_hot(std::size_t index) const {
+        assert(index < m_is_hot.size());
+        return m_is_hot[index];
+    }
 
 private:
     void set_all_as_cold() { set_all_as(false); }
     void set_all_as_hot() { set_all_as(true); }
 
     void set_all_as(bool state) {
-        for (std::size_t i = 0; i < N; ++i) {
+        for (std::size_t i = 0; i < m_is_hot.size(); ++i) {
             m_is_hot[i] = state;
         }
     }
 
 
 
-    std::array<bool, N> m_is_hot;
+    Vec<bool> m_is_hot;
 
 };
 

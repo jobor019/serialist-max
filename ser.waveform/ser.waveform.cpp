@@ -19,7 +19,7 @@ private:
     WaveformWrapper<> m_waveform;
 
 public:
-    MIN_DESCRIPTION{"Phase-based waveform function"};
+    MIN_DESCRIPTION{"Multi-channel Phase-based waveform function"};
     MIN_TAGS{"utilities"};
     MIN_AUTHOR{"Borg"};
     MIN_RELATED{"ser.phase, ser.random"};

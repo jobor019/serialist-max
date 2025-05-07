@@ -26,7 +26,7 @@ private:
     // for now, we'll only support the default / facet patternizer
     PatternizerDoubleWrapper<> m_patternizer;
 
-    InletTriggerHandler<3> m_inlet_triggers{true, false, false};
+    InletTriggerHandler m_inlet_triggers{true, false, false};
 
 public:
     MIN_DESCRIPTION{""};
@@ -77,7 +77,7 @@ public:
     pseudo_attribute<double> chord{this, "chord", m_patternizer.chord, cerr, CHORD_DESCRIPTION
         , input_format::voices, nullptr, [this] {
             if (is_hot(CHORD_INLET)) {
-                process(InletTriggerHandler<>::triggers_like(m_patternizer.chord.get_values()));
+                process(InletTriggerHandler::triggers_like(m_patternizer.chord.get_values()));
             }
 
         }};
@@ -85,7 +85,7 @@ public:
     pseudo_attribute<double> pattern{this, "pattern", m_patternizer.pattern, cerr, PATTERN_DESCRIPTION
     , input_format::voices, nullptr, [this] {
         if (is_hot(PATTERN_INLET)) {
-            process(InletTriggerHandler<>::triggers_like(m_patternizer.pattern.get_values()));
+            process(InletTriggerHandler::triggers_like(m_patternizer.pattern.get_values()));
         }
     }};
 

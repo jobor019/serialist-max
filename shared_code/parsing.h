@@ -121,8 +121,10 @@ public:
              , typename InputType = OutputType
              , typename = std::enable_if_t<parsing::is_atom_convertible<OutputType>::value>>
     static c74::min::atoms voices2atoms(const Voices<InputType>& voices
-                                        , std::optional<std::function<OutputType(InputType)>> f = std::nullopt) {
-        if (std::any_of(voices.begin(), voices.end(), [](const Voice<InputType>& v) { return v.size() > 1; })) {
+                                        , std::optional<std::function<OutputType(InputType)>> f = std::nullopt
+                                        , bool force_list_of_list_format = false) {
+        if (force_list_of_list_format || std::any_of(voices.begin(), voices.end()
+                                                    , [](const Voice<InputType>& v) { return v.size() > 1; })) {
             return format_list_of_lists(voices, f);
         } else {
             return format_simple_list(voices, f);
