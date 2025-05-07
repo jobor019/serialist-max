@@ -202,6 +202,11 @@ TEST_CASE("Parsing list of triggers (Vec<Trigger>)") {
 }
 
 
+TEST_CASE("Parsing Voices<Trigger>") {
+    atoms atms{"["}
+}
+
+
 // ==============================================================================================
 
 TEST_CASE("Parsing Lists of lists (Voices)", "[shared_code]") {

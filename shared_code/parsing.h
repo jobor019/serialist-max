@@ -166,33 +166,6 @@ public:
         return result.vector();
     }
 
-    [[deprecated("Use trigger2atom(const std::optional<Trigger>&) instead")]]
-    static Result<c74::min::atom> trigger2atom(const Vec<Trigger>& trigger) {
-        if (trigger.empty())
-            return {parsing::NULL_STRING};
-
-        if (trigger.size() == 1) {
-            return trigger2atom(trigger[0]);
-        }
-
-        return Error("Invalid trigger: cannot parse multiple triggers in a single voice");
-    }
-
-
-    [[deprecated("Use triggers2atoms(const Voices<std::optional<Trigger>>&) instead")]]
-    static Result<c74::min::atoms> triggers2atoms(const Voices<Trigger>& triggers) {
-        Vec<c74::min::atom> result = Vec<c74::min::atom>::allocated(triggers.size());
-        for (const auto& trigger: triggers) {
-            auto atm = trigger2atom(trigger);
-            if (atm.is_ok()) {
-                result.append(*atm);
-            } else {
-                return atm.err();
-            }
-        }
-        return result.vector();
-    }
-
 
     static Result<c74::min::atoms> event2atoms(const Event& event) {
         if (event.is<MidiNoteEvent>()) {
@@ -371,11 +344,14 @@ public:
         }
     }
 
+    // TODO: The approach for parsing and formatting triggers seems completely redundant, we should just implement
+    //       atoms2triggers as a call to atoms2voices, and then implement triggers2atoms(Voices<Trigger>) instead of
+    //       Voice<Trigger> (to get rid of the redundant transform approach)
 
     static Result<Voices<Trigger>> atoms2triggers(const c74::min::atoms& atms
                                                   , bool empty_creates_new = false) noexcept {
         // if atms.empty(), this is typically the result of processing a singular "bang".
-        //    note that null or [] will not create any trigger here
+        // note that null or [] will not create any trigger here
         if (empty_creates_new && atms.empty()) {
             return Voices<Trigger>::singular(Trigger::pulse_on());
         }
