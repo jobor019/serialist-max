@@ -37,8 +37,8 @@ public:
     inlet<> inlet_main{this , Inlets::trigger_info("When mode is set to \"triggered\", trigger output")
                        , "" , [this] { return inlet_is_hot(); }};
 
-    inlet<> inlet_period{this, PERIOD_DESCRIPTION};
-    inlet<> inlet_offset{this, OFFSET_DESCRIPTION};
+    inlet<> inlet_period{this, PERIOD_DESCRIPTION, "", false};
+    inlet<> inlet_offset{this, OFFSET_DESCRIPTION, "", false};
 
     outlet<> outlet_main{this, Inlets::voice(Types::phase, "Phase output")};
     outlet<> dumpout{this, Inlets::DUMPOUT};
