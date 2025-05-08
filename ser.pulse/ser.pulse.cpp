@@ -21,7 +21,7 @@ class ser_phasepulse : public object<ser_phasepulse> {
     bool m_transport_active = false;
 
 public:
-    MIN_DESCRIPTION{"Phasor-based pulse generator"};
+    MIN_DESCRIPTION{"Phase-based pulse generator"};
     MIN_TAGS{"utilities"};
     MIN_AUTHOR{"Borg"};
     MIN_RELATED{"ser.phase, ser.phasemap"};

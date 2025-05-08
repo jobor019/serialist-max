@@ -13,7 +13,8 @@
 		"rect" : [ 596.0, 177.0, 1046.0, 786.0 ],
 		"gridsize" : [ 15.0, 15.0 ],
 		"subpatcher_template" : "serialist_help",
-		"showontab" : 1,
+		"showrootpatcherontab" : 0,
+		"showontab" : 0,
 		"boxes" : [ 			{
 				"box" : 				{
 					"id" : "obj-8",
@@ -31,7 +32,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 596.0, 203.0, 1046.0, 760.0 ],
+						"rect" : [ 0.0, 26.0, 1046.0, 760.0 ],
 						"openrect" : [ 0.0, 0.0, 1040.0, 740.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
@@ -69,7 +70,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 92.0, 598.0, 171.0, 47.0 ],
-									"presentation_linecount" : 3,
 									"text" : "generate 4 of 8 values where each value is played once before reccurring:"
 								}
 
@@ -146,7 +146,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 92.0, 558.0, 171.0, 33.0 ],
-									"presentation_linecount" : 2,
 									"text" : "generate one of 4 values without sequential repetitions:"
 								}
 
@@ -209,8 +208,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 92.0, 521.0, 170.0, 33.0 ],
-									"presentation_linecount" : 3,
+									"patching_rect" : [ 92.0, 521.0, 171.0, 33.0 ],
 									"text" : "generate a chord of N out of 5 values without repetitions:"
 								}
 
@@ -235,7 +233,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 330.0, 513.0, 225.0, 51.0 ],
-									"presentation_linecount" : 5,
 									"text" : "if size is greater than 5, we'll of course have repetitions, but each value will occur once before repeated"
 								}
 
@@ -388,7 +385,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 296.0, 100.0, 244.0, 78.0 ],
+									"patching_rect" : [ 296.0, 100.0, 245.0, 78.0 ],
 									"text" : "quantization: controls number of discrete steps in all modes. When quantized, the maximum output value will be \n\n1 - (1 / quantization)"
 								}
 
@@ -401,7 +398,7 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 98.0, 378.0, 151.0, 22.0 ],
-									"text" : "[ [ 0.875 0.25 0.75 0.5 ] ]"
+									"text" : "null"
 								}
 
 							}
@@ -924,11 +921,10 @@
 
 							}
  ],
-						"originid" : "pat-420"
+						"originid" : "pat-550"
 					}
 ,
 					"patching_rect" : [ 357.0, 22.0, 162.0, 22.0 ],
-					"presentation_linecount" : 5,
 					"text" : "p \"quantization & repetitions\"",
 					"varname" : "basic[5]"
 				}
@@ -1061,7 +1057,6 @@
 													"numoutlets" : 1,
 													"outlettype" : [ "" ],
 													"patching_rect" : [ 132.0, 122.0, 62.0, 22.0 ],
-													"presentation_linecount" : 2,
 													"text" : "1 0.5 0.25"
 												}
 
@@ -1185,7 +1180,7 @@
 
 											}
  ],
-										"originid" : "pat-418"
+										"originid" : "pat-582"
 									}
 ,
 									"patching_rect" : [ 533.0, 530.0, 58.0, 22.0 ],
@@ -1202,8 +1197,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 430.0, 409.0, 358.0, 104.0 ],
-									"presentation_linecount" : 11,
+									"patching_rect" : [ 430.0, 409.0, 359.0, 104.0 ],
 									"text" : "The distinction between size and voices can be subtle, but\n\n– size controls the number of elements in each voice (where different elements cannot be assigned different durations) \n\n– voices controls number of voices (where different voices can have different durations)"
 								}
 
@@ -1326,7 +1320,7 @@
 
 											}
  ],
-										"originid" : "pat-416"
+										"originid" : "pat-584"
 									}
 ,
 									"patching_rect" : [ 454.0, 530.0, 60.0, 22.0 ],
@@ -1564,7 +1558,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 177.0, 108.0, 167.0, 52.0 ],
-									"presentation_linecount" : 2,
 									"text" : "typically very small values suffice for step (0.01-0.05)"
 								}
 
@@ -1580,7 +1573,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 349.0, 83.0, 187.0, 79.0 ],
-									"presentation_linecount" : 9,
 									"text" : "quantization applies but will override the \"step\" value if the step value is smaller than the quantization (which it typically is)"
 								}
 
@@ -1636,7 +1628,8 @@
 										}
 
 									}
-
+,
+									"varname" : "live.numbox[1]"
 								}
 
 							}
@@ -1783,13 +1776,12 @@
 , 							{
 								"box" : 								{
 									"id" : "obj-8",
-									"linecount" : 2,
 									"maxclass" : "message",
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 84.0, 364.0, 151.0, 35.0 ],
-									"text" : "0.669765 0.406449 0.03399"
+									"patching_rect" : [ 84.0, 364.0, 151.0, 22.0 ],
+									"text" : "null"
 								}
 
 							}
@@ -2271,7 +2263,7 @@
 
 							}
  ],
-						"originid" : "pat-214"
+						"originid" : "pat-580"
 					}
 ,
 					"patching_rect" : [ 275.0, 22.0, 67.0, 22.0 ],
@@ -2349,7 +2341,7 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 486.0, 598.0, 36.0, 22.0 ],
-									"text" : "0.5"
+									"text" : "null"
 								}
 
 							}
@@ -2692,7 +2684,8 @@
 										}
 
 									}
-
+,
+									"varname" : "live.numbox"
 								}
 
 							}
@@ -2854,7 +2847,7 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 97.0, 382.0, 151.0, 22.0 ],
-									"text" : "0.053753"
+									"text" : "null"
 								}
 
 							}
@@ -3312,7 +3305,7 @@
 
 							}
  ],
-						"originid" : "pat-246"
+						"originid" : "pat-614"
 					}
 ,
 					"patching_rect" : [ 182.0, 21.0, 80.0, 22.0 ],
@@ -3578,7 +3571,7 @@
 
 											}
  ],
-										"originid" : "pat-286"
+										"originid" : "pat-654"
 									}
 ,
 									"patching_rect" : [ 155.0, 169.0, 64.0, 22.0 ],
@@ -4183,7 +4176,7 @@
 
 							}
  ],
-						"originid" : "pat-284"
+						"originid" : "pat-652"
 					}
 ,
 					"patching_rect" : [ 93.0, 20.0, 67.0, 22.0 ],
@@ -4214,7 +4207,7 @@
 						"showontab" : 1,
 						"boxes" : [  ],
 						"lines" : [  ],
-						"originid" : "pat-316"
+						"originid" : "pat-684"
 					}
 ,
 					"patching_rect" : [ 561.0, 20.0, 25.0, 22.0 ],
@@ -4239,7 +4232,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 0.0, 26.0, 1046.0, 760.0 ],
+						"rect" : [ 596.0, 203.0, 1046.0, 760.0 ],
 						"openrect" : [ 0.0, 0.0, 1040.0, 740.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
@@ -4471,7 +4464,7 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 100.0, 376.0, 151.0, 22.0 ],
-									"text" : "0.55781"
+									"text" : "null"
 								}
 
 							}
@@ -4911,7 +4904,7 @@
 
 							}
  ],
-						"originid" : "pat-318"
+						"originid" : "pat-686"
 					}
 ,
 					"patching_rect" : [ 27.0, 20.0, 47.0, 22.0 ],
@@ -4922,7 +4915,7 @@
 			}
  ],
 		"lines" : [  ],
-		"originid" : "pat-212",
+		"originid" : "pat-548",
 		"parameters" : 		{
 			"obj-1::obj-1::obj-113" : [ "live.text[272]", "live.text", 0 ],
 			"obj-1::obj-1::obj-34::obj-1" : [ "live.numbox[44]", "live.numbox", 0 ],

@@ -594,7 +594,7 @@
 
 							}
  ],
-						"originid" : "pat-454"
+						"originid" : "pat-1060"
 					}
 ,
 					"patching_rect" : [ 406.0, 19.0, 71.0, 22.0 ],
@@ -1158,7 +1158,7 @@
 
 							}
  ],
-						"originid" : "pat-492"
+						"originid" : "pat-1098"
 					}
 ,
 					"patching_rect" : [ 310.0, 19.0, 74.0, 22.0 ],
@@ -1933,7 +1933,7 @@
 
 							}
  ],
-						"originid" : "pat-522"
+						"originid" : "pat-1128"
 					}
 ,
 					"patching_rect" : [ 208.0, 19.0, 93.0, 22.0 ],
@@ -1959,7 +1959,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 0.0, 26.0, 2512.0, 1231.0 ],
+						"rect" : [ 34.0, 113.0, 2512.0, 1231.0 ],
 						"openrect" : [ 0.0, 0.0, 1040.0, 740.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
@@ -2020,8 +2020,8 @@
 									"numinlets" : 4,
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
-									"patching_rect" : [ 29.0, 485.0, 81.0, 22.0 ],
-									"text" : "ser.makenote"
+									"patching_rect" : [ 29.0, 485.0, 149.0, 22.0 ],
+									"text" : "ser.makenote @enabled 0"
 								}
 
 							}
@@ -2627,7 +2627,18 @@
 							}
 , 							{
 								"patchline" : 								{
+									"destination" : [ "obj-13", 0 ],
+									"hidden" : 1,
+									"midpoints" : [ 38.5, 204.91796875, 15.0, 204.91796875, 15.0, 471.0, 38.5, 471.0 ],
+									"order" : 0,
+									"source" : [ "obj-46", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
 									"destination" : [ "obj-4", 0 ],
+									"order" : 1,
 									"source" : [ "obj-46", 0 ]
 								}
 
@@ -2672,7 +2683,7 @@
 
 							}
  ],
-						"originid" : "pat-552"
+						"originid" : "pat-1158"
 					}
 ,
 					"patching_rect" : [ 83.0, 20.0, 113.0, 22.0 ],
@@ -2703,7 +2714,7 @@
 						"showontab" : 1,
 						"boxes" : [  ],
 						"lines" : [  ],
-						"originid" : "pat-582"
+						"originid" : "pat-1188"
 					}
 ,
 					"patching_rect" : [ 628.0, 21.0, 25.0, 22.0 ],
@@ -2728,7 +2739,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 34.0, 113.0, 2512.0, 1231.0 ],
+						"rect" : [ 0.0, 26.0, 2512.0, 1231.0 ],
 						"openrect" : [ 0.0, 0.0, 1040.0, 740.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
@@ -2741,7 +2752,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 465.0, 340.0, 198.0, 24.0 ],
-									"presentation_linecount" : 2,
 									"text" : "relevant in transport_locked only"
 								}
 
@@ -3346,7 +3356,7 @@
 
 							}
  ],
-						"originid" : "pat-584"
+						"originid" : "pat-1190"
 					}
 ,
 					"patching_rect" : [ 23.0, 20.0, 47.0, 22.0 ],
@@ -3357,7 +3367,7 @@
 			}
  ],
 		"lines" : [  ],
-		"originid" : "pat-452",
+		"originid" : "pat-1058",
 		"parameters" : 		{
 			"obj-1::obj-1::obj-113" : [ "live.text[272]", "live.text", 0 ],
 			"obj-1::obj-1::obj-34::obj-1" : [ "live.numbox[44]", "live.numbox", 0 ],
@@ -3616,6 +3626,10 @@
 				"patcherrelativepath" : "../patchers/generatives",
 				"type" : "JSON",
 				"implicit" : 1
+			}
+, 			{
+				"name" : "ser.util.mxo",
+				"type" : "iLaX"
 			}
  ],
 		"autosave" : 0
