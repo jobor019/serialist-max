@@ -39,14 +39,27 @@
 						"integercoordinates" : 1,
 						"boxes" : [ 							{
 								"box" : 								{
+									"color" : [ 0.8207178116, 0.0, 0.7634038329, 1.0 ],
+									"hidden" : 1,
+									"id" : "obj-5",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 1,
+									"outlettype" : [ "bang" ],
+									"patching_rect" : [ 198.0, 108.0, 58.0, 22.0 ],
+									"text" : "loadbang"
+								}
+
+							}
+, 							{
+								"box" : 								{
 									"bubble" : 1,
 									"id" : "obj-17",
 									"linecount" : 4,
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 400.0, 164.0, 214.0, 64.0 ],
-									"presentation_linecount" : 4,
+									"patching_rect" : [ 341.0, 112.0, 214.0, 64.0 ],
 									"text" : "manually poll output (bang or pulse). At each bang, the output will always be the same as the left (continuously polled) object"
 								}
 
@@ -92,7 +105,7 @@
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 230.0, 133.0, 29.5, 22.0 ],
+									"patching_rect" : [ 230.0, 133.0, 30.0, 22.0 ],
 									"text" : "10"
 								}
 
@@ -105,7 +118,7 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "bang" ],
 									"parameter_enable" : 0,
-									"patching_rect" : [ 340.0, 184.0, 24.0, 24.0 ]
+									"patching_rect" : [ 281.0, 132.0, 24.0, 24.0 ]
 								}
 
 							}
@@ -354,7 +367,7 @@
 									"numoutlets" : 3,
 									"outlettype" : [ "", "", "int" ],
 									"parameter_enable" : 0,
-									"patching_rect" : [ 372.0, 186.0, 20.0, 20.0 ],
+									"patching_rect" : [ 313.0, 134.0, 20.0, 20.0 ],
 									"presentation" : 1,
 									"presentation_rect" : [ 107.0, 223.0, 20.0, 20.0 ],
 									"rounded" : 60.0,
@@ -567,17 +580,24 @@
 							}
 , 							{
 								"patchline" : 								{
+									"destination" : [ "obj-28", 0 ],
+									"hidden" : 1,
+									"source" : [ "obj-5", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
 									"destination" : [ "obj-4", 0 ],
 									"source" : [ "obj-9", 0 ]
 								}
 
 							}
  ],
-						"originid" : "pat-134"
+						"originid" : "pat-454"
 					}
 ,
 					"patching_rect" : [ 406.0, 19.0, 71.0, 22.0 ],
-					"presentation_linecount" : 3,
 					"text" : "p advanced",
 					"varname" : "basic[5]"
 				}
@@ -607,6 +627,17 @@
 						"integercoordinates" : 1,
 						"boxes" : [ 							{
 								"box" : 								{
+									"id" : "obj-8",
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 159.0, 371.0, 296.0, 20.0 ],
+									"text" : "(neither periodtype nor offsettype are relevant here)"
+								}
+
+							}
+, 							{
+								"box" : 								{
 									"bubble" : 1,
 									"bubblepoint" : 0.13,
 									"bubbleside" : 2,
@@ -615,7 +646,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 101.0, 126.0, 148.0, 39.0 ],
-									"presentation_linecount" : 2,
 									"text" : "bang (or pulse) to trigger"
 								}
 
@@ -629,7 +659,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 270.0, 208.0, 133.0, 37.0 ],
-									"presentation_linecount" : 3,
 									"text" : "stepsize attribute (instead of period)"
 								}
 
@@ -656,7 +685,7 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 48.0, 311.0, 50.0, 22.0 ],
-									"text" : "0.7"
+									"text" : "0."
 								}
 
 							}
@@ -701,12 +730,12 @@
 									"bubble" : 1,
 									"bubblepoint" : 0.2,
 									"id" : "obj-6",
-									"linecount" : 4,
+									"linecount" : 5,
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 154.0, 274.0, 298.0, 64.0 ],
-									"text" : "Mode 2 (triggered)\n- Manually triggered (pulse or bang)\n- Always continuous on value changes\n- Useful for stepping through material"
+									"patching_rect" : [ 154.0, 274.0, 392.0, 78.0 ],
+									"text" : "Mode 2 (triggered)\n- Manually triggered (pulse or bang)\n- Independent of transport (ignores period value)\n- Always continuous on value changes\n- Useful for stepping through material"
 								}
 
 							}
@@ -1129,7 +1158,7 @@
 
 							}
  ],
-						"originid" : "pat-6"
+						"originid" : "pat-492"
 					}
 ,
 					"patching_rect" : [ 310.0, 19.0, 74.0, 22.0 ],
@@ -1161,6 +1190,17 @@
 						"showontab" : 1,
 						"integercoordinates" : 1,
 						"boxes" : [ 							{
+								"box" : 								{
+									"id" : "obj-7",
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 192.0, 403.0, 174.0, 20.0 ],
+									"text" : "(offsettype is not relevant here)"
+								}
+
+							}
+, 							{
 								"box" : 								{
 									"id" : "obj-30",
 									"maxclass" : "newobj",
@@ -1510,19 +1550,6 @@
 							}
 , 							{
 								"box" : 								{
-									"attr" : "offsettype",
-									"id" : "obj-15",
-									"maxclass" : "attrui",
-									"numinlets" : 1,
-									"numoutlets" : 1,
-									"outlettype" : [ "" ],
-									"parameter_enable" : 0,
-									"patching_rect" : [ 184.0, 404.0, 182.0, 22.0 ]
-								}
-
-							}
-, 							{
-								"box" : 								{
 									"attr" : "periodtype",
 									"id" : "obj-14",
 									"maxclass" : "attrui",
@@ -1704,14 +1731,6 @@
 									"destination" : [ "obj-4", 0 ],
 									"hidden" : 1,
 									"source" : [ "obj-14", 0 ]
-								}
-
-							}
-, 							{
-								"patchline" : 								{
-									"destination" : [ "obj-4", 0 ],
-									"hidden" : 1,
-									"source" : [ "obj-15", 0 ]
 								}
 
 							}
@@ -1914,7 +1933,7 @@
 
 							}
  ],
-						"originid" : "pat-36"
+						"originid" : "pat-522"
 					}
 ,
 					"patching_rect" : [ 208.0, 19.0, 93.0, 22.0 ],
@@ -2653,11 +2672,11 @@
 
 							}
  ],
-						"originid" : "pat-66"
+						"originid" : "pat-552"
 					}
 ,
-					"patching_rect" : [ 83.0, 20.0, 112.0, 22.0 ],
-					"text" : "p \"transport locked\"",
+					"patching_rect" : [ 83.0, 20.0, 113.0, 22.0 ],
+					"text" : "p transport-locked",
 					"varname" : "basic[3]"
 				}
 
@@ -2684,7 +2703,7 @@
 						"showontab" : 1,
 						"boxes" : [  ],
 						"lines" : [  ],
-						"originid" : "pat-96"
+						"originid" : "pat-582"
 					}
 ,
 					"patching_rect" : [ 628.0, 21.0, 25.0, 22.0 ],
@@ -2715,6 +2734,32 @@
 						"showontab" : 1,
 						"integercoordinates" : 1,
 						"boxes" : [ 							{
+								"box" : 								{
+									"bubble" : 1,
+									"id" : "obj-7",
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 465.0, 340.0, 198.0, 24.0 ],
+									"presentation_linecount" : 2,
+									"text" : "relevant in transport_locked only"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"bubble" : 1,
+									"id" : "obj-6",
+									"linecount" : 2,
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 465.0, 297.0, 195.0, 37.0 ],
+									"text" : "relevant in transport_locked and free_periodic"
+								}
+
+							}
+, 							{
 								"box" : 								{
 									"color" : [ 0.8207178116, 0.0, 0.7634038329, 1.0 ],
 									"hidden" : 1,
@@ -2778,13 +2823,15 @@
 							}
 , 							{
 								"box" : 								{
+									"bubble" : 1,
+									"bubblepoint" : 0.45,
 									"id" : "obj-40",
-									"linecount" : 5,
+									"linecount" : 6,
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 439.0, 135.0, 221.0, 74.0 ],
-									"text" : "- transport_locked: phase offset \n        (in ticks/beats/bars: offsettype\n\n- free_periodic & triggered: value offset \n        (start value on reset)"
+									"patching_rect" : [ 388.0, 134.0, 239.0, 91.0 ],
+									"text" : "Offset:\n- transport_locked: phase offset \n  (in ticks/beats/bars: offsettype\n\n- free_periodic & triggered: value offset \n  (start value on reset)"
 								}
 
 							}
@@ -2795,19 +2842,8 @@
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 440.0, 215.0, 35.0, 22.0 ],
+									"patching_rect" : [ 409.0, 230.0, 35.0, 22.0 ],
 									"text" : "reset"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-36",
-									"maxclass" : "comment",
-									"numinlets" : 1,
-									"numoutlets" : 0,
-									"patching_rect" : [ 394.0, 135.0, 41.0, 20.0 ],
-									"text" : "offset:"
 								}
 
 							}
@@ -2873,11 +2909,12 @@
 							}
 , 							{
 								"box" : 								{
+									"bubble" : 1,
 									"id" : "obj-26",
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 162.0, 174.0, 42.0, 20.0 ],
+									"patching_rect" : [ 154.0, 172.0, 71.0, 24.0 ],
 									"text" : "period"
 								}
 
@@ -2966,7 +3003,7 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"parameter_enable" : 0,
-									"patching_rect" : [ 241.0, 341.0, 182.0, 22.0 ]
+									"patching_rect" : [ 241.0, 341.0, 221.0, 22.0 ]
 								}
 
 							}
@@ -2979,7 +3016,7 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"parameter_enable" : 0,
-									"patching_rect" : [ 241.0, 304.0, 182.0, 22.0 ]
+									"patching_rect" : [ 241.0, 304.0, 221.0, 22.0 ]
 								}
 
 							}
@@ -3309,7 +3346,7 @@
 
 							}
  ],
-						"originid" : "pat-98"
+						"originid" : "pat-584"
 					}
 ,
 					"patching_rect" : [ 23.0, 20.0, 47.0, 22.0 ],
@@ -3320,7 +3357,7 @@
 			}
  ],
 		"lines" : [  ],
-		"originid" : "pat-4",
+		"originid" : "pat-452",
 		"parameters" : 		{
 			"obj-1::obj-1::obj-113" : [ "live.text[272]", "live.text", 0 ],
 			"obj-1::obj-1::obj-34::obj-1" : [ "live.numbox[44]", "live.numbox", 0 ],

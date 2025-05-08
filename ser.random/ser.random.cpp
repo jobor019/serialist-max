@@ -23,7 +23,10 @@ private:
     static const inline auto SIZE_DESCRIPTION = Inlets::voice(Types::number
         , "Set number of random values for each voice to output");
 
-    static const inline auto SPEC_DESCRIPTION = Inlets::voices(Types::number, "Set quantization & weights");
+    static const inline auto QUANTIZATION_DESCR = Inlets::voice(Types::index
+        , "Set number of quantized output values");
+
+    static const inline auto WEIGHTS_DESCR = Inlets::voices(Types::number, "Set weights");
 
     static const inline auto BROWNIAN_STEP_DESCR = Inlets::voice(Types::number,
         "Maximum step size for brownian motion");
@@ -34,7 +37,7 @@ private:
     using Rnd = RandomHandler;
 
 public:
-    MIN_DESCRIPTION{"Random generator"};
+    MIN_DESCRIPTION{"Generate random values in range [0, 1)"};
     MIN_TAGS{"utilities"};
     MIN_AUTHOR{"Borg"};
     MIN_RELATED{"ser.phase, ser.pattern, ser.pulse"};
@@ -42,8 +45,9 @@ public:
     inlet<> inlet_main{this , Inlets::trigger_info("Trigger output (when polling is disabled)")
                        , "" , [this] { return inlet_is_hot(); }};
 
-    inlet<> inlet_size{this, SIZE_DESCRIPTION};
-    inlet<> inlet_random_spec{this, SPEC_DESCRIPTION};
+    inlet<> inlet_size{this, SIZE_DESCRIPTION, "", false};
+    inlet<> inlet_quantization{this, QUANTIZATION_DESCR, "", false};
+    inlet<> inlet_weights{this, WEIGHTS_DESCR, "", false};
 
     outlet<> outlet_main{this, Inlets::voices(Types::number, "Random output")};
     outlet<> dumpout{this, Inlets::DUMPOUT};
@@ -81,8 +85,14 @@ public:
         , Rnd::DEFAULT_BROWNIAN_STEP, cerr, "", &m_mutex, BROWNIAN_STEP_DESCR};
 
     value_attribute<double> lower_bound{this, "lowerbound", m_random.exp_lower_bound
-        , Rnd::DEFAULT_EXP_LOWER_BOUND , cerr, "", &m_mutex, LOWER_BOUND_DESCR};
+        , Rnd::DEFAULT_EXP_LOWER_BOUND , cerr, "Lower Bound", &m_mutex, LOWER_BOUND_DESCR};
 
+    vector_attribute<std::size_t, int> quantization{this, "quantization", m_random.num_quantization_steps
+        , Rnd::DEFAULT_QUANTIZATION, cerr, "", &m_mutex};
+
+
+    vector_attribute<double> weights{this, "weights", m_random.weights
+        , {1.0} , cerr, "", &m_mutex};
 
     attribute<int> poll_interval{ this, "pollinterval", 1, Descriptions::POLL_INTERVAL, setter{
         MIN_FUNCTION {
@@ -98,12 +108,6 @@ public:
         }
     }
     };
-
-    pseudo_attribute<std::size_t> quantization{this, "quantization", m_random.num_quantization_steps
-        , cerr, "", input_format::voices, &m_mutex};
-
-    pseudo_attribute<double> weights{this, "weights", m_random.weights
-        , cerr, "", input_format::voices, &m_mutex};
 
 
     message<> setup{this, "setup", "", setter{ MIN_FUNCTION {
@@ -122,13 +126,13 @@ public:
 
 
     function handle_input = MIN_FUNCTION {
-        if (inlet == 2) { // NOLINT(*-branch-clone)
-            // Note: this inlet intentionally sets both of these values, since quantization and weights
-            // are both extremely important, but mutually exclusive (no mode uses both)
-            quantization.set(args);
+        if (inlet == 3) { // NOLINT(*-branch-clone)
             weights.set(args);
+        }
+        if (inlet == 2) {
+            quantization.set(args);
         } else if (inlet == 1) {
-            // size.set(args);
+            size.set(args);
         } else {
             process(args);
         }
@@ -185,7 +189,7 @@ private:
     }
 
     bool inlet_is_hot() const {
-        return m_poll_interval > 0;
+        return m_poll_interval == 0;
     }
 
 };
