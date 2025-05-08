@@ -6,7 +6,6 @@
 #include "c74_min.h"
 #include "parsing.h"
 #include "max_stereotypes.h"
-#include "max_timepoint.h"
 #include "attribute_setters.h"
 #include "message_stereotypes.h"
 
@@ -26,46 +25,26 @@ public:
     MIN_AUTHOR{"Borg"};
     MIN_RELATED{"ser.phase, ser.phasemap"};
 
-    inlet<> inlet_main{this, "(float/list) cursor position / control messages", "", true};
-    inlet<> inlet_legato{this, "(float/list) legato amount", "", false};
-    // inlet<> inlet_durations{this, "(float/list) list of durations", "", false};
+    inlet<> inlet_main{this, Inlets::voice(Types::phase, "Incoming phase")};
+    inlet<> inlet_legato{this, Inlets::voice(Types::number, "Legato amount"), "", false};
 
-    outlet<> outlet_main{this, "(int/list) pulses"};
-    outlet<> dumpout{this, "(any) dumpout"};
+    outlet<> outlet_main{this, Inlets::voice(Types::pulse, "Generated pulses")};
+    outlet<> dumpout{this, Inlets::DUMPOUT};
 
+    SER_ENABLED_ATTRIBUTE(m_pulse.enabled, nullptr);
+    SER_NUM_VOICES_ATTRIBUTE(m_pulse.num_voices, nullptr);
+    SER_AUTO_RESTORE_ATTRIBUTE();
 
-    attribute<bool> enabled{this, AttributeNames::ENABLED
-                            , true
-                            , title{Titles::ENABLED}
-                            , description{Descriptions::ENABLED}
-                            , setter{MIN_FUNCTION {
-                if (AttributeSetters::try_set_value(args, m_pulse.enabled, cerr))
-                    return args;
-                return enabled;
-            }}
-    };
+    vector_attribute<double> legato{this, "legato", m_pulse.legato_amount, PhasePulsatorParameters::DEFAULT_LEGATO, cerr};
 
-    attribute<int> voices{this, AttributeNames::NUM_VOICES
-                          , 0
-                          , title{Titles::NUM_VOICES}
-                          , description{Descriptions::ENABLED}
-                          , setter{MIN_FUNCTION {
-                if (AttributeSetters::try_set_value(args, m_pulse.num_voices, cerr))
-                    return args;
-                return voices;
-            }}
-    };
+    message<> setup = Messages::setup_message_with_loadstate(this, [this](LoadState& s) {
+        s >> enabled >> voices >> legato;
+    });
 
 
-    attribute<std::vector<double>> legato{this, "legato"
-                                          , Vec<double>::singular(PhasePulsatorParameters::DEFAULT_LEGATO).vector()
-                                          , title{"legato"}
-                                          , setter{MIN_FUNCTION {
-                if (AttributeSetters::try_set_vector(args, m_pulse.legato_amount, cerr))
-                    return args;
-                return legato;
-            }}
-    };
+    message<> savestate = Messages::savestate_message(this, autorestore, [this](SaveState& s) {
+        s << enabled << voices << legato;
+    });
 
 
     message<threadsafe::no> flush{this, AttributeNames::FLUSH
@@ -87,12 +66,10 @@ public:
     };
 
     function handle_input = MIN_FUNCTION {
-        /*if (inlet == 2) {
-            durations.set(args);
-        } else */ if (inlet == 1) {
+        if (inlet == 1) {
             legato.set(args);
         } else {
-            this->process(args);
+            process(args);
         }
 
         return {};
@@ -125,7 +102,6 @@ private:
 
         } else {
             cerr << cursor.err().message() << endl;
-            return;
         }
     }
 
