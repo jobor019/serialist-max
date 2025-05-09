@@ -17,8 +17,6 @@ using namespace serialist;
 class ser_phasepulse : public object<ser_phasepulse> {
     PhasePulsatorWrapper<> m_pulse;
 
-    bool m_transport_active = false;
-
 public:
     MIN_DESCRIPTION{"Phase-based pulse generator"};
     MIN_TAGS{"utilities"};
@@ -31,9 +29,27 @@ public:
     outlet<> outlet_main{this, Inlets::voice(Types::pulse, "Generated pulses")};
     outlet<> dumpout{this, Inlets::DUMPOUT};
 
-    SER_ENABLED_ATTRIBUTE(m_pulse.enabled, nullptr);
     SER_NUM_VOICES_ATTRIBUTE(m_pulse.num_voices, nullptr);
     SER_AUTO_RESTORE_ATTRIBUTE();
+
+    // Expanded version SER_ENABLED_ATTRIBUTE to handle flushing on disabling
+    attribute<bool> enabled{ this, "enabled", true, Titles::ENABLED, Descriptions::ENABLED, setter{
+            MIN_FUNCTION {
+                if (auto v = AtomParser::atoms2value<bool>(args)) {
+                    m_pulse.enabled.set_values(*v);
+                    if (!*v) {
+                        flush_internal();
+                    }
+                    return args;
+
+                } else {
+                    cerr << v.err().message() << endl;
+                    return enabled;
+                }
+            }
+        }
+    };
+
 
     vector_attribute<double> legato{this, "legato", m_pulse.legato_amount, PhasePulsatorParameters::DEFAULT_LEGATO, cerr};
 
@@ -54,13 +70,7 @@ public:
                     return {};
                 }
 
-                // We're not using the `flush` Trigger of the PhasePulsator here, since `process` is only called when
-                // it receives a cursor value, which may not be the case
-                // (cursor disconnected, transport not running, etc.)
-
-                if (auto flushed = m_pulse.pulsator_node.flush(); !flushed.is_empty_like()) {
-                    TriggerStereotypes::output_as_triggers_sorted(flushed, outlet_main, cerr);
-                }
+                flush_internal();
                 return {};
             }
     };
@@ -89,10 +99,8 @@ private:
 
             auto time = SerialistTransport::get_instance().get_time();
             if (!time.get_transport_running()) {
-                m_transport_active = false;
                 return;
             }
-            m_transport_active = true;
 
             m_pulse.pulsator_node.update_time(time);
 
@@ -102,6 +110,17 @@ private:
 
         } else {
             cerr << cursor.err().message() << endl;
+        }
+    }
+
+
+    void flush_internal() {
+        // We're not using the `flush` Trigger of the PhasePulsator here, since `process` is only called when
+        // it receives a cursor value, which may not be the case
+        // (cursor disconnected, transport not running, etc.)
+
+        if (auto flushed = m_pulse.pulsator_node.flush(); !flushed.is_empty_like()) {
+            TriggerStereotypes::output_as_triggers_sorted(flushed, outlet_main, cerr);
         }
     }
 

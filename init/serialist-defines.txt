@@ -5,3 +5,4 @@ max define ser.scope bpatcher @name ser.scope.ui;
 max define ser.scope2 bpatcher @name ser.scope2.ui;
 
 max define ser.pulseview bpatcher @name ser.pulseview.ui;
+max define ser.interpolateview bpatcher @name ser.interpolateview.ui;

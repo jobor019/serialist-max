@@ -20,6 +20,12 @@ private:
     static const inline auto CURSOR_DESCRIPTION = Inlets::voices(Types::number, "Set interpolation cursor");
     static const inline auto CORPUS_DESCRIPTION = Inlets::voices(Types::number, "Set corpus to interpolate");
 
+    static const inline auto SIZE_INFO = "size";
+    static const inline auto CURSOR_INDEX_INFO = "index";
+    static const inline auto CURSOR_PHASE_INFO = "phase";
+    static const inline auto OUTPUT_INDEX_INFO = "output";
+    static const inline auto MODE_INFO = "mode";
+
     static constexpr std::size_t TRIGGER_INLET = 0;
     static constexpr std::size_t CURSOR_INLET = 1;
     static constexpr std::size_t CORPUS_INLET = 2;
@@ -28,6 +34,8 @@ private:
     InterpolatorDoubleWrapper<> m_interpolator;
 
     InletTriggerHandler m_inlet_triggers{true, false, false};
+
+
 
 
 public:
@@ -46,6 +54,7 @@ public:
     SER_ENABLED_ATTRIBUTE(m_interpolator.enabled, nullptr);
     SER_NUM_VOICES_ATTRIBUTE(m_interpolator.num_voices, nullptr);
     SER_AUTO_RESTORE_ATTRIBUTE();
+
 
     attribute<std::vector<int>> triggers{this
                                   , AttributeNames::TRIGGERS
@@ -78,6 +87,10 @@ public:
               process(InletTriggerHandler::triggers_like(m_interpolator.corpus.get_values()));
           }
 
+          atoms size_info{SIZE_INFO};
+          size_info.emplace_back(m_interpolator.corpus.get_values().size());
+          dumpout.send(size_info);
+
     }};
 
 
@@ -104,21 +117,20 @@ public:
         return {};
     };
 
+
     message<> bang = Messages::bang_message(this, handle_input);
     message<> list = Messages::list_message(this, handle_input);
     message<> number = Messages::number_message(this, handle_input);
     message<> list_of_list = Messages::list_of_list_message(this, handle_input);
     message<> anything = Messages::anything_message(this, handle_input);
 
+
 private:
     void update_cursor(const atoms& args) {
         if (set_cursor(args)) {
-            bool trigger_output = is_hot(CURSOR_INLET);
-            if (trigger_output) {
+            if (is_hot(CURSOR_INLET)) {
                 process(InletTriggerHandler::triggers_like(m_interpolator.cursor.get_values()));
             }
-
-            send_cursor(trigger_output);
         }
     }
 
@@ -158,14 +170,26 @@ private:
 
         trigger.set_values(Voices<Trigger>::empty_like());
 
+        dump_indices();
+
         auto formatted_atoms = AtomFormatter::voices2atoms<float>(output);
         outlet_main.send(formatted_atoms);
+
     }
 
 
     bool set_cursor(const atoms& args) {
         if (auto cursor = AtomParser::atoms2voices<double>(args); cursor.is_ok()) {
             m_interpolator.cursor.set_values(cursor.ok());
+
+            auto cursor_info{args};
+            if (m_interpolator.uses_index.get_value()) {
+                cursor_info.insert(cursor_info.begin(), CURSOR_INDEX_INFO);
+            } else {
+                cursor_info.insert(cursor_info.begin(), CURSOR_PHASE_INFO);
+            }
+            dumpout.send(cursor_info);
+
             return true;
         } else {
             cerr << cursor.err().message() << endl;
@@ -179,14 +203,22 @@ private:
     }
 
 
-    void send_cursor(bool output_triggered) {
-        auto cursor = AtomFormatter::voices2atoms<double>(m_interpolator.cursor.get_values());
-        if (output_triggered) {
-            cursor.insert(cursor.begin(), "cursor");
-        } else {
-            cursor.insert(cursor.begin(), "setcursor");
+    void dump_indices() {
+        auto indices = m_interpolator.interpolator.previous_indices();
+        auto interp_mode = mode.get();
+        auto corpus_size = m_interpolator.corpus.get_values().size();
+
+        atoms output_info{OUTPUT_INDEX_INFO};
+        for (const auto& i : indices) {
+            if (!i) { // NOLINT(*-branch-clone)
+                output_info.emplace_back("null");
+            } else if (auto parsed_index = i->get(corpus_size, interp_mode)){
+                output_info.emplace_back(static_cast<int>(*parsed_index));
+            } else {
+                output_info.emplace_back("null"); // Mode::pass
+            }
         }
-        dumpout.send(cursor);
+        dumpout.send(output_info);
     }
 };
 
