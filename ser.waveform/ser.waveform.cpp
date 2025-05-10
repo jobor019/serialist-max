@@ -35,7 +35,7 @@ public:
     SER_NUM_VOICES_ATTRIBUTE(m_waveform.num_voices, nullptr);
     SER_AUTO_RESTORE_ATTRIBUTE();
 
-    vector_attribute<Waveform::Mode> mode{this, "mode", m_waveform.mode, Waveform::DEFAULT_MODE, cerr};
+    value_attribute<Waveform::Mode> mode{this, "mode", m_waveform.mode, Waveform::DEFAULT_MODE, cerr};
 
     vector_attribute<double> duty{this, "duty", m_waveform.duty, Waveform::DEFAULT_DUTY, cerr};
 

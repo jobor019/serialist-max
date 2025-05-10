@@ -84,7 +84,8 @@ public:
     pseudo_attribute<double> corpus{this, "corpus", m_interpolator.corpus, cerr, CORPUS_DESCRIPTION
       , input_format::voices, nullptr, [this] {
           if (is_hot(CORPUS_INLET)) {
-              process(InletTriggerHandler::triggers_like(m_interpolator.corpus.get_values()));
+              // Note: we're intentionally using cursor here, not corpus
+              process(InletTriggerHandler::triggers_like(m_interpolator.cursor.get_values()));
           }
 
           atoms size_info{SIZE_INFO};

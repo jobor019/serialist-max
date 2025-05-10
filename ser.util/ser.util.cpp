@@ -105,6 +105,30 @@ public:
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 /**
+ * @brief Takes a Voices and returns the first voice as a flat list, e.g.
+ *         [ [ 1 ] [ 2 ] [ 3 ] ] => 1,
+ *         [ [ 1 2 3 ] ]         => 1 2 3
+ *         [ [ ] [ 1 2 3 ] ]     => null
+ */
+class FirstOperator : public UtilityOperator {
+public:
+    Result<atoms> operator()(const atoms& args, const Parameters& params, std::size_t, bool) override {
+        if (auto v = AtomParser::atoms2voices<double>(args)) {
+            if (auto first = v->first_vec<>()) {
+                return AtomFormatter::vec2atoms<double>(*first);
+            }
+            return atoms{"null"};
+
+        } else {
+            return v.err();
+        }
+    }
+};
+
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/**
  * @brief Takes a flat list input and converts it into a Voices of size N x 1 (sequence), e.g.
  *        - 1 2 3                      => [ [ 1 ] [ 2 ] [ 3 ] ]
  *        - 1 null 3                   => [ [ 1 ] [   ] [ 3 ] ]
@@ -245,6 +269,24 @@ private:
     Vec<Voice<double>> m_values;
 };
 
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+/**
+ * @brief Output atoms as ints
+ */
+class IntOperator : public UtilityOperator {
+public:
+    Result<atoms> operator()(const atoms& args, const Parameters& params, std::size_t, bool) override {
+        if (auto v = AtomParser::atoms2voices<double>(args)) {
+            return AtomFormatter::voices2atoms<int>(*v);
+        } else {
+            return v.err();
+        }
+    }
+};
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 inline std::unique_ptr<UtilityOperator> string2operator(const std::string& s, const atoms& args) {
@@ -254,12 +296,16 @@ inline std::unique_ptr<UtilityOperator> string2operator(const std::string& s, co
         return std::make_unique<NullMapOperator>();
     if (s == "chord")
         return std::make_unique<ChordOperator>();
+    if (s == "first")
+        return std::make_unique<FirstOperator>();
     if (s == "sequence")
         return std::make_unique<SequenceOperator>();
     if (s == "voices")
         return std::make_unique<VoicesOperator>();
     if (s == "zip")
         return ZipOperator::parse(args);
+    if (s == "int")
+        return std::make_unique<IntOperator>();
 
     throw std::domain_error("Invalid mode " + s);
 
