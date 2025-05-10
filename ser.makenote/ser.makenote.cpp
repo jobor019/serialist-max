@@ -35,12 +35,12 @@ public:
     outlet<> outlet_main{this, "(list) note_number velocity channel"};
     outlet<> dumpout{this, Inlets::DUMPOUT};
 
-    explicit ser_makenote(const atoms& args = {}) {
+    explicit ser_makenote(const atoms& = {}) {
         metro.delay(500);
     }
 
     timer<> metro{this, MIN_FUNCTION {
-        if (!SerialistTransport::get_instance().active()) {
+        if (!SerialistTransport::get_instance().active() || !m_make_note.enabled.get_values().first_or(true)) {
             flush_internal();
         }
 

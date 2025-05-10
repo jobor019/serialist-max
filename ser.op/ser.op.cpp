@@ -17,7 +17,6 @@ class ser_op : public object<ser_op> {
 private:
     OperatorWrapper<> m_op;
     InletTriggerHandler m_inlet_triggers{true, false};
-    std::optional<atom> m_initial_rhs_value = std::nullopt;
 
     static const inline auto LHS_DESCRIPTION = Inlets::voices(Types::number, "Left operand");
     static const inline auto RHS_DESCRIPTION = Inlets::voices(Types::number, "Right operand");
@@ -35,9 +34,13 @@ public:
 
     static const inline std::string CLASS_NAME = "ser.op";
 
+    // Only for documentation, type is not restrictive
+    argument<atoms> mode_arg{this, "mode", "Mode of operation"}; // TODO: List valid values
+    argument<atoms> rhs_arg{this, "rhs", "Set initial right operand"};
+
     explicit ser_op(const atoms& args = {}) {
         if (args.empty()) {
-            error(ErrorMessages::missing_argument(CLASS_NAME, "<operator> [inital_value]"));
+            error(ErrorMessages::missing_argument(CLASS_NAME, "<operator> [initial_value(s)]"));
 
         } else {
             if (auto mode_str = AtomParser::atom2value<std::string>(args[0])) {
@@ -53,15 +56,9 @@ public:
         }
 
         if (args.size() >= 2) {
-            if (auto rhs = AtomParser::atom2value<double>(args[1])) {
-                m_initial_rhs_value = args[1]; // internal object updated in `setup`
-            } else {
-                error(CLASS_NAME + ": the second argument must be a number");
-            }
-        }
-
-        if (args.size() > 2) {
-            cwarn << ErrorMessages::extra_argument(CLASS_NAME) << endl;
+            atoms values;
+            values.insert(values.end(), args.begin() + 1, args.end());
+            rhs.set(values);
         }
     }
 
@@ -94,13 +91,8 @@ public:
 
     message<> setup{this, "setup", setter{MIN_FUNCTION {
         LoadState s{state()};
-        s >> enabled >> voices >> triggers >> lhs; // rhs: see lines below
+        s >> enabled >> voices >> triggers >> lhs >> rhs;
 
-        if (m_initial_rhs_value) {
-            rhs.set(atoms{*m_initial_rhs_value}); // If explicit arg provided, use this value rather than stored value
-        } else {
-            s >> rhs; // otherwise load state, if applicable
-        }
         return {};
     }}};
 

@@ -41,6 +41,15 @@ public:
     outlet<> outlet_main{this, Inlets::voices(Types::number, "Pattern output")};
     outlet<> dumpout{this, Inlets::DUMPOUT};
 
+    // Only for documentation, type is not restrictive
+    argument<atoms> pattern_arg{this, "pattern", "same as \"pattern\" message"};
+
+    explicit ser_pattern(const atoms& args = {}) {
+        if (!args.empty()) {
+            pattern.set(args);
+        }
+    }
+
     SER_ENABLED_ATTRIBUTE(m_patternizer.enabled, nullptr);
     SER_NUM_VOICES_ATTRIBUTE(m_patternizer.num_voices, nullptr);
     SER_AUTO_RESTORE_ATTRIBUTE();

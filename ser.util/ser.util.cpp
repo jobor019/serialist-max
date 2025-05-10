@@ -337,6 +337,8 @@ public:
 
     // Note: we don't need auto-restore, load/save state or enabled for this object
 
+    argument<atoms> mode_arg{this, "mode", "Mode of operation"}; // TODO: List valid values
+
     explicit ser_util(const atoms& args = {}) {
 
         if (auto mode = parse_mode(args)) {

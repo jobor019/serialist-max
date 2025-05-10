@@ -30,6 +30,15 @@ public:
     outlet<> outlet_main{this, Inlets::voice(Types::phase, "Mapped phase")};
     outlet<> dumpout{this, Inlets::DUMPOUT};
 
+    // Only for documentation, type is not restrictive
+    argument<atoms> durations_arg{this, "durations", "same as \"durations\" message"};
+
+    explicit ser_phasemap(const atoms& args = {}) {
+        if (!args.empty()) {
+            durations.set(args);
+        }
+    }
+
     SER_ENABLED_ATTRIBUTE(m_phasemap.enabled, nullptr);
     SER_NUM_VOICES_ATTRIBUTE(m_phasemap.num_voices, nullptr);
     SER_AUTO_RESTORE_ATTRIBUTE();

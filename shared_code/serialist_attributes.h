@@ -277,5 +277,15 @@ public:
     }}}
 
 
+#define SER_DEFAULT_CONSTRUCTOR(class_name) \
+    explicit class_name(const atoms& args = {}) { \
+        if (!args.empty()) { \
+            cwarn << ErrorMessages::extra_argument(#class_name); \
+        } \
+    }
+
+
+
+
 
 #endif //SERIALIST_MAX_SERIALIST_ATTRIBUTES_H
