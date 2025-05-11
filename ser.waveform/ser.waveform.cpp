@@ -18,6 +18,8 @@ class ser_waveform : public object<ser_waveform> {
 private:
     WaveformWrapper<> m_waveform;
 
+    static const inline auto MODE_DESCR = Inlets::value(Types::number, "phase (0), sin (1), square (2) or tri (3)");
+
 public:
     MIN_DESCRIPTION{"Multi-channel Phase-based waveform function"};
     MIN_TAGS{"utilities"};
