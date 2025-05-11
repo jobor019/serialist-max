@@ -13,7 +13,8 @@
 		"rect" : [ 34.0, 87.0, 2512.0, 1256.0 ],
 		"gridsize" : [ 15.0, 15.0 ],
 		"subpatcher_template" : "serialist_help",
-		"showontab" : 1,
+		"showrootpatcherontab" : 0,
+		"showontab" : 0,
 		"boxes" : [ 			{
 				"box" : 				{
 					"id" : "obj-4",
@@ -31,12 +32,51 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 34.0, 113.0, 2512.0, 1230.0 ],
+						"rect" : [ 0.0, 26.0, 2512.0, 1230.0 ],
 						"openrect" : [ 0.0, 0.0, 1040.0, 740.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
 						"integercoordinates" : 1,
 						"boxes" : [ 							{
+								"box" : 								{
+									"id" : "obj-53",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 542.0, 477.0, 65.0, 22.0 ],
+									"presentation_linecount" : 3,
+									"text" : "0.5 0.2 0.8"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-52",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 542.0, 509.0, 35.0, 22.0 ],
+									"text" : "1 0.5"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"bubble" : 1,
+									"bubblepoint" : 0.04,
+									"id" : "obj-50",
+									"linecount" : 3,
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 588.0, 501.0, 150.0, 51.0 ],
+									"text" : "Note: broadcasting applies to both duty and curve"
+								}
+
+							}
+, 							{
 								"box" : 								{
 									"hidden" : 1,
 									"id" : "obj-46",
@@ -808,6 +848,22 @@
 									"destination" : [ "obj-39", 0 ],
 									"hidden" : 1,
 									"source" : [ "obj-46", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-24", 2 ],
+									"midpoints" : [ 551.5, 539.01953125, 499.6796875, 539.01953125, 499.6796875, 407.63671875, 469.5, 407.63671875 ],
+									"source" : [ "obj-52", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-24", 1 ],
+									"midpoints" : [ 551.5, 503.08203125, 518.88671875, 503.08203125, 518.88671875, 399.0, 411.5, 399.0 ],
+									"source" : [ "obj-53", 0 ]
 								}
 
 							}
@@ -1614,18 +1670,54 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 0.0, 26.0, 2512.0, 1230.0 ],
+						"rect" : [ 34.0, 113.0, 2512.0, 1230.0 ],
 						"openrect" : [ 0.0, 0.0, 1040.0, 740.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
 						"integercoordinates" : 1,
 						"boxes" : [ 							{
 								"box" : 								{
+									"id" : "obj-17",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 124.0, 154.0, 32.0, 22.0 ],
+									"text" : "1. 2."
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"bubble" : 1,
+									"bubblepoint" : 1.0,
+									"id" : "obj-13",
+									"linecount" : 2,
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 158.0, 123.0, 141.0, 37.0 ],
+									"text" : "broadcasting applies to  phase input"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-11",
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 872.0, 152.0, 150.0, 20.0 ]
+								}
+
+							}
+, 							{
+								"box" : 								{
 									"id" : "obj-51",
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 228.0, 128.0, 351.0, 20.0 ],
+									"patching_rect" : [ 267.0, 173.0, 351.0, 20.0 ],
 									"text" : "Waveform: maps a phase from 0 to 0.99999 to a given function"
 								}
 
@@ -1638,7 +1730,7 @@
 									"numinlets" : 1,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 65.0, 108.0, 70.0, 22.0 ],
+									"patching_rect" : [ 65.0, 123.0, 70.0, 22.0 ],
 									"text" : "loadmess 2"
 								}
 
@@ -1652,7 +1744,7 @@
 									"numoutlets" : 2,
 									"outlettype" : [ "", "bang" ],
 									"parameter_enable" : 0,
-									"patching_rect" : [ 65.0, 139.0, 50.0, 22.0 ]
+									"patching_rect" : [ 65.0, 154.0, 50.0, 22.0 ]
 								}
 
 							}
@@ -1666,7 +1758,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 477.0, 362.0, 120.0, 52.0 ],
+									"patching_rect" : [ 477.0, 377.0, 120.0, 52.0 ],
 									"text" : "tri (@mode 3): triangle wave"
 								}
 
@@ -1681,7 +1773,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 335.0, 362.0, 105.0, 66.0 ],
+									"patching_rect" : [ 335.0, 377.0, 105.0, 66.0 ],
 									"text" : "square (@mode 2): unit square (pulse) wave"
 								}
 
@@ -1696,7 +1788,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 171.0, 362.0, 147.0, 66.0 ],
+									"patching_rect" : [ 171.0, 377.0, 147.0, 66.0 ],
 									"text" : "sin (@mode 1): sine shifted by -π/4, mapped to range unit range"
 								}
 
@@ -1711,7 +1803,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 10.0, 362.0, 158.0, 66.0 ],
+									"patching_rect" : [ 10.0, 377.0, 158.0, 66.0 ],
 									"text" : "phase (@mode 0, default): unit operator \n(convert to phase)"
 								}
 
@@ -1732,7 +1824,7 @@
 									"numoutlets" : 2,
 									"offset" : [ 0.0, 0.0 ],
 									"outlettype" : [ "", "" ],
-									"patching_rect" : [ 477.0, 309.0, 87.0, 41.0 ],
+									"patching_rect" : [ 477.0, 324.0, 87.0, 41.0 ],
 									"varname" : "ser.scope.ui[4]",
 									"viewvisibility" : 1
 								}
@@ -1745,7 +1837,7 @@
 									"numinlets" : 3,
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
-									"patching_rect" : [ 477.0, 270.0, 135.0, 22.0 ],
+									"patching_rect" : [ 477.0, 285.0, 135.0, 22.0 ],
 									"text" : "ser.waveform @mode 3"
 								}
 
@@ -1767,7 +1859,7 @@
 									"numoutlets" : 2,
 									"offset" : [ 0.0, 0.0 ],
 									"outlettype" : [ "", "" ],
-									"patching_rect" : [ 329.0, 309.0, 87.0, 41.0 ],
+									"patching_rect" : [ 329.0, 324.0, 87.0, 41.0 ],
 									"varname" : "ser.scope.ui[3]",
 									"viewvisibility" : 1
 								}
@@ -1780,7 +1872,7 @@
 									"numinlets" : 3,
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
-									"patching_rect" : [ 329.0, 270.0, 135.0, 22.0 ],
+									"patching_rect" : [ 329.0, 285.0, 135.0, 22.0 ],
 									"text" : "ser.waveform @mode 2"
 								}
 
@@ -1801,7 +1893,7 @@
 									"numoutlets" : 2,
 									"offset" : [ 0.0, 0.0 ],
 									"outlettype" : [ "", "" ],
-									"patching_rect" : [ 169.0, 309.0, 87.0, 41.0 ],
+									"patching_rect" : [ 169.0, 324.0, 87.0, 41.0 ],
 									"varname" : "ser.scope.ui[2]",
 									"viewvisibility" : 1
 								}
@@ -1814,7 +1906,7 @@
 									"numinlets" : 3,
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
-									"patching_rect" : [ 169.0, 270.0, 135.0, 22.0 ],
+									"patching_rect" : [ 169.0, 285.0, 135.0, 22.0 ],
 									"text" : "ser.waveform @mode 1"
 								}
 
@@ -1835,7 +1927,7 @@
 									"numoutlets" : 2,
 									"offset" : [ 0.0, 0.0 ],
 									"outlettype" : [ "", "" ],
-									"patching_rect" : [ 16.0, 309.0, 87.0, 41.0 ],
+									"patching_rect" : [ 16.0, 324.0, 87.0, 41.0 ],
 									"varname" : "ser.scope.ui[1]",
 									"viewvisibility" : 1
 								}
@@ -1857,7 +1949,7 @@
 									"numoutlets" : 2,
 									"offset" : [ 0.0, 0.0 ],
 									"outlettype" : [ "", "" ],
-									"patching_rect" : [ 40.0, 203.0, 87.0, 41.0 ],
+									"patching_rect" : [ 40.0, 218.0, 87.0, 41.0 ],
 									"varname" : "ser.scope.ui",
 									"viewvisibility" : 1
 								}
@@ -1870,7 +1962,7 @@
 									"numinlets" : 3,
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
-									"patching_rect" : [ 16.0, 170.0, 116.0, 22.0 ],
+									"patching_rect" : [ 16.0, 185.0, 116.0, 22.0 ],
 									"text" : "ser.phase @mode 1"
 								}
 
@@ -1882,7 +1974,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 228.0, 156.0, 351.0, 47.0 ],
+									"patching_rect" : [ 267.0, 201.0, 351.0, 47.0 ],
 									"text" : "All waveforms, similar to the output of ser.phase, have ranges from 0 to  0.999999 (the smallest number before 1.0 that Max can represent)"
 								}
 
@@ -1894,7 +1986,7 @@
 									"numinlets" : 3,
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
-									"patching_rect" : [ 16.0, 270.0, 135.0, 22.0 ],
+									"patching_rect" : [ 16.0, 285.0, 135.0, 22.0 ],
 									"text" : "ser.waveform @mode 0"
 								}
 
@@ -1995,6 +2087,13 @@
 							}
 , 							{
 								"patchline" : 								{
+									"destination" : [ "obj-8", 1 ],
+									"source" : [ "obj-17", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
 									"destination" : [ "obj-19", 0 ],
 									"source" : [ "obj-20", 0 ]
 								}
@@ -2047,7 +2146,7 @@
 , 							{
 								"patchline" : 								{
 									"destination" : [ "obj-20", 0 ],
-									"midpoints" : [ 25.5, 257.8671875, 178.5, 257.8671875 ],
+									"midpoints" : [ 25.5, 272.8671875, 178.5, 272.8671875 ],
 									"order" : 2,
 									"source" : [ "obj-8", 0 ]
 								}
@@ -2056,7 +2155,7 @@
 , 							{
 								"patchline" : 								{
 									"destination" : [ "obj-22", 0 ],
-									"midpoints" : [ 25.5, 257.37890625, 338.5, 257.37890625 ],
+									"midpoints" : [ 25.5, 272.37890625, 338.5, 272.37890625 ],
 									"order" : 1,
 									"source" : [ "obj-8", 0 ]
 								}
@@ -2065,7 +2164,7 @@
 , 							{
 								"patchline" : 								{
 									"destination" : [ "obj-24", 0 ],
-									"midpoints" : [ 25.5, 256.9609375, 486.5, 256.9609375 ],
+									"midpoints" : [ 25.5, 271.9609375, 486.5, 271.9609375 ],
 									"order" : 0,
 									"source" : [ "obj-8", 0 ]
 								}
