@@ -18,7 +18,6 @@
 				"box" : 				{
 					"fontname" : "Ableton Sans Medium",
 					"fontsize" : 9.5,
-					"hidden" : 1,
 					"id" : "obj-14",
 					"maxclass" : "comment",
 					"numinlets" : 1,
@@ -38,7 +37,6 @@
 					"bgcolor" : [ 0.125490196078431, 0.125490196078431, 0.125490196078431, 0.7 ],
 					"border" : 1,
 					"bordercolor" : [ 0.576470588235294, 0.576470588235294, 0.576470588235294, 1.0 ],
-					"hidden" : 1,
 					"id" : "obj-18",
 					"maxclass" : "panel",
 					"mode" : 0,
@@ -491,7 +489,7 @@
 
 							}
  ],
-						"originid" : "pat-16"
+						"originid" : "pat-10"
 					}
 ,
 					"patching_rect" : [ 192.0, 266.0, 387.0, 22.0 ],
@@ -780,7 +778,7 @@
 
 							}
  ],
-						"originid" : "pat-18"
+						"originid" : "pat-12"
 					}
 ,
 					"patching_rect" : [ 104.0, 382.0, 71.0, 22.0 ],
@@ -1022,7 +1020,7 @@
 
 			}
  ],
-		"originid" : "pat-14"
+		"originid" : "pat-8"
 	}
 
 }

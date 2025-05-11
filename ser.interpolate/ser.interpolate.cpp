@@ -35,8 +35,7 @@ private:
 
     InletTriggerHandler m_inlet_triggers{true, false, false};
 
-
-
+    bool m_has_undumped_size_info = false;
 
 public:
     MIN_DESCRIPTION{"Multi-channel memory interpolator"};
@@ -57,6 +56,8 @@ public:
     explicit ser_interpolate(const atoms& args = {}) {
         if (!args.empty()) {
             corpus.set(args);
+            // Outlets aren't accessing at ctor or setup time, so we need to set this flag
+            m_has_undumped_size_info = true;
         }
     }
 
@@ -98,10 +99,7 @@ public:
               process(InletTriggerHandler::triggers_like(m_interpolator.cursor.get_values()));
           }
 
-          atoms size_info{SIZE_INFO};
-          size_info.emplace_back(m_interpolator.corpus.get_values().size());
-          dumpout.send(size_info);
-
+          dump_size_info();
     }};
 
 
@@ -118,6 +116,11 @@ public:
 
 
     function handle_input = MIN_FUNCTION {
+        if (m_has_undumped_size_info) {
+            dump_size_info();
+            m_has_undumped_size_info = false;
+        }
+
         if (inlet == CORPUS_INLET) {
             corpus.set(args);
         } else if (inlet == CURSOR_INLET) {
@@ -230,6 +233,13 @@ private:
             }
         }
         dumpout.send(output_info);
+    }
+
+
+    void dump_size_info() {
+        atoms size_info{SIZE_INFO};
+        size_info.emplace_back(m_interpolator.corpus.get_values().size());
+        dumpout.send(size_info);
     }
 };
 
