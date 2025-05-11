@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 34.0, 87.0, 2512.0, 1256.0 ],
+		"rect" : [ 34.0, 100.0, 1046.0, 786.0 ],
 		"gridsize" : [ 15.0, 15.0 ],
 		"subpatcher_template" : "serialist_help",
 		"showontab" : 1,
@@ -31,7 +31,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 0.0, 26.0, 2512.0, 1230.0 ],
+						"rect" : [ 0.0, 26.0, 1046.0, 760.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
 						"boxes" : [  ],
@@ -61,7 +61,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 34.0, 113.0, 2512.0, 1230.0 ],
+						"rect" : [ 34.0, 126.0, 1046.0, 760.0 ],
 						"openrect" : [ 0.0, 0.0, 1040.0, 740.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
@@ -98,7 +98,7 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 695.0, 617.0, 70.0, 22.0 ],
-									"text" : "0.463841"
+									"text" : "0.912402"
 								}
 
 							}
@@ -134,7 +134,7 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 695.0, 482.0, 178.0, 60.0 ],
-									"text" : "Note that in some cases, ser.snh may be overkill. We can often achieve similar results with manual polling:"
+									"text" : "Note that in some cases, ser.snh may be overkill. We may be able to achieve the same thing with manual polling:"
 								}
 
 							}
