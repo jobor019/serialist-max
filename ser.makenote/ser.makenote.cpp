@@ -21,6 +21,8 @@ private:
     static const inline auto VEL_DESCRIPTION = Inlets::voices(Types::number, "Set velocities");
     static const inline auto CH_DESCRIPTION = Inlets::voices(Types::number, "Set channels");
 
+    static const inline auto CLASS_NAME = "ser.makenote";
+
 public:
     MIN_DESCRIPTION{""};
     MIN_TAGS{"utilities"};
@@ -35,7 +37,25 @@ public:
     outlet<> outlet_main{this, "(list) note_number velocity channel"};
     outlet<> dumpout{this, Inlets::DUMPOUT};
 
-    explicit ser_makenote(const atoms& = {}) {
+    argument<atoms> note_arg{this, "note", "same as \"note\" message (accepts only a single note number)"};
+    argument<atoms> velocity_arg{this, "velocity", "same as \"velocity\" message (accepts only a single velocity)"};
+    argument<atoms> channel_arg{this, "channel", "same as \"channel\" message (accepts only a single channel)"};
+
+
+    explicit ser_makenote(const atoms& args = {}) {
+        if (args.size() > 3) {
+            cwarn << ErrorMessages::extra_argument(CLASS_NAME) << endl;
+        }
+        if (args.size() > 2) {
+            channel.set(atoms{args[2]});
+        }
+        if (args.size() > 1) {
+            velocity.set(atoms{args[1]});
+        }
+        if (!args.empty()) {
+            note.set(atoms{args[0]});
+        }
+
         metro.delay(500);
     }
 
