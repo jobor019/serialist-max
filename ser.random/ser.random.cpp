@@ -20,6 +20,9 @@ private:
     std::mutex m_mutex;
     std::atomic<int> m_poll_interval{1}; // shouldn't access poll_interval.get() directly on timer thread
 
+    static const inline auto MODE_DESCR = Inlets::value(Types::number,
+        "uniform (0), weighted (1), exponential (2) or brownian (3)");
+
     static const inline auto SIZE_DESCRIPTION = Inlets::voice(Types::number
         , "Set number of random values for each voice to output");
 
@@ -71,7 +74,7 @@ public:
     };
 
 
-    value_attribute<Rnd::Mode> mode{this, "mode", m_random.mode, Rnd::DEFAULT_MODE, cerr, "", &m_mutex};
+    value_attribute<Rnd::Mode> mode{this, "mode", m_random.mode, Rnd::DEFAULT_MODE, cerr, "", &m_mutex, MODE_DESCR};
 
 
     value_attribute<Rnd::AvoidRepetitions> repetitions{this, "repetitions", m_random.repetition_strategy
