@@ -13,7 +13,8 @@
 		"rect" : [ 34.0, 87.0, 2512.0, 1256.0 ],
 		"gridsize" : [ 15.0, 15.0 ],
 		"subpatcher_template" : "serialist_help",
-		"showontab" : 1,
+		"showrootpatcherontab" : 0,
+		"showontab" : 0,
 		"boxes" : [ 			{
 				"box" : 				{
 					"id" : "obj-6",
@@ -31,7 +32,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 34.0, 113.0, 2512.0, 1230.0 ],
+						"rect" : [ 0.0, 26.0, 2512.0, 1230.0 ],
 						"openrect" : [ 0.0, 0.0, 1040.0, 740.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
@@ -756,7 +757,7 @@
 
 							}
  ],
-						"originid" : "pat-743"
+						"originid" : "pat-210"
 					}
 ,
 					"patching_rect" : [ 163.0, 21.0, 53.0, 22.0 ],
@@ -782,7 +783,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 0.0, 26.0, 2512.0, 1230.0 ],
+						"rect" : [ 34.0, 113.0, 2512.0, 1230.0 ],
 						"openrect" : [ 0.0, 0.0, 1040.0, 740.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
@@ -805,7 +806,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 474.0, 617.0, 27.0, 20.0 ],
-									"presentation_linecount" : 2,
 									"text" : "cos"
 								}
 
@@ -850,7 +850,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 41.0, 615.0, 29.0, 20.0 ],
-									"presentation_linecount" : 2,
 									"text" : "sqrt"
 								}
 
@@ -862,7 +861,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 382.0, 471.0, 39.0, 20.0 ],
-									"presentation_linecount" : 2,
 									"text" : "round"
 								}
 
@@ -874,7 +872,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 278.0, 471.0, 32.0, 20.0 ],
-									"presentation_linecount" : 2,
 									"text" : "floor"
 								}
 
@@ -921,7 +918,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 39.0, 132.0, 105.0, 20.0 ],
-									"presentation_linecount" : 3,
 									"text" : "Binary operators"
 								}
 
@@ -933,7 +929,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 331.0, 311.0, 31.0, 20.0 ],
-									"presentation_linecount" : 2,
 									"text" : "max"
 								}
 
@@ -967,7 +962,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 588.0, 166.0, 54.0, 20.0 ],
-									"presentation_linecount" : 2,
 									"text" : "mod (%)"
 								}
 
@@ -2246,7 +2240,7 @@
 
 							}
  ],
-						"originid" : "pat-741"
+						"originid" : "pat-212"
 					}
 ,
 					"patching_rect" : [ 82.0, 20.0, 71.0, 22.0 ],
@@ -2337,7 +2331,6 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 825.0, 157.0, 104.0, 22.0 ],
-									"presentation_linecount" : 2,
 									"text" : "[ 10 null [ 30 40 ] ]"
 								}
 
@@ -2386,7 +2379,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 516.0, 155.0, 208.0, 47.0 ],
-									"presentation_linecount" : 3,
 									"text" : "Broadcasting applies to null (empty list) as well. Operating on null will yield null(s) of the same size:"
 								}
 
@@ -2447,7 +2439,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 517.0, 365.0, 185.0, 47.0 ],
-									"presentation_linecount" : 3,
 									"text" : "when possible, element-wise operation will be performed without broadcasting:"
 								}
 
@@ -2484,7 +2475,6 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 720.0, 260.0, 55.0, 22.0 ],
-									"presentation_linecount" : 2,
 									"text" : "10 20 30"
 								}
 
@@ -2508,8 +2498,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 518.0, 260.0, 183.0, 47.0 ],
-									"presentation_linecount" : 2,
+									"patching_rect" : [ 518.0, 260.0, 185.0, 47.0 ],
 									"text" : "when applied to a sequence and a chord, the result will be a sequence of chords (multilist):"
 								}
 
@@ -2522,7 +2511,6 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 318.0, 260.0, 95.0, 22.0 ],
-									"presentation_linecount" : 3,
 									"text" : "0 0 0 0 0 0 0 0 0"
 								}
 
@@ -2535,7 +2523,6 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 266.0, 321.0, 160.0, 22.0 ],
-									"presentation_linecount" : 3,
 									"text" : "1. 2. 3. 1. 2. 3. 1. 2. 3."
 								}
 
@@ -2571,8 +2558,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 44.0, 257.0, 207.0, 47.0 ],
-									"presentation_linecount" : 2,
+									"patching_rect" : [ 44.0, 257.0, 209.0, 47.0 ],
 									"text" : "If the voice count differs, the smallest voice count will be repeated to match the largest:"
 								}
 
@@ -2609,7 +2595,6 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 339.0, 154.0, 45.0, 22.0 ],
-									"presentation_linecount" : 2,
 									"text" : "1 2 3 4"
 								}
 
@@ -2755,7 +2740,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 894.0, 489.0, 83.0, 20.0 ],
-									"presentation_linecount" : 2,
 									"text" : "empty / mixed"
 								}
 
@@ -2824,7 +2808,6 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 553.0, 545.0, 39.0, 22.0 ],
-									"presentation_linecount" : 2,
 									"text" : "10 20"
 								}
 
@@ -2837,7 +2820,6 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 553.0, 515.0, 72.0, 22.0 ],
-									"presentation_linecount" : 2,
 									"text" : "10 20 30 40"
 								}
 
@@ -2922,7 +2904,6 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 377.0, 542.0, 49.0, 22.0 ],
-									"presentation_linecount" : 2,
 									"text" : "null null"
 								}
 
@@ -2957,7 +2938,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 222.0, 486.0, 49.0, 20.0 ],
-									"presentation_linecount" : 2,
 									"text" : "multilist"
 								}
 
@@ -2980,7 +2960,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 55.0, 486.0, 61.0, 20.0 ],
-									"presentation_linecount" : 2,
 									"text" : "sequence"
 								}
 
@@ -3040,7 +3019,6 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 222.0, 542.0, 149.0, 22.0 ],
-									"presentation_linecount" : 2,
 									"text" : "[ [ 100 90 80 ] [ 100 ] [ 0 ] ]"
 								}
 
@@ -3053,7 +3031,6 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 116.0, 536.0, 99.0, 22.0 ],
-									"presentation_linecount" : 2,
 									"text" : "[ [ 36 48 60 72 ] ]"
 								}
 
@@ -3621,11 +3598,10 @@
 
 							}
  ],
-						"originid" : "pat-697"
+						"originid" : "pat-214"
 					}
 ,
 					"patching_rect" : [ 259.0, 24.0, 87.0, 22.0 ],
-					"presentation_linecount" : 3,
 					"text" : "p broadcasting",
 					"varname" : "basic[2]"
 				}
@@ -4101,7 +4077,7 @@
 
 							}
  ],
-						"originid" : "pat-647"
+						"originid" : "pat-216"
 					}
 ,
 					"patching_rect" : [ 360.0, 26.0, 89.0, 22.0 ],
@@ -4132,7 +4108,7 @@
 						"showontab" : 1,
 						"boxes" : [  ],
 						"lines" : [  ],
-						"originid" : "pat-669"
+						"originid" : "pat-238"
 					}
 ,
 					"patching_rect" : [ 460.0, 26.0, 25.0, 22.0 ],
@@ -4170,7 +4146,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 654.0, 450.0, 115.0, 74.0 ],
-									"presentation_linecount" : 5,
 									"text" : "- abs\n- ceil, floor, round\n- sqrt, exp, log\n- sin, cos, tan\n- nop (unit operator)"
 								}
 
@@ -4231,7 +4206,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 654.0, 383.0, 233.0, 33.0 ],
-									"presentation_linecount" : 2,
 									"text" : "- add (+),  sub (-), mul (*), div (/),  mod (%)\n- pow, min, max"
 								}
 
@@ -4245,7 +4219,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 452.0, 134.0, 130.0, 64.0 ],
-									"presentation_linecount" : 4,
 									"text" : "Supports multiple different formats, see \"broadcasting\" tab"
 								}
 
@@ -4258,7 +4231,6 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 361.0, 155.0, 82.0, 22.0 ],
-									"presentation_linecount" : 5,
 									"text" : "[ [ 10 20 40 ] ]"
 								}
 
@@ -4273,7 +4245,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 334.0, 415.0, 168.0, 37.0 ],
-									"presentation_linecount" : 4,
 									"text" : "@triggers args controls which inlets trigger output"
 								}
 
@@ -4289,7 +4260,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 238.0, 501.0, 97.0, 52.0 ],
-									"presentation_linecount" : 2,
 									"text" : "both inlets trigger output"
 								}
 
@@ -4305,7 +4275,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 134.0, 501.0, 97.0, 52.0 ],
-									"presentation_linecount" : 2,
 									"text" : "right inlet triggers output"
 								}
 
@@ -4378,8 +4347,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 287.0, 207.0, 130.0, 37.0 ],
-									"presentation_linecount" : 2,
+									"patching_rect" : [ 287.0, 207.0, 131.0, 37.0 ],
 									"text" : "operator keywords, see other tabs"
 								}
 
@@ -4394,7 +4362,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 30.0, 501.0, 96.0, 52.0 ],
+									"patching_rect" : [ 30.0, 501.0, 99.0, 52.0 ],
 									"text" : "left inlet triggers output (default)"
 								}
 
@@ -4579,7 +4547,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 743.0, 184.0, 150.0, 37.0 ],
-									"presentation_linecount" : 2,
 									"text" : "Optional second arg defines right operand"
 								}
 
@@ -4862,7 +4829,7 @@
 
 							}
  ],
-						"originid" : "pat-671"
+						"originid" : "pat-240"
 					}
 ,
 					"patching_rect" : [ 23.0, 20.0, 47.0, 22.0 ],
@@ -4873,7 +4840,7 @@
 			}
  ],
 		"lines" : [  ],
-		"originid" : "pat-645",
+		"originid" : "pat-208",
 		"parameters" : 		{
 			"obj-7::obj-1::obj-113" : [ "live.text[8]", "live.text", 0 ],
 			"obj-7::obj-1::obj-34::obj-1" : [ "live.numbox[1]", "live.numbox", 0 ],

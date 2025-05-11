@@ -114,7 +114,7 @@ class FirstOperator : public UtilityOperator {
 public:
     Result<atoms> operator()(const atoms& args, const Parameters& params, std::size_t, bool) override {
         if (auto v = AtomParser::atoms2voices<double>(args)) {
-            if (auto first = v->first_vec<>()) {
+            if (auto first = v->first_vec<>(); first && !first->empty()) {
                 return AtomFormatter::vec2atoms<double>(*first);
             }
             return atoms{"null"};
