@@ -32,19 +32,131 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 0.0, 26.0, 1146.0, 851.0 ],
+						"rect" : [ 518.0, 238.0, 1146.0, 851.0 ],
 						"openrect" : [ 0.0, 0.0, 1040.0, 740.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
 						"integercoordinates" : 1,
 						"boxes" : [ 							{
 								"box" : 								{
+									"id" : "obj-47",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 758.0, 163.0, 69.0, 22.0 ],
+									"text" : "null 1 null 2"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-45",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 601.0, 163.0, 149.0, 22.0 ],
+									"presentation_linecount" : 3,
+									"text" : "[ [ 1 2 3 ] [ 4 5 ] [ 6 7 8 9 ] ]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-25",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 531.0, 163.0, 62.0, 22.0 ],
+									"presentation_linecount" : 2,
+									"text" : "[ [ 1 2 3 ] ]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-22",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 478.0, 163.0, 45.0, 22.0 ],
+									"presentation_linecount" : 2,
+									"text" : "1 2 3 4"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-18",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 404.0, 250.0, 50.0, 22.0 ],
+									"text" : "0 1 0 1"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-8",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 443.0, 163.0, 30.0, 22.0 ],
+									"text" : "null"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-7",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 404.0, 163.0, 30.0, 22.0 ],
+									"text" : "1"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"bubble" : 1,
+									"id" : "obj-5",
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 489.0, 216.0, 269.0, 24.0 ],
+									"presentation_linecount" : 2,
+									"text" : "len: get size of every individual voice as a list"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-3",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "", "" ],
+									"patching_rect" : [ 404.0, 217.0, 68.0, 22.0 ],
+									"text" : "ser.util size"
+								}
+
+							}
+, 							{
+								"box" : 								{
 									"id" : "obj-58",
 									"maxclass" : "message",
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 557.0, 337.0, 30.0, 22.0 ],
+									"patching_rect" : [ 206.0, 528.0, 30.0, 22.0 ],
 									"text" : "7 8"
 								}
 
@@ -57,8 +169,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 552.0, 384.0, 189.0, 37.0 ],
-									"presentation_linecount" : 2,
+									"patching_rect" : [ 201.0, 575.0, 189.0, 37.0 ],
 									"text" : "zip: zip multiple sequences into a sequence of chords"
 								}
 
@@ -70,7 +181,7 @@
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 370.0, 423.0, 185.0, 22.0 ],
+									"patching_rect" : [ 19.0, 614.0, 185.0, 22.0 ],
 									"text" : "[ [ 1. 4. 7. ] [ 2. 5. 8. ] ]"
 								}
 
@@ -82,7 +193,7 @@
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 514.0, 337.0, 35.0, 22.0 ],
+									"patching_rect" : [ 163.0, 528.0, 35.0, 22.0 ],
 									"text" : "7 8 9"
 								}
 
@@ -94,7 +205,7 @@
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 445.0, 337.0, 35.0, 22.0 ],
+									"patching_rect" : [ 94.0, 528.0, 35.0, 22.0 ],
 									"text" : "4 5 6"
 								}
 
@@ -106,7 +217,7 @@
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 376.0, 337.0, 35.0, 22.0 ],
+									"patching_rect" : [ 25.0, 528.0, 35.0, 22.0 ],
 									"text" : "1 2 3"
 								}
 
@@ -118,7 +229,7 @@
 									"numinlets" : 3,
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
-									"patching_rect" : [ 376.0, 391.0, 157.0, 22.0 ],
+									"patching_rect" : [ 25.0, 582.0, 157.0, 22.0 ],
 									"text" : "ser.util zip 3 @triggers 0 1 2"
 								}
 
@@ -131,8 +242,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 593.0, 316.0, 240.0, 64.0 ],
-									"presentation_linecount" : 8,
+									"patching_rect" : [ 242.0, 507.0, 243.0, 64.0 ],
 									"text" : "Note: the shortest sequence defines the length of the chord (zip standard), unlike most broadcast operators where the longest sequence defines the length"
 								}
 
@@ -217,8 +327,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 658.0, 138.0, 190.0, 37.0 ],
-									"presentation_linecount" : 3,
+									"patching_rect" : [ 659.0, 311.0, 190.0, 37.0 ],
 									"text" : "@nullreplacement sets replacement value (default: 0)"
 								}
 
@@ -231,7 +340,7 @@
 									"numoutlets" : 2,
 									"outlettype" : [ "", "bang" ],
 									"parameter_enable" : 0,
-									"patching_rect" : [ 603.0, 147.0, 50.0, 22.0 ]
+									"patching_rect" : [ 604.0, 320.0, 50.0, 22.0 ]
 								}
 
 							}
@@ -242,7 +351,7 @@
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 603.0, 177.0, 110.0, 22.0 ],
+									"patching_rect" : [ 604.0, 350.0, 110.0, 22.0 ],
 									"text" : "nullreplacement $1"
 								}
 
@@ -255,8 +364,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 587.0, 211.0, 162.0, 37.0 ],
-									"presentation_linecount" : 2,
+									"patching_rect" : [ 588.0, 384.0, 162.0, 37.0 ],
 									"text" : "nullmap: replace empty lists with a given value. "
 								}
 
@@ -268,8 +376,7 @@
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 376.0, 250.0, 147.0, 22.0 ],
-									"presentation_linecount" : 3,
+									"patching_rect" : [ 377.0, 423.0, 147.0, 22.0 ],
 									"text" : "[ [ 5. 6. 7. ] [ 0. ] [ 0. ] ]"
 								}
 
@@ -281,7 +388,7 @@
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 376.0, 163.0, 30.0, 22.0 ],
+									"patching_rect" : [ 377.0, 336.0, 30.0, 22.0 ],
 									"text" : "null"
 								}
 
@@ -293,8 +400,7 @@
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 477.0, 164.0, 97.0, 22.0 ],
-									"presentation_linecount" : 2,
+									"patching_rect" : [ 478.0, 337.0, 97.0, 22.0 ],
 									"text" : "[ [ 5 6 7 ] [ ] null ]"
 								}
 
@@ -306,8 +412,7 @@
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 424.0, 164.0, 47.0, 22.0 ],
-									"presentation_linecount" : 2,
+									"patching_rect" : [ 425.0, 337.0, 47.0, 22.0 ],
 									"text" : "1 null 2"
 								}
 
@@ -319,7 +424,7 @@
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
-									"patching_rect" : [ 376.0, 218.0, 199.0, 22.0 ],
+									"patching_rect" : [ 377.0, 391.0, 199.0, 22.0 ],
 									"text" : "ser.util nullmap @nullreplacement 0"
 								}
 
@@ -844,7 +949,7 @@
 , 							{
 								"patchline" : 								{
 									"destination" : [ "obj-11", 1 ],
-									"midpoints" : [ 385.5, 245.0, 513.5, 245.0 ],
+									"midpoints" : [ 386.5, 418.0, 514.5, 418.0 ],
 									"source" : [ "obj-20", 0 ]
 								}
 
@@ -853,6 +958,13 @@
 								"patchline" : 								{
 									"destination" : [ "obj-1", 0 ],
 									"source" : [ "obj-21", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-3", 0 ],
+									"source" : [ "obj-22", 0 ]
 								}
 
 							}
@@ -872,6 +984,13 @@
 							}
 , 							{
 								"patchline" : 								{
+									"destination" : [ "obj-3", 0 ],
+									"source" : [ "obj-25", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
 									"destination" : [ "obj-24", 0 ],
 									"source" : [ "obj-26", 0 ]
 								}
@@ -881,6 +1000,13 @@
 								"patchline" : 								{
 									"destination" : [ "obj-1", 0 ],
 									"source" : [ "obj-28", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-18", 1 ],
+									"source" : [ "obj-3", 0 ]
 								}
 
 							}
@@ -915,8 +1041,22 @@
 							}
 , 							{
 								"patchline" : 								{
+									"destination" : [ "obj-3", 0 ],
+									"source" : [ "obj-45", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-3", 0 ],
+									"source" : [ "obj-47", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
 									"destination" : [ "obj-55", 1 ],
-									"midpoints" : [ 385.5, 417.05859375, 545.5, 417.05859375 ],
+									"midpoints" : [ 34.5, 608.05859375, 194.5, 608.05859375 ],
 									"source" : [ "obj-49", 0 ]
 								}
 
@@ -949,8 +1089,22 @@
 								}
 
 							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-3", 0 ],
+									"source" : [ "obj-7", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-3", 0 ],
+									"source" : [ "obj-8", 0 ]
+								}
+
+							}
  ],
-						"originid" : "pat-26"
+						"originid" : "pat-6"
 					}
 ,
 					"patching_rect" : [ 239.0, 19.0, 43.0, 22.0 ],
@@ -991,7 +1145,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 489.0, 391.0, 140.0, 66.0 ],
+									"patching_rect" : [ 489.0, 391.0, 141.0, 66.0 ],
 									"text" : "shorthand for list of two chords where the first is monophonic"
 								}
 
@@ -1028,7 +1182,6 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 381.0, 464.0, 49.0, 22.0 ],
-									"presentation_linecount" : 2,
 									"text" : "null null"
 								}
 
@@ -1044,7 +1197,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 353.0, 391.0, 105.0, 66.0 ],
-									"presentation_linecount" : 3,
 									"text" : "null is equivalent to a single empty chord"
 								}
 
@@ -1072,7 +1224,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 227.0, 391.0, 115.0, 66.0 ],
-									"presentation_linecount" : 2,
 									"text" : "a flat list is a sequence of monophonic chords"
 								}
 
@@ -1087,7 +1238,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 87.0, 391.0, 124.0, 66.0 ],
+									"patching_rect" : [ 87.0, 391.0, 127.0, 66.0 ],
 									"text" : "a single number is equivalent to a single monophonic chord"
 								}
 
@@ -1100,7 +1251,6 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 719.0, 464.0, 89.0, 22.0 ],
-									"presentation_linecount" : 2,
 									"text" : "[ [ 1 ] [ 2 ] [ 3 ] ]"
 								}
 
@@ -1116,7 +1266,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 635.0, 391.0, 93.0, 66.0 ],
-									"presentation_linecount" : 2,
 									"text" : "These are already in explicit form"
 								}
 
@@ -1132,7 +1281,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 138.0, 151.0, 149.0, 52.0 ],
-									"presentation_linecount" : 2,
 									"text" : "1 is equivalent to (and a shorthand for) [ [ 1 ] ]"
 								}
 
@@ -1147,7 +1295,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 241.0, 208.0, 209.0, 51.0 ],
-									"presentation_linecount" : 5,
 									"text" : "note: an entire chord can be null, but a chord cannot contain a mix of null and non-null elements"
 								}
 
@@ -1160,7 +1307,6 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 83.0, 208.0, 35.0, 22.0 ],
-									"presentation_linecount" : 2,
 									"text" : "1 2 3"
 								}
 
@@ -1833,11 +1979,10 @@
 
 							}
  ],
-						"originid" : "pat-18"
+						"originid" : "pat-8"
 					}
 ,
 					"patching_rect" : [ 156.0, 19.0, 72.0, 22.0 ],
-					"presentation_linecount" : 2,
 					"text" : "p formatting",
 					"varname" : "basic[3]"
 				}
@@ -2124,7 +2269,7 @@
 
 							}
  ],
-						"originid" : "pat-8"
+						"originid" : "pat-10"
 					}
 ,
 					"patching_rect" : [ 83.0, 19.0, 66.0, 22.0 ],
@@ -2155,7 +2300,7 @@
 						"showontab" : 1,
 						"boxes" : [  ],
 						"lines" : [  ],
-						"originid" : "pat-10"
+						"originid" : "pat-12"
 					}
 ,
 					"patching_rect" : [ 349.0, 22.0, 25.0, 22.0 ],
@@ -2180,7 +2325,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 518.0, 238.0, 1146.0, 851.0 ],
+						"rect" : [ 0.0, 26.0, 1146.0, 851.0 ],
 						"openrect" : [ 0.0, 0.0, 1040.0, 740.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
@@ -2314,7 +2459,7 @@
 							}
  ],
 						"lines" : [  ],
-						"originid" : "pat-12"
+						"originid" : "pat-14"
 					}
 ,
 					"patching_rect" : [ 23.0, 20.0, 47.0, 22.0 ],

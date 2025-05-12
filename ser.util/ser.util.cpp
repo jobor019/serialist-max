@@ -287,6 +287,31 @@ public:
     }
 };
 
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/**
+ * @brief Output a list of sizes of each voice
+ */
+class SizeOperator : public UtilityOperator {
+public:
+    Result<atoms> operator()(const atoms& args, const Parameters&, std::size_t, bool) override {
+        if (auto v = AtomParser::atoms2voices<double>(args)) {
+            auto sizes = Vec<atom>::allocated(v->size());
+            for (const auto& voice : *v) {
+                sizes.append(voice.size());
+            }
+
+            // Note: since a Voices<T> never is empty, sizes will at least contain a single value
+            // (e.g. Voices<T>::empty_like.size() == 1)
+            return atoms{std::move(sizes.vector())};
+
+        } else {
+            return v.err();
+        }
+}};
+
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 inline std::unique_ptr<UtilityOperator> string2operator(const std::string& s, const atoms& args) {
@@ -306,6 +331,8 @@ inline std::unique_ptr<UtilityOperator> string2operator(const std::string& s, co
         return ZipOperator::parse(args);
     if (s == "int")
         return std::make_unique<IntOperator>();
+    if (s == "size")
+        return std::make_unique<SizeOperator>();
 
     throw std::domain_error("Invalid mode " + s);
 
