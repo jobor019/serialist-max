@@ -6,7 +6,8 @@
 using namespace c74::min;
 
 
-class transport : public object<transport> {
+class ser_transport : public object<ser_transport>
+                      , public SerialistTransport::Listener {
 public:
     MIN_DESCRIPTION{""};
     MIN_TAGS{""};
@@ -24,34 +25,61 @@ public:
     outlet<> outlet_active{this, "active", ""};
     outlet<> dumpout{this, "(any) dumpout"};
 
+    explicit ser_transport(const atoms& args = {}) {
+        SerialistTransport::get_instance().add_listener(*this);
+    }
+
+
+    ~ser_transport() override {
+        SerialistTransport::get_instance().remove_listener(*this);
+    }
+
+
+    void on_transport_state_update(const TimePoint& t) override {
+        assert(c74::max::systhread_ismainthread());
+        outlet_active.send(t.get_transport_running());
+    }
+
+
     message<> number{this, "number", MIN_FUNCTION {
         if (static_cast<bool>(args[0])) {
-            SerialistTransport::get_instance().start();
+            start();
         } else {
-            SerialistTransport::get_instance().pause();
+            pause();
         }
         return {};
     }};
 
-    message<> start{this, "start", setter{MIN_FUNCTION {
+
+    message<threadsafe::no> start{this, "start", setter{MIN_FUNCTION {
+        // Note: this will output current state through listener callback.
+        //       Due to callback, **must** be called from main thread
         SerialistTransport::get_instance().start();
         return {};
     }}};
 
-    message<> pause{this, "pause", setter{MIN_FUNCTION {
+
+    message<threadsafe::no> pause{this, "pause", setter{MIN_FUNCTION {
+        // Note: this will output current state through listener callback.
+        //       Due to callback, **must** be called from main thread
         SerialistTransport::get_instance().pause();
         return {};
     }}};
 
-    message<> stop{this, "stop", setter{MIN_FUNCTION {
+
+    message<threadsafe::no> stop{this, "stop", setter{MIN_FUNCTION {
+        // Note: this will output current state through listener callback.
+        //       Due to callback, **must** be called from main thread
         SerialistTransport::get_instance().stop();
         return {};
     }}};
+
 
     message<> reset{this, "reset", setter{MIN_FUNCTION {
         SerialistTransport::get_instance().reset();
         return {};
     }}};
+
 
     message<> tempo{this, "tempo", setter{MIN_FUNCTION {
         if (inlet == 0 && !args.empty() && args[0].type() == message_type::float_argument) {
@@ -117,7 +145,8 @@ public:
 
         return {};
     }}};
+
 };
 
 
-MIN_EXTERNAL(transport);
+MIN_EXTERNAL(ser_transport);

@@ -5,7 +5,7 @@
 TEST_CASE("object is constructible") {
     ext_main(nullptr);
 
-    test_wrapper<transport> an_instance;
-    transport& obj = an_instance;
+    test_wrapper<ser_transport> an_instance;
+    ser_transport& obj = an_instance;
 
 }
