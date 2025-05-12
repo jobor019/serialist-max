@@ -24,7 +24,7 @@ public:
     MIN_DESCRIPTION{"Multi-channel Phase-based waveform function"};
     MIN_TAGS{"utilities"};
     MIN_AUTHOR{"Borg"};
-    MIN_RELATED{"ser.phase, ser.random"};
+    MIN_RELATED{"ser.phase, ser.random, ser.lowpass"};
 
     inlet<> inlet_main{this, Inlets::voice(Types::phase, "position in waveform")};
     inlet<> inlet_duty{this, Inlets::voice(Types::phase, "duty cycle")};

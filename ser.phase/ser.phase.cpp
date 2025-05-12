@@ -32,7 +32,7 @@ public:
     MIN_DESCRIPTION{"Multi-channel phase accumulator"};
     MIN_TAGS{"utilities"};
     MIN_AUTHOR{"Borg"};
-    MIN_RELATED{"ser.index, ser.phasemap, ser.random, ser.waveform, ser.pulse, ser.interpolate"};
+    MIN_RELATED{"ser.index, ser.phasemap, ser.random, ser.waveform, ser.pulse, ser.interpolate, ser.transport"};
 
     inlet<> inlet_main{this , Inlets::trigger_info("When mode is set to \"triggered\", trigger output")
                        , "" , [this] { return inlet_is_hot(); }};

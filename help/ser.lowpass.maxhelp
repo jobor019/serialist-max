@@ -552,12 +552,38 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 0.0, 26.0, 2512.0, 1230.0 ],
+						"rect" : [ 34.0, 113.0, 2512.0, 1230.0 ],
 						"openrect" : [ 0.0, 0.0, 1040.0, 740.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
 						"integercoordinates" : 1,
 						"boxes" : [ 							{
+								"box" : 								{
+									"fontface" : 1,
+									"id" : "obj-37",
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 36.0, 124.0, 390.0, 20.0 ],
+									"text" : "Stepped Attribute:"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"bubble" : 1,
+									"id" : "obj-36",
+									"linecount" : 3,
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 547.0, 466.0, 173.0, 51.0 ],
+									"presentation_linecount" : 3,
+									"text" : "@stepped 0 (default): decay depends on elapsed time"
+								}
+
+							}
+, 							{
 								"box" : 								{
 									"bubble" : 1,
 									"id" : "obj-35",
@@ -573,14 +599,15 @@
 , 							{
 								"box" : 								{
 									"bubble" : 1,
+									"bubblepoint" : 0.1,
 									"id" : "obj-33",
-									"linecount" : 3,
+									"linecount" : 2,
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 509.0, 510.0, 169.0, 51.0 ],
+									"patching_rect" : [ 510.0, 535.0, 248.0, 37.0 ],
 									"presentation_linecount" : 4,
-									"text" : "without the @stepped 1 attribute, the waveform seems random"
+									"text" : "The waveform seems random as the temporal interval between samples differ"
 								}
 
 							}
@@ -589,11 +616,11 @@
 									"bubble" : 1,
 									"bubblepoint" : 0.1,
 									"id" : "obj-32",
-									"linecount" : 3,
+									"linecount" : 2,
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 141.0, 535.0, 150.0, 51.0 ],
+									"patching_rect" : [ 141.0, 535.0, 179.0, 37.0 ],
 									"presentation_linecount" : 3,
 									"text" : "in this case, scope produces a repeating waveform"
 								}
@@ -666,7 +693,7 @@
 													"numoutlets" : 1,
 													"outlettype" : [ "" ],
 													"patching_rect" : [ 230.0, 108.0, 50.0, 35.0 ],
-													"text" : "0.279785"
+													"text" : "0.371999"
 												}
 
 											}
@@ -909,8 +936,8 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 37.0, 150.0, 355.0, 33.0 ],
-									"text" : "using @stepped 1, we detach the ser.lowpass from the transport, meaning that we can have a constant decay time for every step"
+									"patching_rect" : [ 37.0, 146.0, 361.0, 33.0 ],
+									"text" : "Using @stepped 1, we detach the ser.lowpass from the transport, meaning that we can have a constant decay time for every step"
 								}
 
 							}
@@ -1193,7 +1220,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 34.0, 113.0, 2512.0, 1230.0 ],
+						"rect" : [ 0.0, 26.0, 2512.0, 1230.0 ],
 						"openrect" : [ 0.0, 0.0, 1040.0, 740.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,

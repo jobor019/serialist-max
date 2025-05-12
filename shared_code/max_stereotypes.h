@@ -92,7 +92,7 @@ public:
 
 
     static inline const c74::min::description POLL_INTERVAL{
-        "Set the rate in milliseconds at which the object triggers new output,"
+        "Set the rate in milliseconds at which the object triggers output,"
         " or @pollinterval 0 to trigger the object manually."
     };
 
