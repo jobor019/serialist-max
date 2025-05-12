@@ -36,7 +36,7 @@ public:
 
     explicit ser_transport(const atoms& args = {}) {
         SerialistTransport::get_instance().add_listener(*this);
-        metro.delay(0.0);
+        // metro.delay(0.0);
     }
 
 
@@ -51,17 +51,18 @@ public:
     }
 
 
-    timer<> metro { this, MIN_FUNCTION {
-        if (m_poll_interval > 0) {
-            output_state();
-            metro.delay(m_poll_interval);
-            return {};
-        }
-
-        metro.delay(1.0);
-        return {};
-    }
-    };
+    // TODO: This seems to clog the scheduler thread completely
+    // timer<> metro { this, MIN_FUNCTION {
+    //     if (m_poll_interval > 0) {
+    //         output_state();
+    //         metro.delay(m_poll_interval);
+    //         return {};
+    //     }
+    //
+    //     metro.delay(1.0);
+    //     return {};
+    // }
+    // };
 
 
     attribute<int> poll_interval{ this, "pollinterval", 0, Descriptions::POLL_INTERVAL, setter{

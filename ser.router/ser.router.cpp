@@ -267,7 +267,7 @@ public:
         ,Descriptions::USE_INDEX_WITHOUT_OCTAVE, setter{
             MIN_FUNCTION {
                 if (!instantiated())
-                    return index;
+                    return args;
 
                 if (AttributeSetters::try_set_value(args, m_router->uses_index, cerr)) {
                     return args;
