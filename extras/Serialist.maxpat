@@ -10,16 +10,69 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 518.0, 212.0, 897.0, 613.0 ],
+		"rect" : [ 47.0, 110.0, 940.0, 577.0 ],
 		"gridsize" : [ 15.0, 15.0 ],
 		"boxes" : [ 			{
+				"box" : 				{
+					"bgmode" : 0,
+					"border" : 0,
+					"clickthrough" : 0,
+					"enablehscroll" : 0,
+					"enablevscroll" : 0,
+					"id" : "obj-24",
+					"lockeddragscroll" : 0,
+					"lockedsize" : 0,
+					"maxclass" : "bpatcher",
+					"name" : "ser.transport.ui.maxpat",
+					"numinlets" : 3,
+					"numoutlets" : 9,
+					"offset" : [ 0.0, 0.0 ],
+					"outlettype" : [ "", "", "", "", "", "", "", "", "signal" ],
+					"patching_rect" : [ 697.0, 119.0, 178.000000029802322, 269.0 ],
+					"viewvisibility" : 1
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"bubble" : 1,
+					"id" : "obj-5",
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 542.0, 176.0, 84.0, 24.0 ],
+					"text" : "ser.scope2"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"bgmode" : 0,
+					"border" : 0,
+					"clickthrough" : 0,
+					"enablehscroll" : 0,
+					"enablevscroll" : 0,
+					"id" : "obj-1",
+					"lockeddragscroll" : 0,
+					"lockedsize" : 0,
+					"maxclass" : "bpatcher",
+					"name" : "ser.scope2.ui.maxpat",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"offset" : [ 0.0, 0.0 ],
+					"patching_rect" : [ 460.5, 180.0, 60.0, 16.0 ],
+					"viewvisibility" : 1
+				}
+
+			}
+, 			{
 				"box" : 				{
 					"bubble" : 1,
 					"id" : "obj-61",
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 547.0, 334.0, 150.0, 24.0 ],
+					"patching_rect" : [ 547.0, 362.0, 125.0, 24.0 ],
 					"text" : "ser.interpolateview"
 				}
 
@@ -39,7 +92,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"offset" : [ 0.0, 0.0 ],
-					"patching_rect" : [ 440.0, 319.0, 102.0, 54.0 ],
+					"patching_rect" : [ 440.0, 347.0, 102.0, 54.0 ],
 					"viewvisibility" : 1
 				}
 
@@ -51,7 +104,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 527.0, 277.5, 150.0, 24.0 ],
+					"patching_rect" : [ 527.0, 305.0, 98.0, 24.0 ],
 					"text" : "ser.indexview"
 				}
 
@@ -63,7 +116,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 568.0, 225.0, 150.0, 24.0 ],
+					"patching_rect" : [ 568.0, 253.0, 92.0, 24.0 ],
 					"text" : "ser.noteview"
 				}
 
@@ -75,7 +128,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 542.0, 184.0, 150.0, 24.0 ],
+					"patching_rect" : [ 542.0, 212.0, 98.0, 24.0 ],
 					"text" : "ser.pulseview"
 				}
 
@@ -87,7 +140,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 542.0, 134.5, 150.0, 24.0 ],
+					"patching_rect" : [ 542.0, 134.5, 77.0, 24.0 ],
 					"text" : "ser.scope"
 				}
 
@@ -196,7 +249,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"offset" : [ 0.0, 0.0 ],
-					"patching_rect" : [ 462.0, 273.5, 57.0, 32.0 ],
+					"patching_rect" : [ 462.0, 301.0, 57.0, 32.0 ],
 					"viewvisibility" : 1
 				}
 
@@ -216,7 +269,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"offset" : [ 0.0, 0.0 ],
-					"patching_rect" : [ 417.0, 220.0, 147.0, 34.0 ],
+					"patching_rect" : [ 417.0, 248.0, 147.0, 34.0 ],
 					"viewvisibility" : 1
 				}
 
@@ -236,7 +289,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"offset" : [ 0.0, 0.0 ],
-					"patching_rect" : [ 449.0, 186.0, 83.0, 20.0 ],
+					"patching_rect" : [ 449.0, 214.0, 83.0, 20.0 ],
 					"viewvisibility" : 1
 				}
 
@@ -479,7 +532,28 @@
 			}
  ],
 		"lines" : [  ],
-		"originid" : "pat-4",
+		"originid" : "pat-102",
+		"parameters" : 		{
+			"obj-24::obj-113" : [ "live.text[272]", "live.text", 0 ],
+			"obj-24::obj-40" : [ "live.text", "live.text", 0 ],
+			"obj-24::obj-42" : [ "live.text[1]", "live.text", 0 ],
+			"obj-24::obj-48" : [ "live.text[2]", "live.text[2]", 0 ],
+			"obj-24::obj-87" : [ "live.gain~[3]", "live.gain~", 0 ],
+			"obj-24::obj-90" : [ "live.text[6]", "live.text[2]", 0 ],
+			"obj-24::obj-92" : [ "live.text[5]", "live.text[2]", 0 ],
+			"obj-24::obj-94" : [ "live.text[7]", "live.text[2]", 0 ],
+			"parameterbanks" : 			{
+				"0" : 				{
+					"index" : 0,
+					"name" : "",
+					"parameters" : [ "-", "-", "-", "-", "-", "-", "-", "-" ]
+				}
+
+			}
+,
+			"inherited_shortname" : 1
+		}
+,
 		"dependency_cache" : [ 			{
 				"name" : "pyosc.awaitpatcherargs.maxpat",
 				"bootpath" : "~/MaxProjects/pyosc/pyosc/patchers",
@@ -493,8 +567,8 @@
 			}
 , 			{
 				"name" : "ser.indexview.ui.maxpat",
-				"bootpath" : "~/MaxProjects/serialist-max/patchers/ui",
-				"patcherrelativepath" : "../patchers/ui",
+				"bootpath" : "~/MaxProjects/serialist-max/patchers",
+				"patcherrelativepath" : "../patchers",
 				"type" : "JSON",
 				"implicit" : 1
 			}
@@ -504,8 +578,8 @@
 			}
 , 			{
 				"name" : "ser.interpolateview.ui.maxpat",
-				"bootpath" : "~/MaxProjects/serialist-max/patchers/ui",
-				"patcherrelativepath" : "../patchers/ui",
+				"bootpath" : "~/MaxProjects/serialist-max/patchers",
+				"patcherrelativepath" : "../patchers",
 				"type" : "JSON",
 				"implicit" : 1
 			}
@@ -519,8 +593,8 @@
 			}
 , 			{
 				"name" : "ser.noteview.ui.maxpat",
-				"bootpath" : "~/MaxProjects/serialist-max/patchers/ui",
-				"patcherrelativepath" : "../patchers/ui",
+				"bootpath" : "~/MaxProjects/serialist-max/patchers",
+				"patcherrelativepath" : "../patchers",
 				"type" : "JSON",
 				"implicit" : 1
 			}
@@ -550,8 +624,8 @@
 			}
 , 			{
 				"name" : "ser.pulseview.ui.maxpat",
-				"bootpath" : "~/MaxProjects/serialist-max/patchers/ui",
-				"patcherrelativepath" : "../patchers/ui",
+				"bootpath" : "~/MaxProjects/serialist-max/patchers",
+				"patcherrelativepath" : "../patchers",
 				"type" : "JSON",
 				"implicit" : 1
 			}
@@ -565,8 +639,15 @@
 			}
 , 			{
 				"name" : "ser.scope.ui.maxpat",
-				"bootpath" : "~/MaxProjects/serialist-max/patchers/view",
-				"patcherrelativepath" : "../patchers/view",
+				"bootpath" : "~/MaxProjects/serialist-max/patchers",
+				"patcherrelativepath" : "../patchers",
+				"type" : "JSON",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "ser.scope2.ui.maxpat",
+				"bootpath" : "~/MaxProjects/serialist-max/patchers",
+				"patcherrelativepath" : "../patchers",
 				"type" : "JSON",
 				"implicit" : 1
 			}
@@ -577,6 +658,13 @@
 , 			{
 				"name" : "ser.transport.mxo",
 				"type" : "iLaX"
+			}
+, 			{
+				"name" : "ser.transport.ui.maxpat",
+				"bootpath" : "~/MaxProjects/serialist-max/patchers",
+				"patcherrelativepath" : "../patchers",
+				"type" : "JSON",
+				"implicit" : 1
 			}
 , 			{
 				"name" : "ser.util.mxo",
