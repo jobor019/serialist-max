@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 518.0, 212.0, 1544.0, 877.0 ],
+		"rect" : [ 100.0, 100.0, 1544.0, 877.0 ],
 		"gridsize" : [ 15.0, 15.0 ],
 		"subpatcher_template" : "serialist_help",
 		"showrootpatcherontab" : 0,
@@ -37,7 +37,7 @@
 						"showontab" : 1,
 						"boxes" : [  ],
 						"lines" : [  ],
-						"originid" : "pat-28"
+						"originid" : "pat-660"
 					}
 ,
 					"patching_rect" : [ 181.0, 20.0, 25.0, 22.0 ],
@@ -62,12 +62,25 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 518.0, 238.0, 1544.0, 851.0 ],
+						"rect" : [ 100.0, 126.0, 1544.0, 851.0 ],
 						"openrect" : [ 0.0, 0.0, 1040.0, 740.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
 						"integercoordinates" : 1,
 						"boxes" : [ 							{
+								"box" : 								{
+									"hidden" : 1,
+									"id" : "obj-5",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 26.0, 100.0, 70.0, 22.0 ],
+									"text" : "loadmess 0"
+								}
+
+							}
+, 							{
 								"box" : 								{
 									"bubble" : 1,
 									"bubblepoint" : 0.8,
@@ -92,7 +105,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 447.0, 232.0, 182.0, 66.0 ],
-									"presentation_linecount" : 5,
 									"text" : "chords are normalized and zeros are removed, so these three are all equivalent"
 								}
 
@@ -105,7 +117,6 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 519.0, 306.0, 102.0, 22.0 ],
-									"presentation_linecount" : 2,
 									"text" : "[ [ 1 0 0 0 0 2 1 ] ]"
 								}
 
@@ -121,7 +132,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 333.0, 232.0, 98.0, 66.0 ],
-									"presentation_linecount" : 3,
 									"text" : "a chord sets a pattern of subphases "
 								}
 
@@ -295,7 +305,7 @@
 
 											}
  ],
-										"originid" : "pat-98"
+										"originid" : "pat-664"
 									}
 ,
 									"patching_rect" : [ 251.0, 538.0, 89.0, 22.0 ],
@@ -459,7 +469,6 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 403.0, 538.0, 109.0, 22.0 ],
-									"presentation_linecount" : 2,
 									"text" : "[ [ 0.25 -0.5 0.25 ] ]"
 								}
 
@@ -678,7 +687,7 @@
 									"lockedsize" : 0,
 									"maxclass" : "bpatcher",
 									"name" : "ser.transport.ui.maxpat",
-									"numinlets" : 1,
+									"numinlets" : 3,
 									"numoutlets" : 9,
 									"offset" : [ 0.0, 0.0 ],
 									"outlettype" : [ "", "", "", "", "", "", "", "", "signal" ],
@@ -915,6 +924,14 @@
 							}
 , 							{
 								"patchline" : 								{
+									"destination" : [ "obj-47", 0 ],
+									"hidden" : 1,
+									"source" : [ "obj-5", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
 									"destination" : [ "obj-70", 0 ],
 									"source" : [ "obj-51", 0 ]
 								}
@@ -987,7 +1004,7 @@
 
 							}
  ],
-						"originid" : "pat-30",
+						"originid" : "pat-662",
 						"boxgroups" : [ 							{
 								"boxes" : [ "obj-14", "obj-25" ]
 							}
@@ -1002,7 +1019,7 @@
 			}
  ],
 		"lines" : [  ],
-		"originid" : "pat-4",
+		"originid" : "pat-658",
 		"parameters" : 		{
 			"obj-1::obj-1::obj-113" : [ "live.text[272]", "live.text", 0 ],
 			"obj-1::obj-1::obj-34::obj-1" : [ "live.numbox[44]", "live.numbox", 0 ],

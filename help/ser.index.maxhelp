@@ -10,10 +10,11 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 518.0, 212.0, 1146.0, 877.0 ],
+		"rect" : [ 100.0, 100.0, 1146.0, 877.0 ],
 		"gridsize" : [ 15.0, 15.0 ],
 		"subpatcher_template" : "serialist_help",
-		"showontab" : 1,
+		"showrootpatcherontab" : 0,
+		"showontab" : 0,
 		"boxes" : [ 			{
 				"box" : 				{
 					"id" : "obj-4",
@@ -31,7 +32,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 518.0, 238.0, 1146.0, 851.0 ],
+						"rect" : [ 0.0, 26.0, 1146.0, 851.0 ],
 						"openrect" : [ 0.0, 0.0, 1040.0, 740.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
@@ -69,7 +70,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 220.0, 676.0, 165.0, 20.0 ],
-									"presentation_linecount" : 14,
 									"text" : "(both of the above combined)",
 									"textcolor" : [ 0.647058823529412, 0.647058823529412, 0.647058823529412, 1.0 ]
 								}
@@ -139,8 +139,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 403.0, 195.0, 108.0, 37.0 ],
-									"presentation_linecount" : 2,
+									"patching_rect" : [ 403.0, 195.0, 110.0, 37.0 ],
 									"text" : "negative stride: reset to N - 1"
 								}
 
@@ -202,7 +201,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 17.0, 387.0, 334.0, 33.0 ],
-									"presentation_linecount" : 5,
 									"text" : "The @autoreset attribute is just a convenience attribute for common use cases. The following are (roughly) equivalent:"
 								}
 
@@ -316,7 +314,7 @@
 								"box" : 								{
 									"id" : "obj-49",
 									"maxclass" : "newobj",
-									"numinlets" : 1,
+									"numinlets" : 3,
 									"numoutlets" : 8,
 									"outlettype" : [ "", "", "", "", "", "", "", "" ],
 									"patching_rect" : [ 220.0, 557.0, 93.0, 22.0 ],
@@ -367,7 +365,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 472.0, 596.0, 251.0, 127.0 ],
-									"presentation_linecount" : 14,
 									"text" : "- 0 (none, default): no autoreset\n\n- 1 (steps): reset when the number of steps changes (per voice)\n\n- 2 (transport): reset when transport activates\n\n- 3 (both): reset when either number of steps changes or transport activates",
 									"textcolor" : [ 0.647058823529412, 0.647058823529412, 0.647058823529412, 1.0 ]
 								}
@@ -462,7 +459,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 120.0, 182.0, 106.0, 37.0 ],
-									"presentation_linecount" : 2,
 									"text" : "positive stride: reset to 0"
 								}
 
@@ -555,7 +551,7 @@
 									"lockedsize" : 0,
 									"maxclass" : "bpatcher",
 									"name" : "ser.transport.ui.maxpat",
-									"numinlets" : 1,
+									"numinlets" : 3,
 									"numoutlets" : 9,
 									"offset" : [ 0.0, 0.0 ],
 									"outlettype" : [ "", "", "", "", "", "", "", "", "signal" ],
@@ -781,7 +777,7 @@
 
 							}
  ],
-						"originid" : "pat-6"
+						"originid" : "pat-216"
 					}
 ,
 					"patching_rect" : [ 86.0, 20.0, 45.0, 22.0 ],
@@ -807,7 +803,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 0.0, 26.0, 1146.0, 851.0 ],
+						"rect" : [ 100.0, 126.0, 1146.0, 851.0 ],
 						"openrect" : [ 0.0, 0.0, 1040.0, 740.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
@@ -896,7 +892,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 486.0, 181.0, 150.0, 52.0 ],
+									"patching_rect" : [ 486.0, 181.0, 153.0, 52.0 ],
 									"text" : "resetting inidividual voices (here: only the two first)"
 								}
 
@@ -1159,7 +1155,7 @@
 									"lockedsize" : 0,
 									"maxclass" : "bpatcher",
 									"name" : "ser.transport.ui.maxpat",
-									"numinlets" : 1,
+									"numinlets" : 3,
 									"numoutlets" : 9,
 									"offset" : [ 0.0, 0.0 ],
 									"outlettype" : [ "", "", "", "", "", "", "", "", "signal" ],
@@ -1334,7 +1330,7 @@
 
 							}
  ],
-						"originid" : "pat-28"
+						"originid" : "pat-244"
 					}
 ,
 					"patching_rect" : [ 180.0, 20.0, 87.0, 22.0 ],
@@ -1365,7 +1361,7 @@
 						"showontab" : 1,
 						"boxes" : [  ],
 						"lines" : [  ],
-						"originid" : "pat-60"
+						"originid" : "pat-268"
 					}
 ,
 					"patching_rect" : [ 383.0, 20.0, 25.0, 22.0 ],
@@ -1794,7 +1790,7 @@
 									"lockedsize" : 0,
 									"maxclass" : "bpatcher",
 									"name" : "ser.transport.ui.maxpat",
-									"numinlets" : 1,
+									"numinlets" : 3,
 									"numoutlets" : 9,
 									"offset" : [ 0.0, 0.0 ],
 									"outlettype" : [ "", "", "", "", "", "", "", "", "signal" ],
@@ -2020,7 +2016,7 @@
 
 							}
  ],
-						"originid" : "pat-62"
+						"originid" : "pat-270"
 					}
 ,
 					"patching_rect" : [ 23.0, 20.0, 47.0, 22.0 ],
@@ -2031,7 +2027,7 @@
 			}
  ],
 		"lines" : [  ],
-		"originid" : "pat-4",
+		"originid" : "pat-214",
 		"parameters" : 		{
 			"obj-1::obj-1::obj-113" : [ "live.text[272]", "live.text", 0 ],
 			"obj-1::obj-1::obj-34::obj-1" : [ "live.numbox[44]", "live.numbox", 0 ],

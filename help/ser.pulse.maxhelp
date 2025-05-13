@@ -125,7 +125,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 39.0, 388.0, 233.0, 66.0 ],
-									"presentation_linecount" : 5,
 									"text" : "For objects that use both pulse on and off, we can emulate this with 1 and -1. These objects do not respond to bangs"
 								}
 
@@ -141,7 +140,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 435.0, 253.0, 262.0, 64.0 ],
+									"patching_rect" : [ 435.0, 253.0, 264.0, 64.0 ],
 									"text" : "Be careful: since the voice count here is inferred by the trigger's voice count, sending bang (or a single \"1\") will be treated as a single trigger and delete the second voice"
 								}
 
@@ -181,7 +180,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 15.0, 97.0, 586.0, 47.0 ],
-									"presentation_linecount" : 5,
 									"text" : "If we need to trigger output from objects without using a ser.pulse (e.g. for testing or for more simple scenarios), we can emulate pulses with messages 1, -1 and null. There's no need to respect the global ID pool, as long as we don't send it to an object which simultaneously receives conflicting input from a ser.pulse"
 								}
 
@@ -195,7 +193,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 118.0, 280.0, 113.0, 37.0 ],
-									"presentation_linecount" : 2,
 									"text" : "ser.index ignores pulse off"
 								}
 
@@ -525,7 +522,7 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 815.0, 698.0, 75.0, 22.0 ],
-									"text" : "60 100 1"
+									"text" : "60 0 1"
 								}
 
 							}
@@ -569,7 +566,7 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 716.0, 698.0, 50.0, 22.0 ],
-									"text" : "7"
+									"text" : "3"
 								}
 
 							}
@@ -965,11 +962,10 @@
 
 							}
  ],
-						"originid" : "pat-1754"
+						"originid" : "pat-308"
 					}
 ,
 					"patching_rect" : [ 188.0, 18.0, 117.0, 22.0 ],
-					"presentation_linecount" : 3,
 					"text" : "p \"emulating pulses\"",
 					"varname" : "basic[6]"
 				}
@@ -992,7 +988,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 518.0, 238.0, 1146.0, 851.0 ],
+						"rect" : [ 0.0, 26.0, 1146.0, 851.0 ],
 						"openrect" : [ 0.0, 0.0, 1040.0, 740.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
@@ -1353,7 +1349,7 @@
 
 											}
  ],
-										"originid" : "pat-2100"
+										"originid" : "pat-338"
 									}
 ,
 									"patching_rect" : [ 164.0, 643.0, 89.0, 22.0 ],
@@ -1773,7 +1769,7 @@
 
 											}
  ],
-										"originid" : "pat-2090"
+										"originid" : "pat-348"
 									}
 ,
 									"patching_rect" : [ 408.0, 355.0, 89.0, 22.0 ],
@@ -1907,7 +1903,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 10.0, 97.0, 382.0, 20.0 ],
-									"presentation_linecount" : 3,
 									"text" : "Broadcasting applies to the period as well as the legato parameter"
 								}
 
@@ -2205,7 +2200,7 @@
 
 											}
  ],
-										"originid" : "pat-1536"
+										"originid" : "pat-358"
 									}
 ,
 									"patching_rect" : [ 133.0, 323.0, 89.0, 22.0 ],
@@ -2813,7 +2808,7 @@
 
 							}
  ],
-						"originid" : "pat-1514",
+						"originid" : "pat-336",
 						"boxgroups" : [ 							{
 								"boxes" : [ "obj-6", "obj-5", "obj-7" ]
 							}
@@ -2875,8 +2870,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 222.0, 538.0, 176.0, 51.0 ],
-									"presentation_linecount" : 5,
+									"patching_rect" : [ 222.0, 538.0, 177.0, 51.0 ],
 									"text" : "adding the two, we get an uneven phasor which triggers every 2 (± 0.4) ticks "
 								}
 
@@ -2902,7 +2896,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 458.0, 438.0, 139.0, 37.0 ],
-									"presentation_linecount" : 4,
 									"text" : "brownian motion between -0.2 and 0.2"
 								}
 
@@ -3326,7 +3319,7 @@
 
 											}
  ],
-										"originid" : "pat-1968",
+										"originid" : "pat-390",
 										"boxgroups" : [ 											{
 												"boxes" : [ "obj-14", "obj-15", "obj-13" ]
 											}
@@ -3907,7 +3900,7 @@
 
 							}
  ],
-						"originid" : "pat-1566",
+						"originid" : "pat-388",
 						"boxgroups" : [ 							{
 								"boxes" : [ "obj-28", "obj-37", "obj-36" ]
 							}
@@ -3943,7 +3936,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 0.0, 26.0, 1146.0, 851.0 ],
+						"rect" : [ 518.0, 238.0, 1146.0, 851.0 ],
 						"openrect" : [ 0.0, 0.0, 1040.0, 740.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
@@ -3966,7 +3959,7 @@
 										}
 ,
 										"classnamespace" : "box",
-										"rect" : [ 0.0, 0.0, 1000.0, 780.0 ],
+										"rect" : [ 59.0, 106.0, 1000.0, 780.0 ],
 										"gridsize" : [ 15.0, 15.0 ],
 										"boxes" : [ 											{
 												"box" : 												{
@@ -4139,7 +4132,7 @@
 													"numoutlets" : 1,
 													"outlettype" : [ "" ],
 													"patching_rect" : [ 86.0, 281.0, 66.0, 22.0 ],
-													"text" : "0."
+													"text" : "0.999999"
 												}
 
 											}
@@ -4257,7 +4250,7 @@
 													"numoutlets" : 1,
 													"outlettype" : [ "" ],
 													"patching_rect" : [ 98.0, 352.0, 50.0, 22.0 ],
-													"text" : "39651"
+													"text" : "295"
 												}
 
 											}
@@ -4404,7 +4397,7 @@
 
 											}
  ],
-										"originid" : "pat-1948"
+										"originid" : "pat-454"
 									}
 ,
 									"patching_rect" : [ 188.0, 411.0, 149.0, 22.0 ],
@@ -4592,7 +4585,7 @@
 
 							}
  ],
-						"originid" : "pat-1628"
+						"originid" : "pat-452"
 					}
 ,
 					"patching_rect" : [ 325.0, 19.0, 132.0, 22.0 ],
@@ -4631,7 +4624,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 32.0, 416.0, 223.0, 33.0 ],
-									"presentation_linecount" : 2,
 									"text" : "\"null\" only becomes apparent when using multiple asynchronous pulses"
 								}
 
@@ -4707,7 +4699,7 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 33.0, 292.0, 65.0, 22.0 ],
-									"text" : "48351"
+									"text" : "1355"
 								}
 
 							}
@@ -4732,8 +4724,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 105.0, 248.0, 188.0, 78.0 ],
-									"presentation_linecount" : 5,
+									"patching_rect" : [ 105.0, 248.0, 192.0, 78.0 ],
 									"text" : "Each pulse id is assigned from a global pool shared by all objects to avoid conflicts, so ids within a single object aren't necessarily consecutive"
 								}
 
@@ -4761,7 +4752,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 150.0, 542.0, 179.0, 78.0 ],
+									"patching_rect" : [ 150.0, 542.0, 181.0, 78.0 ],
 									"text" : "When multiple voices are used in a single object, \"null\" represents no change in that particular voice (neither pulse on nor pulse off)"
 								}
 
@@ -4774,7 +4765,7 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 506.0, 584.0, 75.0, 22.0 ],
-									"text" : "60 100 1"
+									"text" : "60 0 1"
 								}
 
 							}
@@ -4818,7 +4809,7 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 407.0, 584.0, 50.0, 22.0 ],
-									"text" : "2"
+									"text" : "3"
 								}
 
 							}
@@ -4878,7 +4869,7 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 32.0, 591.0, 114.0, 22.0 ],
-									"text" : "null 48356"
+									"text" : "null -1357"
 								}
 
 							}
@@ -4938,7 +4929,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 560.0, 224.0, 145.0, 79.0 ],
+									"patching_rect" : [ 560.0, 224.0, 148.0, 79.0 ],
 									"text" : "legato > 1.0 yields alternating pulses on and off shifted by one, e.g.\n(...) 2, -1, 3, -2, 4, -3, (...)"
 								}
 
@@ -4999,7 +4990,7 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 565.0, 341.0, 125.0, 22.0 ],
-									"text" : "48349"
+									"text" : "-1344"
 								}
 
 							}
@@ -5011,7 +5002,7 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 301.0, 341.0, 129.0, 22.0 ],
-									"text" : "48350"
+									"text" : "-1352"
 								}
 
 							}
@@ -5290,7 +5281,7 @@
 
 							}
  ],
-						"originid" : "pat-1664"
+						"originid" : "pat-496"
 					}
 ,
 					"patching_rect" : [ 109.0, 18.0, 61.0, 22.0 ],
@@ -5333,7 +5324,7 @@
 						"showontab" : 1,
 						"boxes" : [  ],
 						"lines" : [  ],
-						"originid" : "pat-1708"
+						"originid" : "pat-540"
 					}
 ,
 					"patching_rect" : [ 769.0, 18.0, 25.0, 22.0 ],
@@ -5847,7 +5838,7 @@
 
 											}
  ],
-										"originid" : "pat-1712"
+										"originid" : "pat-544"
 									}
 ,
 									"patching_rect" : [ 409.0, 461.0, 95.0, 22.0 ],
@@ -6343,7 +6334,7 @@
 
 							}
  ],
-						"originid" : "pat-1710"
+						"originid" : "pat-542"
 					}
 ,
 					"patching_rect" : [ 23.0, 20.0, 47.0, 22.0 ],
@@ -6354,7 +6345,7 @@
 			}
  ],
 		"lines" : [  ],
-		"originid" : "pat-1512",
+		"originid" : "pat-306",
 		"parameters" : 		{
 			"obj-1::obj-1::obj-113" : [ "live.text[272]", "live.text", 0 ],
 			"obj-1::obj-1::obj-34::obj-1" : [ "live.numbox[44]", "live.numbox", 0 ],
