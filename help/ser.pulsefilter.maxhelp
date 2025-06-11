@@ -37,7 +37,7 @@
 						"showontab" : 1,
 						"boxes" : [  ],
 						"lines" : [  ],
-						"originid" : "pat-252"
+						"originid" : "pat-530"
 					}
 ,
 					"patching_rect" : [ 181.0, 20.0, 25.0, 22.0 ],
@@ -68,6 +68,19 @@
 						"showontab" : 1,
 						"integercoordinates" : 1,
 						"boxes" : [ 							{
+								"box" : 								{
+									"hidden" : 1,
+									"id" : "obj-3",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 154.0, 155.0, 70.0, 22.0 ],
+									"text" : "loadmess 0"
+								}
+
+							}
+, 							{
 								"box" : 								{
 									"id" : "obj-76",
 									"linecount" : 3,
@@ -170,7 +183,7 @@
 
 											}
  ],
-										"originid" : "pat-284"
+										"originid" : "pat-534"
 									}
 ,
 									"patching_rect" : [ 92.0, 381.0, 44.0, 22.0 ],
@@ -250,7 +263,7 @@
 
 											}
  ],
-										"originid" : "pat-280"
+										"originid" : "pat-536"
 									}
 ,
 									"patching_rect" : [ 272.0, 381.0, 44.0, 22.0 ],
@@ -279,8 +292,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 168.0, 556.0, 155.0, 51.0 ],
-									"presentation_linecount" : 7,
+									"patching_rect" : [ 168.0, 556.0, 158.0, 51.0 ],
 									"text" : "send program change to make it easier to hear sustains"
 								}
 
@@ -343,7 +355,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 372.0, 381.0, 206.0, 173.0 ],
-									"presentation_linecount" : 13,
 									"text" : "@immediate (default: 1):\n\n- sustain: if 1, output pulse off for held notes immediately when opened (if 0, wait until next pulse on or off)\n\n- pause: if 1, output pulse off immediately when closed (if 0, let the next pulse off pass through the gate even when closed)"
 								}
 
@@ -586,7 +597,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 326.0, 135.0, 150.0, 106.0 ],
-									"presentation_linecount" : 6,
 									"text" : "mode: \n- sustain (0): block all pulse off until opened\n\n- pause (1): block all pulse on until opened"
 								}
 
@@ -862,6 +872,24 @@
 							}
 , 							{
 								"patchline" : 								{
+									"destination" : [ "obj-48", 0 ],
+									"hidden" : 1,
+									"order" : 0,
+									"source" : [ "obj-3", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-49", 0 ],
+									"hidden" : 1,
+									"order" : 1,
+									"source" : [ "obj-3", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
 									"destination" : [ "obj-39", 0 ],
 									"source" : [ "obj-38", 0 ]
 								}
@@ -1026,7 +1054,7 @@
 
 							}
  ],
-						"originid" : "pat-254"
+						"originid" : "pat-532"
 					}
 ,
 					"patching_rect" : [ 23.0, 20.0, 47.0, 22.0 ],
@@ -1037,10 +1065,9 @@
 			}
  ],
 		"lines" : [  ],
-		"originid" : "pat-228",
+		"originid" : "pat-528",
 		"parameters" : 		{
 			"obj-1::obj-1::obj-113" : [ "live.text[272]", "live.text", 0 ],
-			"obj-1::obj-1::obj-34::obj-1" : [ "live.numbox[44]", "live.numbox", 0 ],
 			"obj-1::obj-1::obj-40" : [ "live.text", "live.text", 0 ],
 			"obj-1::obj-1::obj-42" : [ "live.text[1]", "live.text", 0 ],
 			"obj-1::obj-1::obj-48" : [ "live.text[2]", "live.text[2]", 0 ],
@@ -1102,20 +1129,6 @@
 				"implicit" : 1
 			}
 , 			{
-				"name" : "pyosc.awaitpatcherargs.maxpat",
-				"bootpath" : "~/MaxProjects/pyosc/pyosc/patchers",
-				"patcherrelativepath" : "../../pyosc/pyosc/patchers",
-				"type" : "JSON",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "ser.core.slider.maxpat",
-				"bootpath" : "~/MaxProjects/serialist-max/patchers/ui",
-				"patcherrelativepath" : "../patchers/ui",
-				"type" : "JSON",
-				"implicit" : 1
-			}
-, 			{
 				"name" : "ser.interpolate.mxo",
 				"type" : "iLaX"
 			}
@@ -1144,17 +1157,13 @@
 				"type" : "iLaX"
 			}
 , 			{
-				"name" : "ser.slidermapping.mxo",
-				"type" : "iLaX"
-			}
-, 			{
 				"name" : "ser.transport.mxo",
 				"type" : "iLaX"
 			}
 , 			{
 				"name" : "ser.transport.ui.maxpat",
-				"bootpath" : "~/MaxProjects/serialist-max/patchers/generatives",
-				"patcherrelativepath" : "../patchers/generatives",
+				"bootpath" : "~/MaxProjects/compression1/patchers",
+				"patcherrelativepath" : "../patchers",
 				"type" : "JSON",
 				"implicit" : 1
 			}

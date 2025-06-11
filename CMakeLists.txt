@@ -14,6 +14,7 @@ set(C74_MIN_API_DIR ${CMAKE_SOURCE_DIR}/min-api)
 set(C74_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/externals)
 
 
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.chordin)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.index)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.interpolate)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.lowpass)
@@ -38,6 +39,7 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/serialist_transport)
 
 add_custom_target(all_externals)
 add_dependencies(all_externals
+        ser.chordin
         ser.index
         ser.interpolate
         ser.lowpass
@@ -55,6 +57,7 @@ add_dependencies(all_externals
         ser.snh
         ser.transport
         ser.util
+        ser.waveform
 )
 
 

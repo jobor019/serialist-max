@@ -35,8 +35,6 @@ private:
     static constexpr std::size_t STRIDE_INLET = 2;
     static constexpr std::size_t RESET_INLET = 3;
 
-    static const inline auto POSITION_INFO = "position";
-
 public:
     MIN_DESCRIPTION{"Multi-channel index generator"};
     MIN_TAGS{""};
@@ -49,6 +47,7 @@ public:
     inlet<> inlet_reset{this, RESET_DESCR, "", false};
 
     outlet<> outlet_main{this, Inlets::voice(Types::index, "Next index")};
+    outlet<> outlet_phase{this, Inlets::voice(Types::phase, "Normalized position")};
     outlet<> dumpout{this, Inlets::DUMPOUT};
 
     argument<atoms> steps_arg{this, "steps", "Set number of steps"};
@@ -184,14 +183,14 @@ private:
         trigger.set_values(Voices<Trigger>::empty_like());
         m_index.reset.set_values(Voices<Trigger>::empty_like());
 
-        dump_position_info(output);
+        output_normalized_position(output);
 
         auto formatted_atoms = AtomFormatter::voices2atoms<std::size_t>(output);
         outlet_main.send(formatted_atoms);
     }
 
 
-    void dump_position_info(const Voices<Facet>& output) {
+    void output_normalized_position(const Voices<Facet>& output) {
         if (output.is_empty_like()) {
             return;
         }
@@ -204,14 +203,12 @@ private:
 
         auto current = output.firsts_or<double>(0);
 
-        Vec<atom> formatted_output = Vec<atom>::allocated(num_voices + 1);
-        formatted_output.append(POSITION_INFO);
-
+        Vec<atom> normalized_position = Vec<atom>::allocated(num_voices);
         for (std::size_t i = 0; i < num_voices; ++i) {
-            formatted_output.append(current[i] / static_cast<double>(IndexHandler::parse(num_steps[i])));
+            normalized_position.append(current[i] / static_cast<double>(IndexHandler::parse(num_steps[i])));
         }
 
-        dumpout.send(formatted_output.vector());
+        outlet_phase.send(normalized_position.vector());
     }
 
 };
