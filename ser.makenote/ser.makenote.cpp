@@ -20,6 +20,10 @@ private:
     static const inline auto NN_DESCRIPTION = Inlets::voices(Types::number, "Set note numbers");
     static const inline auto VEL_DESCRIPTION = Inlets::voices(Types::number, "Set velocities");
     static const inline auto CH_DESCRIPTION = Inlets::voices(Types::number, "Set channels");
+    static const inline auto AUTO_CHANNEL_DESCRIPTION = Inlets::value(
+        Types::boolean,
+        "Automatically assign each voice to a consecutive channel (default: false). "
+        "When enabled, the channel inlet will be ignored.");
 
     static const inline auto CLASS_NAME = "ser.makenote";
 
@@ -85,12 +89,17 @@ public:
         , input_format::voices , &m_mutex};
 
 
+    value_attribute<bool> autochannel{this, "autochannel", m_make_note.auto_channel
+        , MakeNoteWrapper::DEFAULT_AUTO_CHANNEL, cerr
+        , "", &m_mutex, AUTO_CHANNEL_DESCRIPTION};
+
+
     message<> setup = Messages::setup_message_with_loadstate(this, [this](LoadState& s) {
-        s >> enabled >> voices >> note >> velocity >> channel;
+        s >> enabled >> voices >> note >> velocity >> channel >> autochannel;
     });
 
     message<> savestate = Messages::savestate_message(this, autorestore, [this](SaveState& s) {
-        s << enabled << voices << note << velocity << channel;
+        s << enabled << voices << note << velocity << channel << autochannel;
     });
 
 
