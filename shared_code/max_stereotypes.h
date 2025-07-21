@@ -110,7 +110,7 @@ public:
 // ==============================================================================================
 
 
-enum class Types { number, index, phase, trigger, pulse };
+enum class Types { number, index, phase, trigger, pulse, boolean };
 
 enum class Containers { value, voice, voices };
 
@@ -124,6 +124,7 @@ public:
     static inline const std::string PHASE_TYPE = "phase";
     static inline const std::string TRIGGER_TYPE = "trigger";
     static inline const std::string PULSE_TYPE = "pulse";
+    static inline const std::string BOOL_TYPE = "bool";
 
     static inline const std::string VALUE_CONTAINER; // never actually used
     static inline const std::string VOICE_CONTAINER = "list";
@@ -143,6 +144,8 @@ public:
                 return TRIGGER_TYPE;
             case Types::pulse:
                 return PULSE_TYPE;
+            case Types::boolean:
+                return BOOL_TYPE;
         }
         throw std::invalid_argument("unknown type");
     }

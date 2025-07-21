@@ -107,6 +107,7 @@ public:
              , typename = std::enable_if_t<parsing::is_atom_convertible<OutputType>::value>>
     static c74::min::atoms vec2atoms(const Vec<InputType>& v
                                      , std::optional<std::function<OutputType(InputType)>> f = std::nullopt) {
+
         c74::min::atoms atms;
         atms.reserve(v.size());
 
@@ -114,6 +115,18 @@ public:
             atms.emplace_back(value2atom(elem, f));
         }
         return atms;
+    }
+
+
+    template<typename OutputType
+             , typename InputType = OutputType
+             , typename = std::enable_if_t<parsing::is_atom_convertible<OutputType>::value>>
+    static c74::min::atoms vec2atoms_or_null(const Vec<InputType>& v
+                                             , std::optional<std::function<OutputType(InputType)>> f = std::nullopt) {
+        if (v.empty())
+            return {parsing::NULL_STRING};
+
+        return vec2atoms(v, f);
     }
 
 
