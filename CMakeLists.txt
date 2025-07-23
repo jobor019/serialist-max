@@ -5,7 +5,7 @@ project(serialistMax)
 
 set(CMAKE_OSX_ARCHITECTURES arm64;x86_64)
 
-add_subdirectory(serialist)
+add_subdirectory(libs/serialist)
 add_subdirectory(shared_code)
 
 include(${CMAKE_SOURCE_DIR}/min-api/script/min-package.cmake)

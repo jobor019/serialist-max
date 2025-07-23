@@ -1,6 +1,6 @@
 #include <serialist_transport.h>
 #include <core/policies/policies.h>
-#include <core/generatives/phase_map.h>
+#include <core/generatives/lowpass.h>
 
 #include "c74_min.h"
 #include "parsing.h"
@@ -8,7 +8,6 @@
 #include "max_timepoint.h"
 #include "message_stereotypes.h"
 #include "serialist_attributes.h"
-#include "../serialist/src/serialist/core/generatives/lowpass.h"
 
 
 using namespace c74::min;

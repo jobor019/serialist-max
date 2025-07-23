@@ -4,7 +4,7 @@
 
 #include "c74_min_api.h"
 #include "result.h"
-#include "magic_enum.hpp"
+#include "magic_enum/magic_enum.hpp"
 #include "core/collections/vec.h"
 #include "core/collections/voices.h"
 #include "core/types/facet.h"
