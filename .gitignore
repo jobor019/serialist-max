@@ -277,8 +277,3 @@ extensions/
 externals/
 support/
 package-info.json
-
-# Repo-specific
-experiments/
-serialist
-patchers/ongoing/
