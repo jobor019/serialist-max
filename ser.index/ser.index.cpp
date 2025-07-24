@@ -17,7 +17,7 @@ class ser_index : public object<ser_index>
                   , public SerialistTransport::Listener {
 private:
 
-    enum class AutoResetMode { none, steps, transport, both };
+    enum class AutoResetMode : uint8_t { none, steps, transport, both };
 
     IndexWrapper<> m_index;
 
