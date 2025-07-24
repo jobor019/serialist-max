@@ -5,7 +5,19 @@ project(serialistMax)
 
 set(CMAKE_OSX_ARCHITECTURES arm64;x86_64)
 
-add_subdirectory(libs/serialist)
+# Option to build with local symlink in order to simplify lock-step development and access uncommitted changes
+option(SERIALIST_LOCAL_SYMLINK OFF "Build with local symlink to serialist in libs/serialist-symlink")
+
+if (SERIALIST_LOCAL_SYMLINK)
+    if (NOT EXISTS ${CMAKE_SOURCE_DIR}/libs/serialist-symlink)
+        message(FATAL_ERROR "libs/serialist-symlink does not exist, create the symlink or remove the SERIALIST_LOCAL_SYMLINK option")
+    endif()
+    message(STATUS "Building with local symlink to serialist in libs/serialist-symlink")
+    add_subdirectory(libs/serialist-symlink)
+else()
+    add_subdirectory(libs/serialist)
+endif()
+
 add_subdirectory(shared_code)
 
 include(${CMAKE_SOURCE_DIR}/min-api/script/min-package.cmake)

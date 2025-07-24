@@ -277,3 +277,6 @@ extensions/
 externals/
 support/
 package-info.json
+
+# serialist
+libs/serialist-symlink
