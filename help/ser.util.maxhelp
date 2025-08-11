@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 518.0, 212.0, 1146.0, 877.0 ],
+		"rect" : [ 100.0, 100.0, 1146.0, 877.0 ],
 		"gridsize" : [ 15.0, 15.0 ],
 		"subpatcher_template" : "serialist_help",
 		"showrootpatcherontab" : 0,
@@ -32,7 +32,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 518.0, 238.0, 1146.0, 851.0 ],
+						"rect" : [ 0.0, 26.0, 1146.0, 851.0 ],
 						"openrect" : [ 0.0, 0.0, 1040.0, 740.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
@@ -57,7 +57,6 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 601.0, 163.0, 149.0, 22.0 ],
-									"presentation_linecount" : 3,
 									"text" : "[ [ 1 2 3 ] [ 4 5 ] [ 6 7 8 9 ] ]"
 								}
 
@@ -70,7 +69,6 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 531.0, 163.0, 62.0, 22.0 ],
-									"presentation_linecount" : 2,
 									"text" : "[ [ 1 2 3 ] ]"
 								}
 
@@ -83,7 +81,6 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 478.0, 163.0, 45.0, 22.0 ],
-									"presentation_linecount" : 2,
 									"text" : "1 2 3 4"
 								}
 
@@ -131,9 +128,8 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 489.0, 216.0, 269.0, 24.0 ],
-									"presentation_linecount" : 2,
-									"text" : "len: get size of every individual voice as a list"
+									"patching_rect" : [ 489.0, 216.0, 275.0, 24.0 ],
+									"text" : "size: get size of every individual voice as a list"
 								}
 
 							}
@@ -1104,7 +1100,7 @@
 
 							}
  ],
-						"originid" : "pat-6"
+						"originid" : "pat-11"
 					}
 ,
 					"patching_rect" : [ 239.0, 19.0, 43.0, 22.0 ],
@@ -1130,7 +1126,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 0.0, 26.0, 1146.0, 851.0 ],
+						"rect" : [ 100.0, 126.0, 1146.0, 851.0 ],
 						"openrect" : [ 0.0, 0.0, 1040.0, 740.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
@@ -1368,7 +1364,7 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 83.0, 588.0, 193.0, 22.0 ],
-									"text" : "[ [ 1. ] [ 2. 3. ] ]"
+									"text" : "[ [ ] ]"
 								}
 
 							}
@@ -1979,7 +1975,7 @@
 
 							}
  ],
-						"originid" : "pat-8"
+						"originid" : "pat-13"
 					}
 ,
 					"patching_rect" : [ 156.0, 19.0, 72.0, 22.0 ],
@@ -2269,7 +2265,7 @@
 
 							}
  ],
-						"originid" : "pat-10"
+						"originid" : "pat-15"
 					}
 ,
 					"patching_rect" : [ 83.0, 19.0, 66.0, 22.0 ],
@@ -2300,7 +2296,7 @@
 						"showontab" : 1,
 						"boxes" : [  ],
 						"lines" : [  ],
-						"originid" : "pat-12"
+						"originid" : "pat-17"
 					}
 ,
 					"patching_rect" : [ 349.0, 22.0, 25.0, 22.0 ],
@@ -2459,7 +2455,7 @@
 							}
  ],
 						"lines" : [  ],
-						"originid" : "pat-14"
+						"originid" : "pat-19"
 					}
 ,
 					"patching_rect" : [ 23.0, 20.0, 47.0, 22.0 ],
@@ -2470,7 +2466,7 @@
 			}
  ],
 		"lines" : [  ],
-		"originid" : "pat-4",
+		"originid" : "pat-9",
 		"dependency_cache" : [ 			{
 				"name" : "helpdetails.js",
 				"bootpath" : "C74:/help/resources",

@@ -31,7 +31,12 @@ class ser_multilist : public object<ser_multilist> {
     static const inline auto SET_SINGULAR_DESCRIPTION = "Set entire list to a single chord (yielding a multilist of size 1) without triggering output";
     static const inline auto SINGULAR_DESCRIPTION = "Set entire list to a single chord (yielding a multilist of size 1) and trigger output";
 
+    static const inline auto EXTEND_DESCRIPTION = "Extend multilist by the content of another multilist. "
+                                                  "This also supports keywords such as \"range\"";
+    static const inline auto RANGE_DESCRIPTION = "Set entire list to a range of consecutive values";
 
+
+    static const inline auto ERROR_OUT_OF_BOUNDS = "outofbounds";
 
     static constexpr std::size_t MAIN_INLET = 0;
     static constexpr std::size_t APPEND_INLET = 1;
@@ -160,6 +165,18 @@ public:
     }}};
 
 
+    message<> m_extend{this, "extend", EXTEND_DESCRIPTION, setter{MIN_FUNCTION {
+        if (inlet != 0) {
+            cerr << "invalid message \"extend\" for inlet " << inlet << endl;
+            return {};
+        }
+
+        extend(args);
+
+        return {};
+    }}};
+
+
     message<> m_insert{this, "insert", INSERT_DESCRIPTION, setter{MIN_FUNCTION {
         if (inlet != 0) {
             cerr << "invalid message \"insert\" for inlet " << inlet << endl;
@@ -173,18 +190,33 @@ public:
 
         // Note: we support both negative (strategy: sign) and unbounded (strategy: pad) indices
         if (auto index = AtomParser::atom2value<int>(args[0])) {
-            if (auto vector = AtomParser::atoms2vec<double>(atoms{args.begin() + 1, args.end()})) {
+            if (auto vector = AtomParser::atoms2vec<double>(drop_first_n(args, 1))) {
 
                 append_to_history(m_multilist);
 
                 if (*index > 0) {
                     // if the index is greater than size, pad with empty vectors so that the index is valid
-                    for (int i = 0; i < *index - (m_multilist.size() + 1); i++) {
+                    int n_pad = *index - static_cast<int>(m_multilist.size() + 1);
+
+                    // This is most likely a user input error. To avoid crashes if the value is too large, we throw
+                    // an error here instead. `extend` can be used to achieve the same effect without imposed limits.
+                    if (n_pad > 1024) {
+                        cerr << "index too large: " << *index << endl;
+                        return {};
+                    }
+
+                    for (int i = 0; i < n_pad; i++) {
                         m_multilist.append(Vec<double>{});
                     }
                 }
-                m_multilist.insert(*index, *vector);
-                update_attribute_and_output(m_multilist);
+
+                if (auto bounded_index = parse_bounded_index(args[0], ContainerType::BoundLimit::after)) {
+                    m_multilist.insert(*bounded_index, *vector);
+                    update_attribute_and_output(m_multilist);
+                } else {
+                    // Out of bounds errors: user need to be able to react to this programmatically
+                    dumpout.send("insert", ERROR_OUT_OF_BOUNDS, args[0]);
+                }
             } else {
                 cerr << vector.err().message() << endl;
             }
@@ -209,15 +241,17 @@ public:
         }
 
         if (auto bounded_index = parse_bounded_index(args[0])) {
-            if (auto vector = AtomParser::atoms2vec<double>(atoms{args.begin() + 1, args.end()})) {
+            if (auto vector = AtomParser::atoms2vec<double>(drop_first_n(args, 1))) {
                 m_multilist.replace(*bounded_index, *vector);
                 update_attribute_and_output(m_multilist);
             } else {
+                // Parsing errors: print a message to the console (user should be notified)
                 cerr << vector.err().message() << ". could not replace value" <<endl;
             }
 
         } else {
-            cerr << bounded_index.err().message() << endl;
+            // Out of bounds errors: user need to be able to react to this programmatically
+            dumpout.send("replace", ERROR_OUT_OF_BOUNDS, args[0]);
         }
 
         return {};
@@ -268,6 +302,20 @@ public:
     };
 
 
+    message<> m_range{this, "range", RANGE_DESCRIPTION, setter{MIN_FUNCTION {
+        if (inlet != 0) {
+            cerr << "invalid message \"range\" for inlet " << inlet << endl;
+            return {};
+        }
+
+        if (auto range = generate_range(args)) {
+            reset(*range);
+        } // otherwise: error message already printed
+
+        return {};
+    }}};
+
+
     message<> bang{this, "bang", "Output the current value", setter{MIN_FUNCTION {
         if (inlet != 0) {
             cerr << "invalid message \"bang\" for inlet " << inlet << endl;
@@ -315,6 +363,13 @@ private:
     }
 
 
+    void reset(const ContainerType& new_state) {
+        append_to_history(m_multilist);
+        m_multilist = new_state;
+        update_attribute_and_output(m_multilist);
+    }
+
+
     void append(const atoms& args) {
         if (auto v = AtomParser::atoms2vec<double>(args)) {
             append_to_history(m_multilist);
@@ -327,6 +382,36 @@ private:
     }
 
 
+    void extend(const atoms& args) {
+        if (args.empty()) {
+            cerr << "too few arguments for message \"extend\"" << endl;
+            return;
+        }
+
+        // First, we check if the first argument is a keyword rather than a value.
+        // Note that it could also be "[" or "null", which obviously shouldn't be read as keywords
+        if (auto potential_keyword = AtomParser::atom2value<std::string>(args[0])) {
+            if (*potential_keyword == "range") {
+                if (auto range = generate_range(drop_first_n(args, 1))) {
+                    m_multilist.extend(*range);
+                } else {
+                    return; // keyword was "range" but arguments were not well-formed: error message already printed
+                }
+            }
+            // TODO: Other keywords
+
+        } else if (auto v = parse_container_type(args, true)) {
+            m_multilist.extend(*v);
+
+        } else {
+            cerr << v.err().message() << endl;
+            return;
+        }
+
+        update_attribute_and_output(m_multilist);
+    }
+
+
     void remove(const atoms& args) {
         if (args.empty()) {
             cerr << "too few arguments for message \"remove\"" << endl;
@@ -336,10 +421,11 @@ private:
         auto indices_to_remove = Vec<std::size_t>::allocated(args.size());
 
         for (const auto& arg: args) {
-            if (auto bounded_index = parse_bounded_index(args[0])) {
+            if (auto bounded_index = parse_bounded_index(arg)) {
                 indices_to_remove.append(*bounded_index);
             } else {
                 // If any index is not well-formed, abort
+                dumpout.send({"remove", ERROR_OUT_OF_BOUNDS, arg});
                 cerr << bounded_index.err().message() << ". no values were removed" << endl;
                 return;
             }
@@ -349,6 +435,44 @@ private:
         m_multilist.erase(indices_to_remove);
 
         update_attribute_and_output(m_multilist);
+    }
+
+
+    std::optional<Vec<Vec<double>>> generate_range(const atoms& args) {
+        if (auto range_args = AtomParser::atoms2vec<int>(args)) {
+            if (range_args->empty()) {
+                cerr << "missing argument for message \"range\"" << endl;
+                return std::nullopt;
+            }
+
+            int start = 0;
+            int end = 0;
+
+            if (range_args->size() == 1) {
+                if ((*range_args)[0] <= 0) {
+                    return std::nullopt;
+                }
+
+                end = (*range_args)[0];
+            } else {
+                start = (*range_args)[0];
+                end = (*range_args)[1];
+            }
+
+            if (start > end) {
+                auto tmp = start;
+                start = end;
+                end = tmp;
+            }
+
+            return Vec<int>::range(start, end).as_type<Vec<double>>([](const int& i) {
+                return Vec{static_cast<double>(i)};
+            });
+
+        } else {
+            cerr << range_args.err().message() << endl;
+            return std::nullopt;
+        }
     }
 
 
@@ -388,10 +512,10 @@ private:
 
 
     /** @brief Read the value as an index and check its validity. */
-    Result<std::size_t> parse_bounded_index(atom arg) const {
+    Result<std::size_t> parse_bounded_index(atom arg, ContainerType::BoundLimit limit_type = ContainerType::BoundLimit::before) const {
         if (auto index = AtomParser::atom2value<int>(arg)) {
 
-            if (auto bounded_index = m_multilist.bounded_index(*index)) {
+            if (auto bounded_index = m_multilist.bounded_index(*index, limit_type)) {
                 return {*bounded_index};
             } else {
                 return Error{"index " + std::to_string(*index) + " out of bounds"};
@@ -433,6 +557,12 @@ private:
         } else {
             return Error{v.err().message()};
         }
+    }
+
+    static atoms drop_first_n(const atoms& args, std::size_t n) {
+        atoms args_cloned{args};
+        args_cloned.erase(args_cloned.begin(), args_cloned.begin() + n);
+        return args_cloned;
     }
 
 };
