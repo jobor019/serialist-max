@@ -52,7 +52,7 @@ inline constexpr bool is_atom_convertible_v = is_atom_convertible<T>::value;
 
 // ==============================================================================================
 
-bool is_empty_like(const c74::min::atom& atm) noexcept {
+inline bool is_empty_like(const c74::min::atom& atm) noexcept {
     return (atm.type() == c74::min::message_type::no_argument
             || atm.type() == c74::min::message_type::symbol_argument && static_cast<std::string>(atm).empty())
            || (atm.type() == c74::min::message_type::int_argument && static_cast<int>(atm) == 0)
@@ -60,7 +60,7 @@ bool is_empty_like(const c74::min::atom& atm) noexcept {
 }
 
 
-bool is_empty_like(const c74::min::atoms& atms) noexcept {
+inline bool is_empty_like(const c74::min::atoms& atms) noexcept {
     if (atms.empty()) {
         return true;
     } else if (atms.size() == 1) {
@@ -69,11 +69,11 @@ bool is_empty_like(const c74::min::atoms& atms) noexcept {
     return false;
 }
 
-std::size_t to_zero_index(std::size_t i) noexcept {
+inline std::size_t to_zero_index(std::size_t i) noexcept {
     return utils::decrement(i);
 }
 
-std::size_t to_one_index(std::size_t i) noexcept {
+inline std::size_t to_one_index(std::size_t i) noexcept {
     return utils::increment(i);
 }
 

@@ -31,6 +31,7 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.index)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.interpolate)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.lowpass)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.makenote)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.multilist)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.op)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.phase)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.pattern)
@@ -56,6 +57,7 @@ add_dependencies(all_externals
         ser.interpolate
         ser.lowpass
         ser.makenote
+        ser.multilist
         ser.op
         ser.pattern
         ser.phase

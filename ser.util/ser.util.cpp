@@ -198,7 +198,7 @@ public:
         assert(!args.empty() && args[0] == "zip");
 
         if (args.size() < 2) {
-            throw std::invalid_argument("missing argument \"size\" for mode \"zip\"");
+            throw std::invalid_argument(R"(missing argument "size" for mode "zip")");
         }
 
         if (auto size = AtomParser::atom2value<std::size_t>(args[1])) {
@@ -304,7 +304,7 @@ public:
 
             // Note: since a Voices<T> never is empty, sizes will at least contain a single value
             // (e.g. Voices<T>::empty_like.size() == 1)
-            return atoms{std::move(sizes.vector())};
+            return atoms{sizes.vector()};
 
         } else {
             return v.err();
