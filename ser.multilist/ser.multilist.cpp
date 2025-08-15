@@ -16,7 +16,11 @@ public:
 
     enum class Keyword {
         range,
-        linspace
+        linspace,
+        ones,
+        zeros,
+        repeat,
+
     };
 
 
@@ -30,6 +34,12 @@ public:
                 return parse_range(args_without_keyword);
             case Keyword::linspace:
                 return parse_linspace(args_without_keyword);
+            case Keyword::ones:
+                return parse_ones(args_without_keyword);
+            case Keyword::zeros:
+                return parse_zeros(args_without_keyword);
+            case Keyword::repeat:
+                return parse_repeat(args_without_keyword);
             default:
                 return Error{"Unknown keyword: " + static_cast<std::string>(magic_enum::enum_name(keyword))};
         }
@@ -129,6 +139,49 @@ public:
         }
     }
 
+
+    static Result<Vec<double>> parse_ones(const atoms& args) {
+        if (args.empty()) {
+            return Error{"too few arguments for message \"ones\""};
+        }
+
+        if (auto num = AtomParser::atom2value<int>(args[0])) {
+            return Vec<double>::ones(static_cast<std::size_t>(std::max(0,*num)));
+        } else {
+            return Error{num.err().message()};
+        }
+    }
+
+
+    static Result<Vec<double>> parse_zeros(const atoms& args) {
+        if (args.empty()) {
+            return Error{"too few arguments for message \"zeros\""};
+        }
+
+        if (auto num = AtomParser::atom2value<int>(args[0])) {
+            return Vec<double>::zeros(static_cast<std::size_t>(std::max(0,*num)));
+        } else {
+            return Error{num.err().message()};
+        }
+    }
+
+
+    static Result<Vec<double>> parse_repeat(const atoms& args) {
+        if (args.size() < 2) {
+            return Error{"too few arguments for message \"repeat\""};
+        }
+
+        if (auto repeat_args = AtomParser::atoms2vec<double>(args)) {
+            std::size_t num = static_cast<std::size_t>(std::round(std::max(0.0, (*repeat_args)[0])));
+            double value = (*repeat_args)[1];
+
+            return Vec<double>::repeated(value, num);
+        } else {
+            return Error{repeat_args.err().message()};
+        }
+    }
+
+
     /** @brief this is similar to Voices<T>::tranposed() except that it allows empty outer lists */
     static Vec<Vec<double>> transposed(const Vec<double>& vec) {
         if (vec.empty()) {
@@ -177,8 +230,11 @@ class ser_multilist : public object<ser_multilist> {
 
     static const inline auto EXTEND_DESCRIPTION = "Extend multilist by the content of another multilist. "
                                                   "This also supports keywords such as \"range\"";
-    static const inline auto RANGE_DESCRIPTION = "Set entire list to a range of consecutive integer values";
-    static const inline auto LINSPACE_DESCRIPTION = "Set entire list to a evenly spaced numbers over a specified interval";
+    static const inline auto RANGE_DESCRIPTION = "Set entire list to a range of consecutive integer values"; // TODO: explain arguments
+    static const inline auto LINSPACE_DESCRIPTION = "Set entire list to a evenly spaced numbers over a specified interval"; // TODO: explain arguments
+    static const inline auto ONES_DESCRIPTION = "Set entire list to a vector of ones"; // TODO: explain arguments
+    static const inline auto ZEROS_DESCRIPTION = "Set entire list to a vector of zeros"; // TODO: explain arguments
+    static const inline auto REPEAT_DESCRIPTION = "Set entire list to a vector of repeated values"; // TODO: explain arguments
 
 
     static const inline auto ERROR_OUT_OF_BOUNDS = "outofbounds";
@@ -446,6 +502,8 @@ public:
         return {};
     };
 
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
     message<> m_range{this, "range", RANGE_DESCRIPTION, setter{MIN_FUNCTION {
         if (inlet != 0) {
@@ -478,6 +536,54 @@ public:
         return {};
     }}};
 
+
+    message<> m_ones{this, "ones", ONES_DESCRIPTION, setter{MIN_FUNCTION {
+        if (inlet != 0) {
+            cerr << "invalid message \"ones\" for inlet " << inlet << endl;
+            return {};
+        }
+
+        if (auto ones = VecGenerator::parse_ones(args)) {
+            reset(VecGenerator::transposed(*ones));
+        } else {
+            cerr << ones.err().message() << endl;
+        }
+        return {};
+    }}};
+
+
+    message<> m_zeros{this, "zeros", ZEROS_DESCRIPTION, setter{MIN_FUNCTION {
+        if (inlet != 0) {
+            cerr << "invalid message \"zeros\" for inlet " << inlet << endl;
+            return {};
+        }
+
+        if (auto zeros = VecGenerator::parse_zeros(args)) {
+            reset(VecGenerator::transposed(*zeros));
+        } else {
+            cerr << zeros.err().message() << endl;
+        }
+        return {};
+    }}};
+
+
+    message<> m_repeat{this, "repeat", REPEAT_DESCRIPTION, setter{MIN_FUNCTION {
+        if (inlet != 0) {
+            cerr << "invalid message \"repeat\" for inlet " << inlet << endl;
+            return {};
+        }
+
+        if (auto repeat = VecGenerator::parse_repeat(args)) {
+            reset(VecGenerator::transposed(*repeat));
+        } else {
+            cerr << repeat.err().message() << endl;
+        }
+
+        return {};
+    }}};
+
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     message<> bang{this, "bang", "Output the current value", setter{MIN_FUNCTION {
         if (inlet != 0) {
