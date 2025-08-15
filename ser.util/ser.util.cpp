@@ -180,6 +180,84 @@ public:
     }
 };
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/**
+ * @brief Takes a Voices input and returns 1 for each voice containing a non-null value greater than 0, otherwise 0, e.g.
+ *        - [ [ 0 0 1 ] [ 0 0 0 ] ]    => [ [ 1 ] [ 0 ] ]
+ *        - 1 null 0                   => [ [ 1 ] [ 0  ] [ 0 ] ]
+ *        Note that we can use this with `ser.op` to test more elaborate conditions, e.g.
+ *        `ser.op % 12 -> ser.op == 4 -> ser.util any` returns 1 for every Voice in a Voices containing an E.
+ */
+class AnyOperator : public UtilityOperator {
+public:
+    Result<atoms> operator()(const atoms& args, const Parameters& params, std::size_t inlet, bool is_hot) override {
+        if (auto voices = AtomParser::atoms2voices<double>(args)) {
+
+            auto bool_mask = voices->vec().as_type<bool>([](const Voice<double>& v) {
+                return v.any([](const double& x) { return x > 0; });
+            });
+
+            return AtomFormatter::vec2atoms<bool>(bool_mask);
+
+        } else {
+            return voices.err();
+        }
+    }
+};
+
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/**
+ * @brief Takes a Voices input and returns 1 for each voice containing only values greater than 0, otherwise 0, e.g.
+ *        - [ [ 0 0 1 ] [ 0 0 0 ] ]    => [ [ 0 ] [ 0 ] ]
+ *        - [ [ 1 1 1 ] [ 0 0 0 ] ]    => [ [ 1 ] [ 0 ] ]
+ *        - 1 null 0                   => [ [ 1 ] [ 1  ] [ 0 ] ]
+ *        Note that this returns true for empty voices
+ */
+class AllOperator : public UtilityOperator {
+public:
+    Result<atoms> operator()(const atoms& args, const Parameters& params, std::size_t inlet, bool is_hot) override {
+        if (auto voices = AtomParser::atoms2voices<double>(args)) {
+
+            auto bool_mask = voices->vec().as_type<bool>([](const Voice<double>& v) {
+                return v.all([](const double& x) { return x > 0; });
+            });
+
+            return AtomFormatter::vec2atoms<bool>(bool_mask);
+
+        } else {
+            return voices.err();
+        }
+    }
+};
+
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/**
+ * @brief Takes a Voices input and returns the number of values greater than 0 in each voice, e.g.
+ *        - [ [ 0 1 1 ] [ 0 0 0 ] ]    => [ [ 2 ] [ 0 ] ]
+ *        - 1 null 0                   => [ [ 1 ] [ 0 ] [ 0 ] ]
+ */
+class CountOperator : public UtilityOperator {
+public:
+    Result<atoms> operator()(const atoms& args, const Parameters& params, std::size_t inlet, bool is_hot) override {
+        if (auto voices = AtomParser::atoms2voices<double>(args)) {
+
+            auto counts = voices->vec().as_type<std::size_t>([](const Voice<double>& v) {
+                return v.count([](const double& x) { return x > 0; });
+            });
+
+            return AtomFormatter::vec2atoms<std::size_t>(counts);
+
+        } else {
+            return voices.err();
+        }
+    }
+};
+
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -327,6 +405,12 @@ inline std::unique_ptr<UtilityOperator> string2operator(const std::string& s, co
         return std::make_unique<SequenceOperator>();
     if (s == "voices")
         return std::make_unique<VoicesOperator>();
+    if (s == "any")
+        return std::make_unique<AnyOperator>();
+    if (s == "all")
+        return std::make_unique<AllOperator>();
+    if (s == "count")
+        return std::make_unique<CountOperator>();
     if (s == "zip")
         return ZipOperator::parse(args);
     if (s == "int")

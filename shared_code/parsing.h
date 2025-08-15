@@ -110,10 +110,17 @@ public:
 
         c74::min::atoms atms;
         atms.reserve(v.size());
-
-        for (auto& elem: v) {
-            atms.emplace_back(value2atom(elem, f));
+        
+        if constexpr (std::is_same_v<InputType, bool>) {
+            for (auto elem : v) {
+                atms.emplace_back(value2atom(static_cast<bool>(elem), f));
+            }
+        } else {
+            for (auto& elem : v) {
+                atms.emplace_back(value2atom(elem, f));
+            }
         }
+
         return atms;
     }
 
