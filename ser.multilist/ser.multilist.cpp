@@ -20,7 +20,7 @@ public:
         ones,
         zeros,
         repeat,
-
+        logpattern,
     };
 
 
@@ -40,6 +40,8 @@ public:
                 return parse_zeros(args_without_keyword);
             case Keyword::repeat:
                 return parse_repeat(args_without_keyword);
+            case Keyword::logpattern:
+                return parse_logpattern(args_without_keyword);
             default:
                 return Error{"Unknown keyword: " + static_cast<std::string>(magic_enum::enum_name(keyword))};
         }
@@ -175,9 +177,64 @@ public:
             std::size_t num = static_cast<std::size_t>(std::round(std::max(0.0, (*repeat_args)[0])));
             double value = (*repeat_args)[1];
 
-            return Vec<double>::repeated(value, num);
+            return Vec<double>::repeated(num, value);
         } else {
             return Error{repeat_args.err().message()};
+        }
+    }
+
+
+    /**
+     * @brief generate a pattern of power of 2-spaced values, typically for generating beat-aligned velocity maps, etc.
+     * @param args <num> <value1> <value2> ... <default_value>
+     *          Examples:
+     *          - logpattern 3 100 80 => (num=3, value1=100, default_value=80) => 100 80 80
+     *          - logpattern 16 3 2 1 0 => 3 0 0 0 1 0 0 0 2 0 0 0 1 0 0 0
+     * @return
+     */
+    static Result<Vec<double>> parse_logpattern(const atoms& args) {
+        if (args.size() < 2) {
+            return Error{"too few arguments for message \"logpattern\""};
+        }
+
+        if (auto logpattern_args = AtomParser::atoms2vec<double>(args)) {
+            std::size_t num = static_cast<std::size_t>(std::round(std::max(0.0, (*logpattern_args)[0])));
+
+            if (num == 0)
+                return {{}};
+            if (num == 1)
+                return Vec<double>::singular((*logpattern_args)[1]);
+
+            bool has_default_value = logpattern_args->size() > 2;
+            std::size_t num_pattern_values = has_default_value ? logpattern_args->size() - 1 : logpattern_args->size();
+
+            double default_value = has_default_value ? (*logpattern_args)[logpattern_args->size() - 1] : 0.0;
+            Vec<double> logpattern_values = logpattern_args->slice(1, num_pattern_values);
+
+            auto result = Vec<double>::repeated(num, default_value);
+
+            if (logpattern_values.empty()) {
+                return result;
+            }
+
+            result[0] = logpattern_values[0];
+
+            for (std::size_t i = logpattern_values.size(); i > 1; --i) {
+                std::size_t pattern_idx = i - 1;
+                std::size_t divisor = 1ULL << pattern_idx; // 2^pattern_idx: 2, 4, 8, 16, ...
+                std::size_t interval = num / divisor;
+
+                if (interval > 0) {
+                    for (std::size_t pos = interval; pos < num; pos += interval * 2) {
+                        result[pos] = logpattern_values[pattern_idx];
+                    }
+                }
+            }
+
+            return result;
+
+        } else {
+            return Error{logpattern_args.err().message()};
         }
     }
 
@@ -238,6 +295,8 @@ class ser_multilist : public object<ser_multilist> {
     static const inline auto ONES_DESCRIPTION = "Set entire list to a vector of ones"; // TODO: explain arguments
     static const inline auto ZEROS_DESCRIPTION = "Set entire list to a vector of zeros"; // TODO: explain arguments
     static const inline auto REPEAT_DESCRIPTION = "Set entire list to a vector of repeated values"; // TODO: explain arguments
+
+    static const inline auto LOGPATTERN_DESCRIPTION = "TODO"; // TODO: explain arguments
 
 
     static const inline auto ERROR_OUT_OF_BOUNDS = "outofbounds";
@@ -602,6 +661,22 @@ public:
             reset(VecGenerator::transposed(*repeat));
         } else {
             cerr << repeat.err().message() << endl;
+        }
+
+        return {};
+    }}};
+
+
+    message<> m_logpattern{this, "logpattern", LOGPATTERN_DESCRIPTION, setter{MIN_FUNCTION {
+        if (inlet != 0) {
+            cerr << "invalid message \"logpattern\" for inlet " << inlet << endl;
+            return {};
+        }
+
+        if (auto logpattern = VecGenerator::parse_logpattern(args)) {
+            reset(VecGenerator::transposed(*logpattern));
+        } else {
+            cerr << logpattern.err().message() << endl;
         }
 
         return {};

@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 174.0, 434.0, 1052.0, 782.0 ],
+		"rect" : [ 174.0, 100.0, 1052.0, 782.0 ],
 		"gridsize" : [ 15.0, 15.0 ],
 		"subpatcher_template" : "serialist_help",
 		"showontab" : 1,
@@ -31,12 +31,118 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 174.0, 460.0, 1052.0, 756.0 ],
+						"rect" : [ 174.0, 126.0, 1052.0, 756.0 ],
 						"openrect" : [ 0.0, 0.0, 1040.0, 740.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
 						"integercoordinates" : 1,
 						"boxes" : [ 							{
+								"box" : 								{
+									"id" : "obj-29",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 890.0, 514.0, 139.0, 22.0 ],
+									"text" : "logpattern 64 5 4 3 2 1 0"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-30",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 886.0, 490.0, 119.0, 22.0 ],
+									"text" : "logpattern 24 3 2 1 0"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"ghostbar" : 44,
+									"id" : "obj-31",
+									"maxclass" : "multislider",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "", "" ],
+									"parameter_enable" : 0,
+									"patching_rect" : [ 871.0, 636.0, 299.0, 89.0 ],
+									"setminmax" : [ 0.0, 5.0 ],
+									"size" : 24,
+									"spacing" : 2
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-32",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 886.0, 466.0, 119.0, 22.0 ],
+									"text" : "logpattern 16 3 2 1 0"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-33",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 886.0, 442.0, 92.0, 22.0 ],
+									"text" : "logpattern 4 2 1"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-34",
+									"linecount" : 2,
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 910.0, 583.0, 303.0, 35.0 ],
+									"text" : "3. 0. 0. 0. 0. 0. 1. 0. 0. 0. 0. 0. 2. 0. 0. 0. 0. 0. 1. 0. 0. 0. 0. 0."
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-35",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 886.0, 418.0, 82.0, 22.0 ],
+									"text" : "logpattern 4 2"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-36",
+									"maxclass" : "newobj",
+									"numinlets" : 3,
+									"numoutlets" : 3,
+									"outlettype" : [ "", "", "" ],
+									"patching_rect" : [ 871.0, 548.0, 68.0, 22.0 ],
+									"saved_object_attributes" : 									{
+										"parameter_enable" : 0,
+										"parameter_mappable" : 0
+									}
+,
+									"text" : "ser.multilist"
+								}
+
+							}
+, 							{
 								"box" : 								{
 									"bubble" : 1,
 									"bubblepoint" : 0.0,
@@ -47,7 +153,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 793.0, 142.0, 130.0, 52.0 ],
-									"presentation_linecount" : 2,
 									"text" : "expressions can be used as arguments"
 								}
 
@@ -894,8 +999,59 @@
 							}
 , 							{
 								"patchline" : 								{
+									"destination" : [ "obj-36", 0 ],
+									"source" : [ "obj-29", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
 									"destination" : [ "obj-27", 1 ],
 									"source" : [ "obj-3", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-36", 0 ],
+									"source" : [ "obj-30", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-36", 0 ],
+									"source" : [ "obj-32", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-36", 0 ],
+									"source" : [ "obj-33", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-36", 0 ],
+									"source" : [ "obj-35", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-31", 0 ],
+									"order" : 1,
+									"source" : [ "obj-36", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-34", 1 ],
+									"order" : 0,
+									"source" : [ "obj-36", 0 ]
 								}
 
 							}
@@ -1047,7 +1203,7 @@
 
 							}
  ],
-						"originid" : "pat-66"
+						"originid" : "pat-10"
 					}
 ,
 					"patching_rect" : [ 331.0, 20.0, 76.0, 22.0 ],
@@ -1764,7 +1920,7 @@
 
 							}
  ],
-						"originid" : "pat-68"
+						"originid" : "pat-12"
 					}
 ,
 					"patching_rect" : [ 422.0, 20.0, 37.0, 22.0 ],
@@ -2268,7 +2424,7 @@
 
 							}
  ],
-						"originid" : "pat-70"
+						"originid" : "pat-14"
 					}
 ,
 					"patching_rect" : [ 521.0, 20.0, 43.0, 22.0 ],
@@ -2679,7 +2835,7 @@
 							}
  ],
 						"lines" : [  ],
-						"originid" : "pat-72"
+						"originid" : "pat-16"
 					}
 ,
 					"patching_rect" : [ 271.0, 20.0, 49.0, 22.0 ],
@@ -3924,7 +4080,7 @@
 
 							}
  ],
-						"originid" : "pat-74"
+						"originid" : "pat-18"
 					}
 ,
 					"patching_rect" : [ 89.0, 20.0, 55.0, 22.0 ],
@@ -3955,7 +4111,7 @@
 						"showontab" : 1,
 						"boxes" : [  ],
 						"lines" : [  ],
-						"originid" : "pat-76"
+						"originid" : "pat-20"
 					}
 ,
 					"patching_rect" : [ 688.0, 20.0, 25.0, 22.0 ],
@@ -4401,7 +4557,7 @@
 							}
  ],
 						"lines" : [  ],
-						"originid" : "pat-78"
+						"originid" : "pat-22"
 					}
 ,
 					"patching_rect" : [ 23.0, 20.0, 47.0, 22.0 ],
@@ -4412,7 +4568,7 @@
 			}
  ],
 		"lines" : [  ],
-		"originid" : "pat-64",
+		"originid" : "pat-8",
 		"dependency_cache" : [ 			{
 				"name" : "helpdetails.js",
 				"bootpath" : "C74:/help/resources",
