@@ -456,6 +456,13 @@ public:
     }
 
 
+    static c74::min::atoms drop_first_n(const c74::min::atoms& args, std::size_t n) {
+        c74::min::atoms args_cloned{args};
+        args_cloned.erase(args_cloned.begin(), args_cloned.begin() + n);
+        return args_cloned;
+    }
+
+
 private:
     static std::tuple<AtomIterator, AtomIterator, std::size_t>
     get_content_edges(const c74::min::atoms& atms, bool leading_bracket_stripped = false) noexcept {

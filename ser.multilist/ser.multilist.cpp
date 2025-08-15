@@ -9,6 +9,150 @@
 
 using namespace c74::min;
 
+
+
+class VecGenerator {
+public:
+
+    enum class Keyword {
+        range,
+        linspace
+    };
+
+
+    VecGenerator() = delete;
+
+    static Result<Vec<double>> parse(Keyword keyword, const atoms& args, bool args_contains_keyword = true) {
+        auto args_without_keyword = args_contains_keyword ? AtomParser::drop_first_n(args, 1) : args;
+
+        switch (keyword) {
+            case Keyword::range:
+                return parse_range(args_without_keyword);
+            case Keyword::linspace:
+                return parse_linspace(args_without_keyword);
+            default:
+                return Error{"Unknown keyword: " + static_cast<std::string>(magic_enum::enum_name(keyword))};
+        }
+    }
+
+    static std::optional<Keyword> parse_keyword(const atoms& args) {
+        if (args.empty()) {
+            return std::nullopt;
+        }
+
+        if (auto potential_keyword = AtomParser::atom2value<std::string>(args[0])) {
+            auto keyword = lowercase(*potential_keyword);
+
+            // note: keyword could either be invalid or correspond to a default Voices symbol, e.g. "[" or "null". This
+            //       returns std::nullopt in both cases
+            return magic_enum::enum_cast<Keyword>(keyword);
+        }
+
+        return std::nullopt;
+    }
+
+
+    /**
+     * @param args Supports two formats:
+     *              (a) <end>, will yield a range from 0 to <end> (exclusive) where <end> is a positive integer
+     *              (b) <start> <end> will yield a range from <start> to <end> (exclusive), where <start> and <end> are
+     *                  integers. If <start> is larger than <end>, the range will be reversed
+     */
+    static Result<Vec<double>> parse_range(const atoms& args) {
+        if (auto range_args = AtomParser::atoms2vec<int>(args)) {
+            if (range_args->empty()) {
+                return Error{"missing argument for message \"range\""};
+            }
+
+            int start = 0;
+            int end = 0;
+
+            if (range_args->size() == 1) {
+                if ((*range_args)[0] <= 0) {
+                    return Error{"invalid argument for message \"range\""};
+                }
+
+                end = (*range_args)[0];
+
+            } else {
+                start = (*range_args)[0];
+                end = (*range_args)[1];
+            }
+
+            if (start > end) {
+                auto tmp = start;
+                start = end;
+                end = tmp;
+            }
+
+            return Vec<int>::range(start, end).as_type<double>();
+
+        } else {
+            return Error{range_args.err().message()};
+        }
+    }
+
+
+    /**
+     * @param args Supports three formats:
+     *             (a) <start> <end> (default num = 10, default include_endpoint = false)
+     *             (b) <start> <end> <num> (default include_endpoint = false)
+     *             (c) <start> <end> <num> <include_endpoint>
+     *             If <start> is larger than <end>, the range will be reversed
+     *
+     */
+    static Result<Vec<double>> parse_linspace(const atoms& args) {
+        if (auto linspace_args = AtomParser::atoms2vec<double>(args)) {
+            if (linspace_args->size() < 2) {
+                return Error{"too few arguments for message \"linspace\""};
+            }
+
+            double start = (*linspace_args)[0];
+            double end = (*linspace_args)[1];
+
+            std::size_t num = 10;
+
+            if (linspace_args->size() >= 3) {
+                num = static_cast<std::size_t>(std::max(0.0, (*linspace_args)[2]));
+            }
+
+            bool include_endpoint = false;
+
+            if (linspace_args->size() >= 4) {
+                include_endpoint = static_cast<bool>((*linspace_args)[3]);
+            }
+
+            return Vec<double>::linspace(start, end, num, include_endpoint);
+
+        } else {
+            return Error{linspace_args.err().message()};
+        }
+    }
+
+    /** @brief this is similar to Voices<T>::tranposed() except that it allows empty outer lists */
+    static Vec<Vec<double>> transposed(const Vec<double>& vec) {
+        if (vec.empty()) {
+            return {};
+        }
+
+        auto output = Vec<Vec<double>>::allocated(vec.size());
+        for (double v: vec) {
+            output.append(Vec<double>::singular(v));
+        }
+
+        return output;
+    }
+
+private:
+    static std::string lowercase(const std::string& s) {
+        std::string result = s;
+        std::transform(result.begin(), result.end(), result.begin(),
+                       [](char c) { return std::tolower(c); });
+        return result;
+    }
+};
+
+
 class ser_multilist : public object<ser_multilist> {
 
     /* Note: we're using Vec<Vec<double>> instead of Voices<double>> because we want to allow empty outer lists
@@ -33,7 +177,8 @@ class ser_multilist : public object<ser_multilist> {
 
     static const inline auto EXTEND_DESCRIPTION = "Extend multilist by the content of another multilist. "
                                                   "This also supports keywords such as \"range\"";
-    static const inline auto RANGE_DESCRIPTION = "Set entire list to a range of consecutive values";
+    static const inline auto RANGE_DESCRIPTION = "Set entire list to a range of consecutive integer values";
+    static const inline auto LINSPACE_DESCRIPTION = "Set entire list to a evenly spaced numbers over a specified interval";
 
 
     static const inline auto ERROR_OUT_OF_BOUNDS = "outofbounds";
@@ -190,7 +335,7 @@ public:
 
         // Note: we support both negative (strategy: sign) and unbounded (strategy: pad) indices
         if (auto index = AtomParser::atom2value<int>(args[0])) {
-            if (auto vector = AtomParser::atoms2vec<double>(drop_first_n(args, 1))) {
+            if (auto vector = AtomParser::atoms2vec<double>(AtomParser::drop_first_n(args, 1))) {
 
                 append_to_history(m_multilist);
 
@@ -241,7 +386,7 @@ public:
         }
 
         if (auto bounded_index = parse_bounded_index(args[0])) {
-            if (auto vector = AtomParser::atoms2vec<double>(drop_first_n(args, 1))) {
+            if (auto vector = AtomParser::atoms2vec<double>(AtomParser::drop_first_n(args, 1))) {
                 m_multilist.replace(*bounded_index, *vector);
                 update_attribute_and_output(m_multilist);
             } else {
@@ -308,9 +453,27 @@ public:
             return {};
         }
 
-        if (auto range = generate_range(args)) {
-            reset(*range);
-        } // otherwise: error message already printed
+        if (auto range = VecGenerator::parse_range(args)) {
+            reset(VecGenerator::transposed(*range));
+        } else {
+            cerr << range.err().message() << endl;
+        }
+
+        return {};
+    }}};
+
+
+    message<> m_linspace{this, "linspace", LINSPACE_DESCRIPTION, setter{MIN_FUNCTION {
+        if (inlet != 0) {
+            cerr << "invalid message \"linspace\" for inlet " << inlet << endl;
+            return {};
+        }
+
+        if (auto linspace = VecGenerator::parse_linspace(args)) {
+            reset(VecGenerator::transposed(*linspace));
+        } else {
+            cerr << linspace.err().message() << endl;
+        }
 
         return {};
     }}};
@@ -388,18 +551,13 @@ private:
             return;
         }
 
-        // First, we check if the first argument is a keyword rather than a value.
-        // Note that it could also be "[" or "null", which obviously shouldn't be read as keywords
-        if (auto potential_keyword = AtomParser::atom2value<std::string>(args[0])) {
-            if (*potential_keyword == "range") {
-                if (auto range = generate_range(drop_first_n(args, 1))) {
-                    m_multilist.extend(*range);
-                } else {
-                    return; // keyword was "range" but arguments were not well-formed: error message already printed
-                }
+        if (auto keyword = VecGenerator::parse_keyword(args)) {
+            if (auto v = VecGenerator::parse(*keyword, args, true)) {
+                m_multilist.extend(Voices<double>::transposed(*v).vec());
+            } else {
+                cerr << v.err().message() << endl;
+                return;
             }
-            // TODO: Other keywords
-
         } else if (auto v = parse_container_type(args, true)) {
             m_multilist.extend(*v);
 
@@ -435,44 +593,6 @@ private:
         m_multilist.erase(indices_to_remove);
 
         update_attribute_and_output(m_multilist);
-    }
-
-
-    std::optional<Vec<Vec<double>>> generate_range(const atoms& args) {
-        if (auto range_args = AtomParser::atoms2vec<int>(args)) {
-            if (range_args->empty()) {
-                cerr << "missing argument for message \"range\"" << endl;
-                return std::nullopt;
-            }
-
-            int start = 0;
-            int end = 0;
-
-            if (range_args->size() == 1) {
-                if ((*range_args)[0] <= 0) {
-                    return std::nullopt;
-                }
-
-                end = (*range_args)[0];
-            } else {
-                start = (*range_args)[0];
-                end = (*range_args)[1];
-            }
-
-            if (start > end) {
-                auto tmp = start;
-                start = end;
-                end = tmp;
-            }
-
-            return Vec<int>::range(start, end).as_type<Vec<double>>([](const int& i) {
-                return Vec{static_cast<double>(i)};
-            });
-
-        } else {
-            cerr << range_args.err().message() << endl;
-            return std::nullopt;
-        }
     }
 
 
@@ -557,12 +677,6 @@ private:
         } else {
             return Error{v.err().message()};
         }
-    }
-
-    static atoms drop_first_n(const atoms& args, std::size_t n) {
-        atoms args_cloned{args};
-        args_cloned.erase(args_cloned.begin(), args_cloned.begin() + n);
-        return args_cloned;
     }
 
 };
