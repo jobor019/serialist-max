@@ -218,6 +218,9 @@ class ser_multilist : public object<ser_multilist> {
 
     static constexpr std::size_t MAX_HISTORY = 100;
 
+    static const inline auto INITIAL_ARGS_DESCRIPTION = "Initial value of multilist (default: []). This also supports "
+                                                        "all generator keywords such as \"range\" and \"linspace\".";
+
     static const inline auto RESET_DESCRIPTION = Inlets::voices(Types::number, "Set entire multilist and trigger output");
     static const inline auto APPEND_DESCRIPTION = Inlets::voice(Types::number, "Append list");
     static const inline auto REMOVE_DESCRIPTION = Inlets::voice(Types::number, "Remove list at given index(es)");
@@ -262,6 +265,28 @@ public:
     outlet<> outlet_main{this, Inlets::voices(Types::number, "Updated multilist")};
     outlet<> outlet_queries{this, Inlets::voice(Types::number, "Query output")};
     outlet<> dumpout{this, Inlets::DUMPOUT};
+
+    argument<atoms> m_args{this, "initial", INITIAL_ARGS_DESCRIPTION};
+
+
+    explicit ser_multilist(const atoms& args = {}) {
+        if (!args.empty()) {
+            if (auto keyword = VecGenerator::parse_keyword(args)) {
+                if (auto v = VecGenerator::parse(*keyword, args, true)) {
+                    reset(Voices<double>::transposed(*v).vec());
+                } else {
+                    cerr << v.err().message() << endl;
+                    return;
+                }
+            } else if (auto v = parse_container_type(args, true)) {
+                m_multilist.extend(*v);
+
+            } else {
+                cerr << v.err().message() << endl;
+                return;
+            }
+        }
+    }
 
 
     attribute<atoms> m_value{ this, "value", EMPTY_LIST_FORMATTED, visibility::hide, setter{
