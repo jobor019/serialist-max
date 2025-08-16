@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 100.0, 100.0, 1146.0, 877.0 ],
+		"rect" : [ 100.0, 100.0, 771.0, 782.0 ],
 		"gridsize" : [ 15.0, 15.0 ],
 		"subpatcher_template" : "serialist_help",
 		"showrootpatcherontab" : 0,
@@ -32,7 +32,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 0.0, 26.0, 1146.0, 851.0 ],
+						"rect" : [ 0.0, 26.0, 771.0, 756.0 ],
 						"openrect" : [ 0.0, 0.0, 1040.0, 740.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
@@ -119,8 +119,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 573.0, 288.0, 140.0, 66.0 ],
-									"presentation_linecount" : 4,
+									"patching_rect" : [ 573.0, 288.0, 143.0, 66.0 ],
 									"text" : "count: count the number of values greater than one in each voice"
 								}
 
@@ -133,7 +132,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 247.0, 192.0, 226.0, 24.0 ],
-									"presentation_linecount" : 2,
 									"text" : "multiple voices -> one value per voice"
 								}
 
@@ -146,7 +144,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 247.0, 153.0, 195.0, 24.0 ],
-									"presentation_linecount" : 2,
 									"text" : "single voice -> one value output"
 								}
 
@@ -174,7 +171,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 332.0, 285.0, 128.0, 66.0 ],
-									"presentation_linecount" : 3,
 									"text" : "all: check if all values are greater than zero in each voice"
 								}
 
@@ -441,7 +437,7 @@
 
 							}
  ],
-						"originid" : "pat-76"
+						"originid" : "pat-132"
 					}
 ,
 					"patching_rect" : [ 235.0, 19.0, 53.0, 22.0 ],
@@ -467,7 +463,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 0.0, 26.0, 1146.0, 851.0 ],
+						"rect" : [ 100.0, 126.0, 771.0, 756.0 ],
 						"openrect" : [ 0.0, 0.0, 1040.0, 740.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
@@ -1535,7 +1531,7 @@
 
 							}
  ],
-						"originid" : "pat-66"
+						"originid" : "pat-134"
 					}
 ,
 					"patching_rect" : [ 302.0, 19.0, 43.0, 22.0 ],
@@ -1561,7 +1557,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 0.0, 26.0, 1146.0, 851.0 ],
+						"rect" : [ 0.0, 26.0, 771.0, 756.0 ],
 						"openrect" : [ 0.0, 0.0, 1040.0, 740.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
@@ -1574,7 +1570,6 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 478.0, 208.0, 62.0, 22.0 ],
-									"presentation_linecount" : 3,
 									"text" : "[ [ 1 2 3 ] ]"
 								}
 
@@ -1588,7 +1583,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 559.0, 270.0, 138.0, 37.0 ],
-									"presentation_linecount" : 2,
 									"text" : "\"first\" works as the inverse of \"chord\""
 								}
 
@@ -2476,7 +2470,7 @@
 
 							}
  ],
-						"originid" : "pat-68"
+						"originid" : "pat-136"
 					}
 ,
 					"patching_rect" : [ 156.0, 19.0, 72.0, 22.0 ],
@@ -2502,7 +2496,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 0.0, 26.0, 1146.0, 851.0 ],
+						"rect" : [ 0.0, 26.0, 771.0, 756.0 ],
 						"openrect" : [ 0.0, 0.0, 1040.0, 740.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
@@ -2766,7 +2760,7 @@
 
 							}
  ],
-						"originid" : "pat-70"
+						"originid" : "pat-138"
 					}
 ,
 					"patching_rect" : [ 83.0, 19.0, 66.0, 22.0 ],
@@ -2792,12 +2786,12 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 0.0, 26.0, 1146.0, 851.0 ],
+						"rect" : [ 0.0, 26.0, 771.0, 756.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
 						"boxes" : [  ],
 						"lines" : [  ],
-						"originid" : "pat-72"
+						"originid" : "pat-140"
 					}
 ,
 					"patching_rect" : [ 358.0, 19.0, 25.0, 22.0 ],
@@ -2822,7 +2816,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 100.0, 126.0, 1146.0, 851.0 ],
+						"rect" : [ 0.0, 26.0, 771.0, 756.0 ],
 						"openrect" : [ 0.0, 0.0, 1040.0, 740.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
@@ -2956,7 +2950,7 @@
 							}
  ],
 						"lines" : [  ],
-						"originid" : "pat-74"
+						"originid" : "pat-142"
 					}
 ,
 					"patching_rect" : [ 23.0, 20.0, 47.0, 22.0 ],
@@ -2967,7 +2961,7 @@
 			}
  ],
 		"lines" : [  ],
-		"originid" : "pat-64",
+		"originid" : "pat-130",
 		"dependency_cache" : [ 			{
 				"name" : "helpdetails.js",
 				"bootpath" : "C74:/help/resources",
