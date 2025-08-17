@@ -263,6 +263,8 @@ private:
 };
 
 
+// ==============================================================================================
+
 class ser_multilist : public object<ser_multilist> {
 
     /* Note: we're using Vec<Vec<double>> instead of Voices<double>> because we want to allow empty outer lists
@@ -340,7 +342,7 @@ public:
                     return;
                 }
             } else if (auto v = parse_container_type(args, true)) {
-                m_multilist.extend(*v);
+                reset(*v);
 
             } else {
                 cerr << v.err().message() << endl;
@@ -348,6 +350,13 @@ public:
             }
         }
     }
+
+    // TODO: This doesn't work - outlets aren't available at this point. Need to update the min-api if possible to support this operation
+    // message<> m_setup{ this, "setup", MIN_FUNCTION {
+    //     // Since outlets aren't properly initialized the first time we call ctor, we also need to output state here
+    //     output_state(m_multilist);
+    //     return {};
+    // }};
 
 
     attribute<atoms> m_value{ this, "value", EMPTY_LIST_FORMATTED, visibility::hide, setter{
@@ -708,7 +717,7 @@ public:
             return {};
         }
 
-        output_formatted_multilist(m_value.get(), m_multilist);
+        output_state(m_value.get(), m_multilist);
 
         return {};
     }}};
@@ -726,7 +735,7 @@ private:
         if (auto v = parse_container_type(new_state, true)) {
             append_to_history(std::move(m_multilist));
             m_multilist = *v;
-            output_formatted_multilist(new_state, m_multilist);
+            output_state(new_state, m_multilist);
             return true;
         } else {
             cerr << v.err().message() << endl;
@@ -741,7 +750,7 @@ private:
             m_multilist = *v;
             update_attribute_only(new_state); // input was well-formed: throughput on the outlet
             if (trigger_output) {
-                output_formatted_multilist(new_state, m_multilist); // input was well-formed: throughput on the outlet
+                output_state(new_state, m_multilist); // input was well-formed: throughput on the outlet
             }
         } else {
             cerr << v.err().message() << endl;
@@ -828,7 +837,7 @@ private:
 
     void update_attribute_and_output(const atoms& multilist_formatted, const ContainerType& actual) {
         update_attribute_only(multilist_formatted);
-        output_formatted_multilist(multilist_formatted, actual);
+        output_state(multilist_formatted, actual);
     }
 
 
@@ -847,7 +856,12 @@ private:
     }
 
 
-    void output_formatted_multilist(const atoms& multilist_formatted, const ContainerType& actual) {
+    void output_state(const ContainerType& actual) {
+        output_state(format(actual), actual);
+    }
+
+
+    void output_state(const atoms& multilist_formatted, const ContainerType& actual) {
         atoms size_info{"size"};
         size_info.push_back(actual.size());
         dumpout.send(size_info);

@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 34.0, 87.0, 2512.0, 1257.0 ],
+		"rect" : [ 34.0, 87.0, 2492.0, 1255.0 ],
 		"openinpresentation" : 1,
 		"gridsize" : [ 15.0, 15.0 ],
 		"integercoordinates" : 1,
@@ -213,7 +213,7 @@
 					"maxclass" : "inlet",
 					"numinlets" : 0,
 					"numoutlets" : 1,
-					"outlettype" : [ "flush" ],
+					"outlettype" : [ "" ],
 					"patching_rect" : [ 88.0, 8.0, 30.0, 30.0 ]
 				}
 
@@ -396,6 +396,13 @@
 				"patchline" : 				{
 					"destination" : [ "obj-14", 0 ],
 					"source" : [ "obj-13", 1 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-18", 0 ],
+					"source" : [ "obj-13", 0 ]
 				}
 
 			}
@@ -604,7 +611,7 @@
 
 			}
  ],
-		"originid" : "pat-304"
+		"originid" : "pat-56"
 	}
 
 }

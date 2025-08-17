@@ -181,12 +181,14 @@ public:
 
 private:
     void set_tempo(const atoms& args) {
-        if (!args.empty() && args[0].type() == message_type::float_argument) {
-            if (auto v = static_cast<double>(args[0]); v > 0.0) {
-                SerialistTransport::get_instance().set_tempo(v);
+        if (auto tempo = AtomParser::atoms2value<double>(args)) {
+            if (*tempo > 0.0) {
+                SerialistTransport::get_instance().set_tempo(*tempo);
             } else {
                 cerr << "tempo must be positive" << endl;
             }
+        } else {
+            cerr << tempo.err().message() << endl;
         }
     }
 

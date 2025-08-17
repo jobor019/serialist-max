@@ -10,7 +10,11 @@ using namespace c74::min;
 using namespace serialist;
 
 struct Parameters {
-    double null_replacement{0.0};
+    static constexpr double DEFAULT_NULL_REPLACEMENT{0.0};
+    static constexpr double DEFAULT_TOLERANCE{1e-3};
+
+    double null_replacement{DEFAULT_NULL_REPLACEMENT};
+    double tolerance{DEFAULT_TOLERANCE};
 };
 
 // ==============================================================================================
@@ -81,6 +85,27 @@ public:
     }
 };
 
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/**
+ * @brief Replaces any inner list with a given value with "null"
+ */
+class NullifyOperator : public UtilityOperator {
+public:
+    Result<atoms> operator()(const atoms& args, const Parameters& params, std::size_t inlet, bool is_hot) override {
+        if (auto v = AtomParser::atoms2voices<double>(args)) {
+            for (auto& voice: v->vec_mut()) {
+                if (voice.size() == 1 && utils::equals(voice[0], params.null_replacement, params.tolerance)) {
+                    voice.clear();
+                }
+            }
+            return AtomFormatter::voices2atoms<double>(*v);
+        } else {
+            return v.err();
+        }
+    }
+};
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -261,6 +286,78 @@ public:
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+/**
+ * @brief Sorts each voice individually. e.g.
+ *          - [ [ 1 3 2 ] [ 2 1 ] => [ [ 1 2 3 ] [ 1 2 ] ]
+ */
+class SortOperator : public UtilityOperator {
+public:
+    Result<atoms> operator()(const atoms& args, const Parameters& params, std::size_t inlet, bool is_hot) override {
+        if (auto voices = AtomParser::atoms2voices<double>(args)) {
+
+            for (auto& v : voices->vec_mut()) {
+                v.sort();
+            }
+
+            return AtomFormatter::voices2atoms<double>(*voices);
+
+        } else {
+            return voices.err();
+        }
+    }
+};
+
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/**
+ * @brief Removes duplicates from each voice individually. uses Parameters::tolerance to determine equality. e.g.
+ *          - [ [ 1 2 2 3 ] [ 1 2 ] [ 5 5 5 ] ] => [ [ 1 2 3 ] [ 1 2 ] [ 5 ] ]
+ *          - [ [ 0.1 0.11 0.2 ] ] (tolerance = 0.1) => [ [ 0.1 0.2 ] ]
+ */
+class UniqueOperator : public UtilityOperator {
+public:
+    Result<atoms> operator()(const atoms& args, const Parameters& params, std::size_t inlet, bool is_hot) override {
+        if (auto voices = AtomParser::atoms2voices<double>(args)) {
+
+            for (auto& v : voices->vec_mut()) {
+                v.unique(params.tolerance);
+            }
+
+            return AtomFormatter::voices2atoms<double>(*voices);
+
+        } else {
+            return voices.err();
+        }
+    }
+};
+
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/**
+ * @brief Returns pitches as unique, sorted pitch classes, e.g.
+ *          - [ [ 59 60 61 ] [ 48 60 ] ] => [ [ 0 1 11 ] [ 0 ] ]
+ */
+class PitchClassesOperator : public UtilityOperator {
+public:
+    Result<atoms> operator()(const atoms& args, const Parameters& params, std::size_t inlet, bool is_hot) override {
+        if (auto voices = AtomParser::atoms2voices<int>(args)) {
+            for (auto& v : voices->vec_mut()) {
+                v.map([](int x) { return x % 12; }).unique(); // note: unique already sorts
+            }
+
+            return AtomFormatter::voices2atoms<int>(*voices);
+
+        } else {
+            return voices.err();
+        }
+    }
+};
+
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 /** @brief Given J inlets with a Voices of size N x 1 (sequence), returns the zipped (stacked) Voices of size N x J */
 class ZipOperator : public UtilityOperator {
 public:
@@ -397,6 +494,8 @@ inline std::unique_ptr<UtilityOperator> string2operator(const std::string& s, co
         return std::make_unique<LenOperator>();
     if (s == "nullmap")
         return std::make_unique<NullMapOperator>();
+    if (s == "nullify")
+        return std::make_unique<NullifyOperator>();
     if (s == "chord")
         return std::make_unique<ChordOperator>();
     if (s == "first")
@@ -411,6 +510,12 @@ inline std::unique_ptr<UtilityOperator> string2operator(const std::string& s, co
         return std::make_unique<AllOperator>();
     if (s == "count")
         return std::make_unique<CountOperator>();
+    if (s == "sort")
+        return std::make_unique<SortOperator>();
+    if (s == "unique")
+        return std::make_unique<UniqueOperator>();
+    if (s == "pitchclasses" || s == "pc" || s == "pcs")
+        return std::make_unique<PitchClassesOperator>();
     if (s == "zip")
         return ZipOperator::parse(args);
     if (s == "int")
@@ -475,7 +580,7 @@ public:
 
 
     // Doesn't target a Sequence/Variable so value_attribute isn't applicable here
-    attribute<double> nullreplacement{ this, "nullreplacement", 0.0, setter{
+    attribute<double> nullreplacement{ this, "nullreplacement", Parameters::DEFAULT_NULL_REPLACEMENT, setter{
         MIN_FUNCTION {
             if (auto v = AtomParser::atoms2value<double>(args)) {
                 m_params.null_replacement = *v;
@@ -486,6 +591,20 @@ public:
             return nullreplacement;
         }
     }};
+
+
+    attribute<double> tolerance{ this, "tolerance", Parameters::DEFAULT_TOLERANCE, setter{
+        MIN_FUNCTION {
+            if (auto v = AtomParser::atoms2value<double>(args)) {
+                m_params.tolerance = *v;
+                return args;
+            }
+
+            cerr << "bad argument for message \"tolerance\"" << endl;
+            return tolerance;
+        }
+    }};
+
 
 
     function handle_input = MIN_FUNCTION {
