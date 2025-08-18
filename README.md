@@ -23,4 +23,4 @@ cmake --build build --config Release --target all_externals
 
 ## License
 
-Once the first official release (1.0.0) is released, the library will be distributed under the MIT license.
+For now, the library is distributed under the AGPLv3. Once the first official release (1.0.0) is released, the library will be redistributed under the MIT license.
