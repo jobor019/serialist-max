@@ -16,13 +16,14 @@ class ser_makenote : public object<ser_makenote> {
 private:
     std::mutex m_mutex;
     MakeNoteWrapper m_make_note;
+    std::atomic<bool> m_detached{false};
 
     static const inline auto NN_DESCRIPTION = Inlets::voices(Types::number, "Set note numbers");
     static const inline auto VEL_DESCRIPTION = Inlets::voices(Types::number, "Set velocities");
     static const inline auto CH_DESCRIPTION = Inlets::voices(Types::number, "Set channels");
     static const inline auto AUTO_CHANNEL_DESCRIPTION = Inlets::value(
-        Types::boolean,
-        "Automatically assign each voice to a consecutive channel (default: false). "
+        Types::boolean
+        , "Automatically assign each voice to a consecutive channel (default: false). "
         "When enabled, the channel inlet will be ignored.");
 
     static const inline auto CLASS_NAME = "ser.makenote";
@@ -64,7 +65,8 @@ public:
     }
 
     timer<> metro{this, MIN_FUNCTION {
-        if (!SerialistTransport::get_instance().active() || !m_make_note.enabled.get_values().first_or(true)) {
+        if (!m_make_note.enabled.get_values().first_or(true)
+            || (!m_detached && !SerialistTransport::get_instance().active())) {
             flush_internal();
         }
 
@@ -92,6 +94,20 @@ public:
     value_attribute<bool> autochannel{this, "autochannel", m_make_note.auto_channel
         , MakeNoteWrapper::DEFAULT_AUTO_CHANNEL, cerr
         , "", &m_mutex, AUTO_CHANNEL_DESCRIPTION};
+
+
+    attribute<bool> detached{ this, "detached", false, Descriptions::DETACHED_DESCRIPTION, setter{
+            MIN_FUNCTION {
+                if (auto v = AtomParser::atoms2value<bool>(args)) {
+                    m_detached = *v;
+					return args;
+				}
+
+                cerr << "bad argument for message \"detached\"" << endl;
+                return detached;
+            }
+        }
+    };
 
 
     message<> setup = Messages::setup_message_with_loadstate(this, [this](LoadState& s) {

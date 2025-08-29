@@ -78,10 +78,6 @@ private:
 
         auto time = SerialistTransport::get_instance().get_time();
 
-        if (!time.get_transport_running()) {
-            return;
-        }
-
         auto& node = m_waveform.waveform;
 
         node.update_time(time);

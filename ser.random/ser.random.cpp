@@ -19,6 +19,7 @@ private:
     RandomWrapper<> m_random;
     std::mutex m_mutex;
     std::atomic<int> m_poll_interval{1}; // shouldn't access poll_interval.get() directly on timer thread
+    std::atomic<bool> m_detached{false};
 
     static const inline auto MODE_DESCR = Inlets::value(Types::number,
         "uniform (0), weighted (1), exponential (2) or brownian (3)");
@@ -113,6 +114,20 @@ public:
     };
 
 
+    attribute<bool> detached{ this, "detached", false, Descriptions::DETACHED_DESCRIPTION, setter{
+        MIN_FUNCTION {
+            if (auto v = AtomParser::atoms2value<bool>(args)) {
+                m_detached = *v;
+                return args;
+            }
+
+            cerr << "bad argument for message \"detached\"" << endl;
+            return detached;
+        }
+    }
+    };
+
+
     message<> setup{this, "setup", "", setter{ MIN_FUNCTION {
         LoadState s{state()};
         s >> enabled >> mode >> repetitions >> size >> step >> lower_bound >> quantization >> weights >> poll_interval;
@@ -154,7 +169,7 @@ private:
     void process(const atoms& atms) {
         auto time = SerialistTransport::get_instance().get_time();
 
-        if (!time.get_transport_running()) {
+        if (!m_detached && !time.get_transport_running()) {
             return;
         }
 

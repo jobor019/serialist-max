@@ -156,10 +156,6 @@ private:
 
 
     void process(const atoms& args) {
-        if (!SerialistTransport::get_instance().active()) {
-            return;
-        }
-
         auto& trigger = m_index.trigger;
 
         if (args.empty()) {

@@ -126,10 +126,6 @@ public:
 
 private:
     void process(const atoms& atms) {
-        if (!SerialistTransport::get_instance().active()) {
-            return;
-        }
-
         if (atms.empty()) {
             // bang received: trigger all voices
             process(Voices<Trigger>::singular(Trigger::pulse_on()));
@@ -146,10 +142,6 @@ private:
 
 
     void process(const Voices<Trigger>& triggers) {
-        if (!SerialistTransport::get_instance().active()) {
-            return;
-        }
-
         auto& trigger = m_patternizer.trigger;
         trigger.set_values(triggers);
 

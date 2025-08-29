@@ -96,6 +96,10 @@ public:
         " or @pollinterval 0 to trigger the object manually."
     };
 
+    static inline const c74::min::description DETACHED_DESCRIPTION{
+        "Enable object even when transport is disabled (default: false)"
+    };
+
 
     static c74::min::description to_description(const std::string& s) {
         return s.c_str(); // NOLINT(*-redundant-string-cstr)
