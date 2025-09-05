@@ -41,6 +41,7 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.pulse)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.pulsefilter)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.random)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.router)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.scale)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.slidermapping)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.snh)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.transport)
@@ -56,6 +57,7 @@ add_dependencies(all_externals
         ser.index
         ser.interpolate
         ser.lowpass
+        ser.scale
         ser.makenote
         ser.multilist
         ser.op
