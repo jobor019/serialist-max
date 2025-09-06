@@ -1,5 +1,6 @@
 
 #include <collections/stack.h>
+#include <collections/range.h>
 
 #include "c74_min.h"
 #include "parsing.h"
@@ -9,7 +10,111 @@
 
 using namespace c74::min;
 
+static std::string lowercase(const std::string& s) {
+    std::string result = s;
+    std::transform(result.begin(), result.end(), result.begin(),
+                   [](char c) { return std::tolower(c); });
+    return result;
+}
 
+
+class VoicesGenerator {
+public:
+
+    static constexpr int DEFAULT_MODRANGE_LOW = 0;
+    static constexpr int DEFAULT_MODRANGE_HIGH = 127;
+    static constexpr int DEFAULT_MODRANGE_OCTAVE = 12;
+
+
+    enum class Keyword {
+        modrange
+    };
+
+
+    Result<Vec<Vec<double>>> parse(Keyword keyword, const atoms& args) const {
+        switch (keyword) {
+            case Keyword::modrange:
+                return parse_modrange(args);
+            default:
+                return Error{"Unknown keyword: " + static_cast<std::string>(magic_enum::enum_name(keyword))};
+        }
+    }
+
+
+    Result<void> set_modrange(const atoms& args) {
+        if (auto range = AtomParser::atoms2ranges<long>(args, DEFAULT_MODRANGE_LOW, DEFAULT_MODRANGE_HIGH)) {
+            m_modrange_low_boundaries = std::get<0>(*range);
+            m_modrange_high_boundaries = std::get<1>(*range);
+            return {};
+
+        } else {
+            return Error{range.err().message()};
+        }
+    }
+
+
+    Result<void> set_modrange_octave(const atoms& args) {
+        if (auto octave = AtomParser::atoms2value<int>(args)) {
+            if (*octave > 0) {
+                m_modrange_octave = *octave;
+                return {};
+            }
+
+            return Error{"octave must be a positive integer"};
+
+        } else {
+            return Error{octave.err().message()};
+        }
+    }
+
+
+    static std::optional<Keyword> parse_keyword(const atoms& args) {
+        if (args.empty()) {
+            return std::nullopt;
+        }
+
+        if (auto potential_keyword = AtomParser::atom2value<std::string>(args[0])) {
+            auto keyword = lowercase(*potential_keyword);
+            return magic_enum::enum_cast<Keyword>(keyword);
+        }
+
+        return std::nullopt;
+    }
+
+    Result<Vec<Vec<double>>> parse_modrange(const atoms& args) const {
+        if (auto pitch_classes = AtomParser::atoms2vec<long>(args)) {
+
+            assert(m_modrange_low_boundaries.size() == m_modrange_high_boundaries.size());
+            std::size_t num_voices = m_modrange_low_boundaries.size();
+
+            auto ranges = Vec<Vec<double>>::allocated(num_voices);
+            for (std::size_t i = 0; i < num_voices; ++i) {
+                long start = std::min(m_modrange_low_boundaries[i], m_modrange_high_boundaries[i]);
+                long end = std::max(m_modrange_low_boundaries[i], m_modrange_high_boundaries[i]);
+                ranges.append(ModuloRange{start, end, *pitch_classes, m_modrange_octave}
+                    .to_vec()
+                    .as_type<double>()
+                );
+            }
+
+            return std::move(ranges);
+
+        } else {
+            return Error{pitch_classes.err()};
+        }
+    }
+
+
+private:
+    Vec<long> m_modrange_low_boundaries{DEFAULT_MODRANGE_LOW};
+    Vec<long> m_modrange_high_boundaries{DEFAULT_MODRANGE_HIGH};
+    long m_modrange_octave = DEFAULT_MODRANGE_OCTAVE;
+
+
+};
+
+
+// ==============================================================================================
 
 class VecGenerator {
 public:
@@ -120,7 +225,7 @@ public:
                 std::size_t num =  static_cast<std::size_t>(std::max(0.0, (*linspace_args)[0]));
                 return Vec<double>::linspace(0.0, 1.0, num, false);
             }
-            
+
             if (linspace_args->size() < 2) {
                 return Error{"too few arguments for message \"linspace\""};
             }
@@ -215,7 +320,7 @@ public:
             std::size_t num_pattern_values = has_default_value ? binary_pattern_args->size() - 1 : binary_pattern_args->size();
 
             double default_value = has_default_value ? (*binary_pattern_args)[binary_pattern_args->size() - 1] : 0.0;
-            Vec<double> binarypattern_values = binary_pattern_args->slice(1, num_pattern_values);
+            Vec<double> binarypattern_values = binary_pattern_args->slice(1, static_cast<long>(num_pattern_values));
 
             auto result = Vec<double>::repeated(num, default_value);
 
@@ -259,13 +364,6 @@ public:
         return output;
     }
 
-private:
-    static std::string lowercase(const std::string& s) {
-        std::string result = s;
-        std::transform(result.begin(), result.end(), result.begin(),
-                       [](char c) { return std::tolower(c); });
-        return result;
-    }
 };
 
 
@@ -305,6 +403,7 @@ class ser_multilist : public object<ser_multilist> {
     static const inline auto REPEAT_DESCRIPTION = "Set entire list to a vector of repeated values"; // TODO: explain arguments
 
     static const inline auto BINARYPATTERN_DESCRIPTION = "TODO"; // TODO: explain arguments
+    static const inline auto MODRANGE_DESCRIPTION = "TODO"; // TODO: explain arguments
 
     static const inline auto ITER_DESCRIPTION = "Output each list in the multilist iteratively on the second outlet";
 
@@ -314,6 +413,10 @@ class ser_multilist : public object<ser_multilist> {
     static constexpr std::size_t MAIN_INLET = 0;
     static constexpr std::size_t APPEND_INLET = 1;
     static constexpr std::size_t REMOVE_INLET = 2;
+
+    const atoms m_ctor_args;
+
+    VoicesGenerator m_voices_generator;
 
     ContainerType m_multilist;
 
@@ -338,31 +441,46 @@ public:
     argument<atoms> m_args{this, "initial", INITIAL_ARGS_DESCRIPTION};
 
 
-    explicit ser_multilist(const atoms& args = {}) {
-        if (!args.empty()) {
-            if (auto keyword = VecGenerator::parse_keyword(args)) {
-                if (auto v = VecGenerator::parse(*keyword, args, true)) {
-                    reset(Voices<double>::transposed(*v).vec());
-                } else {
-                    cerr << v.err().message() << endl;
-                    return;
-                }
-            } else if (auto v = parse_container_type(args, true)) {
-                reset(*v);
+    explicit ser_multilist(const atoms& args = {}) : m_ctor_args{args} {}
 
+
+    message<> m_setup{ this, "setup", MIN_FUNCTION {
+        if (m_ctor_args.empty()) {
+            return {};
+        }
+
+        if (auto voices_keyword = VoicesGenerator::parse_keyword(m_ctor_args)) {
+            if (auto v = m_voices_generator.parse(*voices_keyword, m_ctor_args)) {
+                reset(*v);
             } else {
                 cerr << v.err().message() << endl;
-                return;
+                return {};
             }
         }
-    }
 
-    // TODO: This doesn't work - outlets aren't available at this point. Need to update the min-api if possible to support this operation
-    // message<> m_setup{ this, "setup", MIN_FUNCTION {
-    //     // Since outlets aren't properly initialized the first time we call ctor, we also need to output state here
-    //     output_state(m_multilist);
-    //     return {};
-    // }};
+        else if (auto vec_keyword = VecGenerator::parse_keyword(m_ctor_args)) {
+            if (auto v = VecGenerator::parse(*vec_keyword, m_ctor_args, true)) {
+                reset(Voices<double>::transposed(*v).vec());
+            } else {
+                cerr << v.err().message() << endl;
+                return {};
+            }
+
+        } else if (auto v = parse_container_type(m_ctor_args, true)) {
+            reset(*v);
+
+        } else {
+            cerr << v.err().message() << endl;
+            return {};
+        }
+
+
+        // TODO: This doesn't work - outlets aren't available at this point.
+        //       Need to update the min-api if possible to support this operation
+        // Since outlets aren't properly initialized the first time we call ctor, we also need to output state here
+        // output_state(m_multilist);
+        return {};
+    }};
 
 
     attribute<atoms> m_value{ this, "value", EMPTY_LIST_FORMATTED, visibility::hide, setter{
@@ -392,6 +510,35 @@ public:
                     return args;
                 }
                 return m_value;
+            }
+        }
+    };
+
+
+    attribute<atoms> m_modrange_bounds{ this, "modrangebounds"
+        , {VoicesGenerator::DEFAULT_MODRANGE_LOW, VoicesGenerator::DEFAULT_MODRANGE_HIGH}, setter{
+            MIN_FUNCTION {
+                if (auto rc = m_voices_generator.set_modrange(args)) {
+					return args;
+				} else {
+				    cerr << rc.err().message() << endl;
+				}
+
+                return m_modrange_bounds;
+            }
+        }
+    };
+
+
+    attribute<int> m_modrange_octave{ this, "modrangeoctave", VoicesGenerator::DEFAULT_MODRANGE_OCTAVE, setter{
+            MIN_FUNCTION {
+                if (auto rc = m_voices_generator.set_modrange_octave(args)) {
+                    return args;
+                } else {
+                    cerr << rc.err().message() << endl;
+                }
+
+                return m_modrange_octave;
             }
         }
     };
@@ -513,7 +660,7 @@ public:
                 }
 
                 if (auto bounded_index = parse_bounded_index(args[0], ContainerType::BoundLimit::after)) {
-                    m_multilist.insert(*bounded_index, *vector);
+                    m_multilist.insert(static_cast<long>(*bounded_index), *vector);
                     update_attribute_and_output(m_multilist);
                 } else {
                     // Out of bounds errors: user need to be able to react to this programmatically
@@ -715,6 +862,22 @@ public:
     }}};
 
 
+    message<> m_modrange{this, "modrange", MODRANGE_DESCRIPTION, setter{MIN_FUNCTION {
+        if (inlet != 0) {
+            cerr << "invalid message \"modrange\" for inlet " << inlet << endl;
+            return {};
+        }
+
+        if (auto modrange = m_voices_generator.parse_modrange(args)) {
+            reset(*modrange);
+        } else {
+            cerr << modrange.err().message() << endl;
+        }
+
+        return {};
+    }}};
+
+
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     message<> bang{this, "bang", "Output the current value", setter{MIN_FUNCTION {
@@ -869,7 +1032,7 @@ private:
 
     void output_state(const atoms& multilist_formatted, const ContainerType& actual) {
         atoms size_info{"size"};
-        size_info.push_back(actual.size());
+        size_info.emplace_back(actual.size());
         dumpout.send(size_info);
 
         outlet_main.send(multilist_formatted);

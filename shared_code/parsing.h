@@ -437,6 +437,41 @@ public:
     }
 
 
+    template<typename T, typename = std::enable_if_t<std::is_arithmetic_v<T>>>
+    static Result<std::tuple<Vec<T>, Vec<T>>> atoms2ranges(const c74::min::atoms& args
+                                                                     , const T& default_low
+                                                                     , const T& default_high) {
+        if (auto v = atoms2voices<T>(args)) {
+            // called with no argument resets to default, e.g.: `<keyword>`
+            if (v->is_empty_like()) {
+                return {{{default_low}, {default_high}}};
+            }
+
+            // called with two single-valued arguments, e.g.: `<keyword> <low> <high>`
+            if (v->size() == 2 && (*v)[0].size() == 1 && (*v)[1].size() == 1) {
+                return {{(*v)[0], (*v)[1]}};
+            }
+
+            // called with a voices input with exactly two elements in each voice,
+            // e.g. `<keyword> [ [ <low0> <high0> ] [ <low1> <high1> ] ... ]`
+            if (v->vec().all([](const Voice<T>& voice) { return voice.size() == 2;})) {
+                auto low = Vec<T>::allocated(v->size());
+                auto high = Vec<T>::allocated(v->size());
+                for (std::size_t i = 0; i < v->size(); ++i) {
+                    low.append((*v)[i][0]);
+                    high.append((*v)[i][1]);
+                }
+                return {{low, high}};
+            }
+
+            return Error{"invalid argument format, expected two arguments per voice"};
+
+        } else {
+            return Error{v.err().message()};
+        }
+    }
+
+
     static c74::min::atoms prepend_leading_bracket(const c74::min::atoms& atms) noexcept {
         c74::min::atoms output;
         output.reserve(atms.size() + 1);

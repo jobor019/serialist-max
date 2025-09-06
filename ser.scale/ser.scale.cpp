@@ -35,7 +35,7 @@ public:
 
     attribute<atoms> input{ this, "input", {Scaler::DEFAULT_INPUT_LOW, Scaler::DEFAULT_INPUT_HIGH}, setter{
             MIN_FUNCTION {
-                if (auto v = parse_ranges(args)) {
+                if (auto v = AtomParser::atoms2ranges<double>(args, Scaler::DEFAULT_INPUT_LOW, Scaler::DEFAULT_INPUT_HIGH)) {
                     m_scaler.input_low.set_values(Voices<double>::transposed(std::get<0>(*v)));
                     m_scaler.input_high.set_values(Voices<double>::transposed(std::get<1>(*v)));
                     return args;
@@ -50,7 +50,7 @@ public:
 
     attribute<atoms> output{ this, "output", {Scaler::DEFAULT_OUTPUT_LOW, Scaler::DEFAULT_OUTPUT_HIGH}, setter{
             MIN_FUNCTION {
-                if (auto v = parse_ranges(args)) {
+                if (auto v = AtomParser::atoms2ranges<double>(args, Scaler::DEFAULT_OUTPUT_LOW, Scaler::DEFAULT_OUTPUT_HIGH)) {
                     m_scaler.output_low.set_values(Voices<double>::transposed(std::get<0>(*v)));
                     m_scaler.output_high.set_values(Voices<double>::transposed(std::get<1>(*v)));
                     return args;
@@ -106,38 +106,6 @@ private:
         m_scaler.scaler_node.update_time(TimePoint());
         auto output = m_scaler.scaler_node.process();
         outlet_main.send(AtomFormatter::voices2atoms<double>(output));
-    }
-
-
-    static Result<std::tuple<Vec<double>, Vec<double>>> parse_ranges(const atoms& args) {
-        if (auto v = AtomParser::atoms2voices<double>(args)) {
-            // called with no argument resets to default, e.g.: `output`
-            if (v->is_empty_like()) {
-                return {{{Scaler::DEFAULT_INPUT_LOW}, {Scaler::DEFAULT_INPUT_HIGH}}};
-            }
-
-            // called with two single-valued arguments, e.g.: `output <low> <high>`
-            if (v->size() == 2 && (*v)[0].size() == 1 && (*v)[1].size() == 1) {
-                return {{(*v)[0], (*v)[1]}};
-            }
-
-            // called with a voices input with exactly two elements in each voice,
-            // e.g. `output [ [ <low0> <high0> ] [ <low1> <high1> ] ... ]`
-            if (v->vec().all([](const Voice<double>& voice) { return voice.size() == 2;})) {
-                auto low = Vec<double>::allocated(v->size());
-                auto high = Vec<double>::allocated(v->size());
-                for (std::size_t i = 0; i < v->size(); ++i) {
-                    low.append((*v)[i][0]);
-                    high.append((*v)[i][1]);
-                }
-                return {{low, high}};
-            }
-
-            return Error{"invalid argument format, expected two arguments per voice"};
-
-        } else {
-            return Error{v.err().message()};
-        }
     }
 
 
