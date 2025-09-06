@@ -31,12 +31,24 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 0.0, 26.0, 1052.0, 756.0 ],
+						"rect" : [ 100.0, 126.0, 1052.0, 756.0 ],
 						"openrect" : [ 0.0, 0.0, 1040.0, 740.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
 						"integercoordinates" : 1,
 						"boxes" : [ 							{
+								"box" : 								{
+									"id" : "obj-66",
+									"maxclass" : "number",
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "", "bang" ],
+									"parameter_enable" : 0,
+									"patching_rect" : [ 160.0, 392.0, 38.0, 22.0 ]
+								}
+
+							}
+, 							{
 								"box" : 								{
 									"id" : "obj-29",
 									"maxclass" : "message",
@@ -210,7 +222,7 @@
 									"numoutlets" : 2,
 									"outlettype" : [ "", "bang" ],
 									"parameter_enable" : 0,
-									"patching_rect" : [ 210.0, 380.0, 50.0, 22.0 ]
+									"patching_rect" : [ 265.0, 391.0, 50.0, 22.0 ]
 								}
 
 							}
@@ -225,7 +237,7 @@
 									"numoutlets" : 2,
 									"outlettype" : [ "", "bang" ],
 									"parameter_enable" : 0,
-									"patching_rect" : [ 151.0, 380.0, 50.0, 22.0 ]
+									"patching_rect" : [ 206.0, 391.0, 50.0, 22.0 ]
 								}
 
 							}
@@ -524,7 +536,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 161.0, 338.0, 86.0, 39.0 ],
+									"patching_rect" : [ 216.0, 349.0, 86.0, 39.0 ],
 									"text" : "start stop"
 								}
 
@@ -538,7 +550,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 293.0, 338.0, 130.0, 39.0 ],
+									"patching_rect" : [ 348.0, 349.0, 130.0, 39.0 ],
 									"text" : "num steps endpoint"
 								}
 
@@ -550,7 +562,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 358.0, 379.0, 150.0, 24.0 ],
+									"patching_rect" : [ 413.0, 390.0, 150.0, 24.0 ],
 									"text" : "include endpoint"
 								}
 
@@ -563,7 +575,7 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "int" ],
 									"parameter_enable" : 0,
-									"patching_rect" : [ 329.0, 379.0, 24.0, 24.0 ]
+									"patching_rect" : [ 384.0, 390.0, 24.0, 24.0 ]
 								}
 
 							}
@@ -613,7 +625,7 @@
 									"numoutlets" : 2,
 									"outlettype" : [ "", "bang" ],
 									"parameter_enable" : 0,
-									"patching_rect" : [ 270.0, 380.0, 50.0, 22.0 ]
+									"patching_rect" : [ 325.0, 391.0, 50.0, 22.0 ]
 								}
 
 							}
@@ -624,7 +636,7 @@
 									"numinlets" : 4,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 151.0, 417.0, 197.0, 22.0 ],
+									"patching_rect" : [ 206.0, 428.0, 197.0, 22.0 ],
 									"text" : "pak 0. 1. 10. 0"
 								}
 
@@ -636,7 +648,7 @@
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 151.0, 445.0, 119.0, 22.0 ],
+									"patching_rect" : [ 206.0, 456.0, 119.0, 22.0 ],
 									"text" : "linspace $1 $2 $3 $4"
 								}
 
@@ -644,12 +656,13 @@
 , 							{
 								"box" : 								{
 									"id" : "obj-19",
+									"linecount" : 2,
 									"maxclass" : "message",
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 41.0, 518.0, 202.0, 22.0 ],
-									"text" : "null"
+									"patching_rect" : [ 41.0, 518.0, 202.0, 35.0 ],
+									"text" : "0. 0.142857 0.285714 0.428571 0.571429 0.714286 0.857143"
 								}
 
 							}
@@ -1183,6 +1196,13 @@
 							}
 , 							{
 								"patchline" : 								{
+									"destination" : [ "obj-47", 0 ],
+									"source" : [ "obj-66", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
 									"destination" : [ "obj-6", 0 ],
 									"source" : [ "obj-7", 0 ]
 								}
@@ -1203,7 +1223,7 @@
 
 							}
  ],
-						"originid" : "pat-6"
+						"originid" : "pat-11"
 					}
 ,
 					"patching_rect" : [ 331.0, 20.0, 76.0, 22.0 ],
@@ -1229,7 +1249,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 100.0, 126.0, 1052.0, 756.0 ],
+						"rect" : [ 0.0, 26.0, 1052.0, 756.0 ],
 						"openrect" : [ 0.0, 0.0, 1040.0, 740.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
@@ -1338,7 +1358,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 385.0, 669.0, 201.0, 33.0 ],
-									"presentation_linecount" : 3,
 									"text" : "... but if we append something else, we see that they are different"
 								}
 
@@ -1432,7 +1451,6 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 193.0, 542.0, 103.0, 22.0 ],
-									"presentation_linecount" : 5,
 									"text" : "clear, append null"
 								}
 
@@ -1737,7 +1755,7 @@
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 85.0, 429.0, 452.0, 76.0 ],
+									"patching_rect" : [ 85.0, 429.0, 453.0, 76.0 ],
 									"text" : "TODO: Explain distinction between null and [ [ ] ] (how we cannot distinguish between [ [ ] ] and [ ] as they technically are the same thing for all other ser objects. When we do `clear`, the state is [ ], meaning that if we append something to it, we'll get a list of 1 element. But if we start by appending [ ], this will still just be output as null even though its internal state is different"
 								}
 
@@ -2326,7 +2344,7 @@
 
 							}
  ],
-						"originid" : "pat-8"
+						"originid" : "pat-13"
 					}
 ,
 					"patching_rect" : [ 422.0, 20.0, 37.0, 22.0 ],
@@ -2830,7 +2848,7 @@
 
 							}
  ],
-						"originid" : "pat-10"
+						"originid" : "pat-15"
 					}
 ,
 					"patching_rect" : [ 521.0, 20.0, 43.0, 22.0 ],
@@ -3364,7 +3382,7 @@
 
 							}
  ],
-						"originid" : "pat-12"
+						"originid" : "pat-17"
 					}
 ,
 					"patching_rect" : [ 271.0, 20.0, 49.0, 22.0 ],
@@ -4609,7 +4627,7 @@
 
 							}
  ],
-						"originid" : "pat-14"
+						"originid" : "pat-19"
 					}
 ,
 					"patching_rect" : [ 89.0, 20.0, 55.0, 22.0 ],
@@ -4640,7 +4658,7 @@
 						"showontab" : 1,
 						"boxes" : [  ],
 						"lines" : [  ],
-						"originid" : "pat-16"
+						"originid" : "pat-21"
 					}
 ,
 					"patching_rect" : [ 688.0, 20.0, 25.0, 22.0 ],
@@ -5086,7 +5104,7 @@
 							}
  ],
 						"lines" : [  ],
-						"originid" : "pat-18"
+						"originid" : "pat-23"
 					}
 ,
 					"patching_rect" : [ 23.0, 20.0, 47.0, 22.0 ],
@@ -5097,7 +5115,7 @@
 			}
  ],
 		"lines" : [  ],
-		"originid" : "pat-4",
+		"originid" : "pat-9",
 		"dependency_cache" : [ 			{
 				"name" : "helpdetails.js",
 				"bootpath" : "C74:/help/resources",

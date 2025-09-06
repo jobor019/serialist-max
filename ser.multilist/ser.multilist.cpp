@@ -106,15 +106,21 @@ public:
 
 
     /**
-     * @param args Supports three formats:
-     *             (a) <start> <end> (default num = 10, default include_endpoint = false)
-     *             (b) <start> <end> <num> (default include_endpoint = false)
-     *             (c) <start> <end> <num> <include_endpoint>
+     * @param args Supports four formats:
+     *             (a) <num>         (default start = 0.0, default end = 1.0, default include_endpoint = false)
+     *             (b) <start> <end> (default num = 10, default include_endpoint = false)
+     *             (c) <start> <end> <num> (default include_endpoint = false)
+     *             (d) <start> <end> <num> <include_endpoint>
      *             If <start> is larger than <end>, the range will be reversed
      *
      */
     static Result<Vec<double>> parse_linspace(const atoms& args) {
         if (auto linspace_args = AtomParser::atoms2vec<double>(args)) {
+            if (linspace_args->size() == 1) {
+                std::size_t num =  static_cast<std::size_t>(std::max(0.0, (*linspace_args)[0]));
+                return Vec<double>::linspace(0.0, 1.0, num, false);
+            }
+            
             if (linspace_args->size() < 2) {
                 return Error{"too few arguments for message \"linspace\""};
             }
