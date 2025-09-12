@@ -45,6 +45,7 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.scale)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.slidermapping)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.snh)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.transport)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.trigger)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.util)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ser.waveform)
 
@@ -72,6 +73,7 @@ add_dependencies(all_externals
         ser.slidermapping
         ser.snh
         ser.transport
+        ser.trigger
         ser.util
         ser.waveform
 )
