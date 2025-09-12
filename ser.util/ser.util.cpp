@@ -9,12 +9,18 @@
 using namespace c74::min;
 using namespace serialist;
 
+enum class ZipMode {
+    min_size = 0, broadcast = 1
+};
+
 struct Parameters {
     static constexpr double DEFAULT_NULL_REPLACEMENT{0.0};
     static constexpr double DEFAULT_TOLERANCE{1e-3};
+    static constexpr auto DEFAULT_ZIP_MODE{ZipMode::min_size};
 
     double null_replacement{DEFAULT_NULL_REPLACEMENT};
     double tolerance{DEFAULT_TOLERANCE};
+    ZipMode zip_mode{DEFAULT_ZIP_MODE};
 };
 
 // ==============================================================================================
@@ -400,7 +406,7 @@ public:
             }
 
             if (is_hot) {
-                return zip();
+                return zip(params.zip_mode);
             }
             return atoms{};
 
@@ -413,16 +419,57 @@ public:
     std::size_t num_inlets() const override { return size(); }
 
 private:
-    atoms zip() const {
-        auto num_inlets = size();
+    atoms zip(ZipMode mode = Parameters::DEFAULT_ZIP_MODE) const {
+        Vec<Voice<double>> v;
+        if (mode == ZipMode::broadcast) {
+            v = zip_broadcasted();
+        } else if (mode == ZipMode::min_size) {
+            v = zip_minimum_vector_size();
+        } else {
+            throw std::invalid_argument("unknown zip mode");
+        }
 
+        if (v.empty()) {
+            return AtomFormatter::voices2atoms<double>(Voices<double>::empty_like());
+        }
+
+        return AtomFormatter::voices2atoms<double>(Voices<double>{v});
+    }
+
+
+    Vec<Voice<double>> zip_broadcasted() const {
+        auto size_per_voice = m_values.as_type<std::size_t>([](const Voice<double>& v) { return v.size(); });
+
+        if (size_per_voice.any([](std::size_t x) { return x == 0; })) {
+            // Cannot broadcast empty voices
+            return {};
+        }
+
+        auto num_voices = size_per_voice.max<>();
+
+        auto broadcasted_values = m_values.cloned().map([num_voices](Voice<double> v) {
+            return v.resize_fold(num_voices);
+        });
+
+        return zip_common(num_voices, broadcasted_values);
+    }
+
+
+    Vec<Voice<double>> zip_minimum_vector_size() const {
         auto num_voices = m_values
                 .as_type<std::size_t>([](const Voice<double>& v) { return v.size(); })
                 .min<>();
 
         if (num_voices == 0) {
-            return AtomFormatter::voices2atoms<double>(Voices<double>::empty_like());
+            return {};
         }
+
+        return zip_common(num_voices, m_values);
+    }
+
+
+    Vec<Voice<double>> zip_common(std::size_t num_voices, const Vec<Voice<double>>& values) const {
+        auto num_inlets = size();
 
         auto zipped = Vec<Voice<double>>::allocated(num_voices);
 
@@ -430,12 +477,13 @@ private:
             auto v = Voice<double>::allocated(num_inlets);
 
             for (int inlet_index = 0; inlet_index < num_inlets; ++inlet_index) {
-                v.append(m_values[inlet_index][voice_index]);
+                v.append(values[inlet_index][voice_index]);
             }
             zipped.append(std::move(v));
         }
 
-        return AtomFormatter::voices2atoms<double>(Voices<double>{zipped});
+        return zipped;
+
     }
 
 
@@ -602,6 +650,18 @@ public:
 
             cerr << "bad argument for message \"tolerance\"" << endl;
             return tolerance;
+        }
+    }};
+
+    attribute<bool> zip_broadcast{ this, "zipbroadcast", static_cast<bool>(Parameters::DEFAULT_ZIP_MODE), setter{
+        MIN_FUNCTION {
+            if (auto v = AtomParser::atoms2value<bool>(args)) {
+                m_params.zip_mode = static_cast<ZipMode>(*v);
+                return args;
+            }
+
+            cerr << "bad argument for message \"zipbroadcast\"" << endl;
+            return zip_broadcast;
         }
     }};
 

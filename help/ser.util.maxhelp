@@ -16,6 +16,354 @@
 		"showontab" : 1,
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-8",
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 0,
+					"patcher" : 					{
+						"fileversion" : 1,
+						"appversion" : 						{
+							"major" : 9,
+							"minor" : 0,
+							"revision" : 5,
+							"architecture" : "x64",
+							"modernui" : 1
+						}
+,
+						"classnamespace" : "box",
+						"rect" : [ 100.0, 126.0, 771.0, 756.0 ],
+						"openrect" : [ 0.0, 0.0, 1040.0, 740.0 ],
+						"gridsize" : [ 15.0, 15.0 ],
+						"showontab" : 1,
+						"integercoordinates" : 1,
+						"boxes" : [ 							{
+								"box" : 								{
+									"id" : "obj-13",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 250.0, 371.0, 72.0, 22.0 ],
+									"presentation_linecount" : 2,
+									"text" : "10 20 30 40"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-12",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 205.0, 371.0, 39.0, 22.0 ],
+									"presentation_linecount" : 2,
+									"text" : "10 20"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-11",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 35.0, 475.0, 213.0, 22.0 ],
+									"text" : "[ [ 1. 10. ] [ 2. 20. ] [ 3. 30. ] [ 1. 40. ] ]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-9",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 167.0, 371.0, 30.0, 22.0 ],
+									"text" : "10"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-7",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 35.0, 371.0, 35.0, 22.0 ],
+									"text" : "1 2 3"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"bubble" : 1,
+									"id" : "obj-6",
+									"linecount" : 3,
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 199.0, 411.0, 189.0, 51.0 ],
+									"presentation_linecount" : 3,
+									"text" : "@zipbroadcast 1 applies default broadcasting (longest sequence defines length)"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-4",
+									"linecount" : 2,
+									"maxclass" : "newobj",
+									"numinlets" : 2,
+									"numoutlets" : 2,
+									"outlettype" : [ "", "" ],
+									"patching_rect" : [ 35.0, 419.0, 151.0, 35.0 ],
+									"text" : "ser.util zip 2 @triggers 0 1 @zipbroadcast 1"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-5",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 447.0, 207.0, 93.0, 22.0 ],
+									"text" : "zipbroadcast $1"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-3",
+									"maxclass" : "toggle",
+									"numinlets" : 1,
+									"numoutlets" : 1,
+									"outlettype" : [ "int" ],
+									"parameter_enable" : 0,
+									"patching_rect" : [ 447.0, 175.0, 24.0, 24.0 ]
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-58",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 210.0, 192.0, 30.0, 22.0 ],
+									"text" : "7 8"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"bubble" : 1,
+									"id" : "obj-56",
+									"linecount" : 2,
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 205.0, 239.0, 189.0, 37.0 ],
+									"text" : "zip: zip multiple sequences into a sequence of chords"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-55",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 23.0, 278.0, 185.0, 22.0 ],
+									"text" : "[ [ 1. 4. 7. ] [ 2. 5. 8. ] ]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-53",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 167.0, 192.0, 35.0, 22.0 ],
+									"text" : "7 8 9"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-52",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 98.0, 192.0, 35.0, 22.0 ],
+									"text" : "4 5 6"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-51",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 29.0, 192.0, 35.0, 22.0 ],
+									"text" : "1 2 3"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-49",
+									"maxclass" : "newobj",
+									"numinlets" : 3,
+									"numoutlets" : 2,
+									"outlettype" : [ "", "" ],
+									"patching_rect" : [ 29.0, 246.0, 157.0, 22.0 ],
+									"text" : "ser.util zip 3 @triggers 0 1 2"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"bubble" : 1,
+									"id" : "obj-48",
+									"linecount" : 3,
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 246.0, 178.0, 183.0, 51.0 ],
+									"text" : "By default the shortest sequence defines the length of the chord (zip standard)"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"border" : 0,
+									"filename" : "helpdetails.js",
+									"id" : "obj-2",
+									"ignoreclick" : 1,
+									"jsarguments" : [ "ser.util" ],
+									"maxclass" : "jsui",
+									"nofsaa" : 1,
+									"numinlets" : 1,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"parameter_enable" : 0,
+									"patching_rect" : [ 10.0, 10.0, 895.0, 120.0 ]
+								}
+
+							}
+ ],
+						"lines" : [ 							{
+								"patchline" : 								{
+									"destination" : [ "obj-4", 1 ],
+									"source" : [ "obj-12", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-4", 1 ],
+									"source" : [ "obj-13", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-5", 0 ],
+									"source" : [ "obj-3", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-11", 1 ],
+									"midpoints" : [ 44.5, 464.5, 238.5, 464.5 ],
+									"source" : [ "obj-4", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-55", 1 ],
+									"midpoints" : [ 38.5, 272.05859375, 198.5, 272.05859375 ],
+									"source" : [ "obj-49", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-49", 0 ],
+									"midpoints" : [ 456.5, 234.97265625, 38.5, 234.97265625 ],
+									"source" : [ "obj-5", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-49", 0 ],
+									"source" : [ "obj-51", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-49", 1 ],
+									"source" : [ "obj-52", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-49", 2 ],
+									"source" : [ "obj-53", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-49", 2 ],
+									"source" : [ "obj-58", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-4", 0 ],
+									"source" : [ "obj-7", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-4", 1 ],
+									"source" : [ "obj-9", 0 ]
+								}
+
+							}
+ ],
+						"originid" : "pat-8"
+					}
+,
+					"patching_rect" : [ 406.0, 21.0, 34.0, 22.0 ],
+					"text" : "p zip",
+					"varname" : "basic[7]"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-5",
 					"maxclass" : "newobj",
 					"numinlets" : 0,
@@ -530,7 +878,7 @@
 
 							}
  ],
-						"originid" : "pat-54"
+						"originid" : "pat-10"
 					}
 ,
 					"patching_rect" : [ 306.0, 19.0, 89.0, 22.0 ],
@@ -961,7 +1309,7 @@
 
 							}
  ],
-						"originid" : "pat-56"
+						"originid" : "pat-12"
 					}
 ,
 					"patching_rect" : [ 235.0, 19.0, 53.0, 22.0 ],
@@ -987,12 +1335,23 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 100.0, 126.0, 771.0, 756.0 ],
+						"rect" : [ 0.0, 26.0, 771.0, 756.0 ],
 						"openrect" : [ 0.0, 0.0, 1040.0, 740.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
 						"integercoordinates" : 1,
 						"boxes" : [ 							{
+								"box" : 								{
+									"id" : "obj-14",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 386.0, 371.0, 50.0, 22.0 ]
+								}
+
+							}
+, 							{
 								"box" : 								{
 									"bubble" : 1,
 									"id" : "obj-54",
@@ -1000,7 +1359,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 712.0, 550.0, 162.0, 78.0 ],
+									"patching_rect" : [ 234.0, 555.0, 164.0, 78.0 ],
 									"text" : "nullify: opposite of nullmap, replace any element exactly matching @nullreplacement with null"
 								}
 
@@ -1012,7 +1371,7 @@
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 508.0, 610.0, 147.0, 22.0 ],
+									"patching_rect" : [ 30.0, 615.0, 147.0, 22.0 ],
 									"text" : "[ [ 0. 0. -1. ] ]"
 								}
 
@@ -1024,7 +1383,7 @@
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 508.0, 523.0, 39.0, 22.0 ],
+									"patching_rect" : [ 30.0, 528.0, 39.0, 22.0 ],
 									"text" : "1 2 -1"
 								}
 
@@ -1046,7 +1405,7 @@
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 633.0, 524.0, 66.0, 22.0 ],
+									"patching_rect" : [ 155.0, 529.0, 66.0, 22.0 ],
 									"text" : "[ [ 0 0 -1 ] ]"
 								}
 
@@ -1058,7 +1417,7 @@
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 556.0, 524.0, 53.0, 22.0 ],
+									"patching_rect" : [ 78.0, 529.0, 53.0, 22.0 ],
 									"text" : "1 -1 -1 0"
 								}
 
@@ -1070,7 +1429,7 @@
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
-									"patching_rect" : [ 508.0, 578.0, 191.0, 22.0 ],
+									"patching_rect" : [ 30.0, 583.0, 191.0, 22.0 ],
 									"text" : "ser.util nullify @nullreplacement -1"
 								}
 
@@ -1180,104 +1539,6 @@
 									"outlettype" : [ "", "" ],
 									"patching_rect" : [ 404.0, 217.0, 68.0, 22.0 ],
 									"text" : "ser.util size"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-58",
-									"maxclass" : "message",
-									"numinlets" : 2,
-									"numoutlets" : 1,
-									"outlettype" : [ "" ],
-									"patching_rect" : [ 206.0, 528.0, 30.0, 22.0 ],
-									"text" : "7 8"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"bubble" : 1,
-									"id" : "obj-56",
-									"linecount" : 2,
-									"maxclass" : "comment",
-									"numinlets" : 1,
-									"numoutlets" : 0,
-									"patching_rect" : [ 201.0, 575.0, 189.0, 37.0 ],
-									"text" : "zip: zip multiple sequences into a sequence of chords"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-55",
-									"maxclass" : "message",
-									"numinlets" : 2,
-									"numoutlets" : 1,
-									"outlettype" : [ "" ],
-									"patching_rect" : [ 19.0, 614.0, 185.0, 22.0 ],
-									"text" : "[ [ 1. 4. 7. ] [ 2. 5. 8. ] [ 3. 6. 9. ] ]"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-53",
-									"maxclass" : "message",
-									"numinlets" : 2,
-									"numoutlets" : 1,
-									"outlettype" : [ "" ],
-									"patching_rect" : [ 163.0, 528.0, 35.0, 22.0 ],
-									"text" : "7 8 9"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-52",
-									"maxclass" : "message",
-									"numinlets" : 2,
-									"numoutlets" : 1,
-									"outlettype" : [ "" ],
-									"patching_rect" : [ 94.0, 528.0, 35.0, 22.0 ],
-									"text" : "4 5 6"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-51",
-									"maxclass" : "message",
-									"numinlets" : 2,
-									"numoutlets" : 1,
-									"outlettype" : [ "" ],
-									"patching_rect" : [ 25.0, 528.0, 35.0, 22.0 ],
-									"text" : "1 2 3"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-49",
-									"maxclass" : "newobj",
-									"numinlets" : 3,
-									"numoutlets" : 2,
-									"outlettype" : [ "", "" ],
-									"patching_rect" : [ 25.0, 582.0, 157.0, 22.0 ],
-									"text" : "ser.util zip 3 @triggers 0 1 2"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"bubble" : 1,
-									"id" : "obj-48",
-									"linecount" : 4,
-									"maxclass" : "comment",
-									"numinlets" : 1,
-									"numoutlets" : 0,
-									"patching_rect" : [ 242.0, 507.0, 243.0, 64.0 ],
-									"text" : "Note: the shortest sequence defines the length of the chord (zip standard), unlike most broadcast operators where the longest sequence defines the length"
 								}
 
 							}
@@ -2089,42 +2350,6 @@
 							}
 , 							{
 								"patchline" : 								{
-									"destination" : [ "obj-55", 1 ],
-									"midpoints" : [ 34.5, 608.05859375, 194.5, 608.05859375 ],
-									"source" : [ "obj-49", 0 ]
-								}
-
-							}
-, 							{
-								"patchline" : 								{
-									"destination" : [ "obj-49", 0 ],
-									"source" : [ "obj-51", 0 ]
-								}
-
-							}
-, 							{
-								"patchline" : 								{
-									"destination" : [ "obj-49", 1 ],
-									"source" : [ "obj-52", 0 ]
-								}
-
-							}
-, 							{
-								"patchline" : 								{
-									"destination" : [ "obj-49", 2 ],
-									"source" : [ "obj-53", 0 ]
-								}
-
-							}
-, 							{
-								"patchline" : 								{
-									"destination" : [ "obj-49", 2 ],
-									"source" : [ "obj-58", 0 ]
-								}
-
-							}
-, 							{
-								"patchline" : 								{
 									"destination" : [ "obj-62", 0 ],
 									"source" : [ "obj-59", 0 ]
 								}
@@ -2147,7 +2372,7 @@
 , 							{
 								"patchline" : 								{
 									"destination" : [ "obj-57", 1 ],
-									"midpoints" : [ 517.5, 605.0, 645.5, 605.0 ],
+									"midpoints" : [ 39.5, 610.0, 167.5, 610.0 ],
 									"source" : [ "obj-62", 0 ]
 								}
 
@@ -2167,10 +2392,10 @@
 
 							}
  ],
-						"originid" : "pat-58"
+						"originid" : "pat-14"
 					}
 ,
-					"patching_rect" : [ 409.0, 19.0, 43.0, 22.0 ],
+					"patching_rect" : [ 452.0, 19.0, 43.0, 22.0 ],
 					"text" : "p misc",
 					"varname" : "basic[4]"
 				}
@@ -3106,7 +3331,7 @@
 
 							}
  ],
-						"originid" : "pat-60"
+						"originid" : "pat-16"
 					}
 ,
 					"patching_rect" : [ 156.0, 19.0, 72.0, 22.0 ],
@@ -3396,7 +3621,7 @@
 
 							}
  ],
-						"originid" : "pat-62"
+						"originid" : "pat-18"
 					}
 ,
 					"patching_rect" : [ 83.0, 19.0, 66.0, 22.0 ],
@@ -3427,10 +3652,10 @@
 						"showontab" : 1,
 						"boxes" : [  ],
 						"lines" : [  ],
-						"originid" : "pat-64"
+						"originid" : "pat-20"
 					}
 ,
-					"patching_rect" : [ 465.0, 19.0, 25.0, 22.0 ],
+					"patching_rect" : [ 508.0, 19.0, 25.0, 22.0 ],
 					"text" : "p ?"
 				}
 
@@ -3586,7 +3811,7 @@
 							}
  ],
 						"lines" : [  ],
-						"originid" : "pat-66"
+						"originid" : "pat-22"
 					}
 ,
 					"patching_rect" : [ 23.0, 20.0, 47.0, 22.0 ],
@@ -3597,7 +3822,7 @@
 			}
  ],
 		"lines" : [  ],
-		"originid" : "pat-52",
+		"originid" : "pat-6",
 		"dependency_cache" : [ 			{
 				"name" : "helpdetails.js",
 				"bootpath" : "C74:/help/resources",
