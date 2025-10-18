@@ -185,7 +185,7 @@ private:
         } else {
             auto triggers = AtomParser::atoms2triggers(atms, false);
 
-            if (!triggers || triggers->is_empty_like()) {
+            if (!triggers || !Trigger::contains_pulse_on(*triggers)) {
                 return;
             }
 
