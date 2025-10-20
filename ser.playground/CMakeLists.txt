@@ -27,5 +27,11 @@ target_link_libraries(${TEST_NAME}
         shared_code
 )
 
+set_target_properties(${PROJECT_NAME} PROPERTIES
+        BUILD_WITH_INSTALL_RPATH TRUE
+        BUILD_RPATH "@loader_path/../../../../support/"
+        INSTALL_RPATH "@loader_path/../../../../support/"
+)
+
 target_compile_definitions(${PROJECT_NAME} PUBLIC SERIALIST_EPSILON=1e-6)
 target_compile_definitions(${TEST_NAME} PUBLIC SERIALIST_EPSILON=1e-6)
