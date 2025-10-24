@@ -2,6 +2,7 @@
 #define TRANSPORT_SINGLETON_H
 #include <mutex>
 #include <thread>
+#include <string>
 
 #include "temporal/transport.h"
 
@@ -26,6 +27,20 @@ public:
     };
 
 
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    class Leader {
+    public:
+        virtual ~Leader() = default;
+
+        /**
+         * @brief called when the transport assigns this leader as the active leader
+         */
+        virtual void set_active_leader(bool active) = 0;
+    };
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     ~SerialistTransport();
     SerialistTransport(SerialistTransport const&) = delete;
     void operator=(SerialistTransport const&) = delete;
@@ -34,16 +49,21 @@ public:
 
     static SerialistTransport& get_instance();
 
-    TimePoint start();
-    TimePoint pause();
-    TimePoint reset();
-    TimePoint stop();
+    bool start();
+    bool pause();
+    bool reset();
+    bool stop();
 
-    void set_tempo(double tempo);
-    void set_meter(const std::optional<Meter>& meter);
+    bool set_tempo(double tempo);
+    bool set_meter(const std::optional<Meter>& meter);
+
+    void set_time(const TimePoint& time);
 
     void add_listener(Listener& listener);
     void remove_listener(Listener& listener);
+
+    void add_leader(Leader& leader);
+    void remove_leader(Leader& leader);
 
     /**
     * @return a copy of the internal `TimePoint` without updating the internal `TimePoint`
@@ -59,7 +79,11 @@ private:
 
     void notify_listeners(const TimePoint&);
 
+    void notify_leaders();
+
     Transport m_transport{false};
+
+    // last value produced by update_time when leaderless, otherwise last value provided by leader
     std::atomic<TimePoint> m_current_time{};
     std::mutex m_transport_mtx{};
 
@@ -67,6 +91,9 @@ private:
     std::atomic<bool> m_should_terminate{false};
 
     Vec<Listener*> m_listeners{};
+
+    Vec<Leader*> m_leaders{};
+    std::atomic<bool> m_has_leader{false};
 };
 
 

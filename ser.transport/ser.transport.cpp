@@ -1,6 +1,7 @@
 #include <serialist_transport.h>
 
 #include "c74_min.h"
+#include "max_timepoint.h"
 #include "max_stereotypes.h"
 #include "temporal/transport.h"
 
@@ -8,12 +9,20 @@ using namespace c74::min;
 
 
 class ser_transport : public object<ser_transport>
-                      , public SerialistTransport::Listener {
+                      , public SerialistTransport::Listener
+                      , public SerialistTransport::Leader {
 private:
     std::atomic<int> m_poll_interval{1}; // accessing poll_interval.get() directly on timer thread is likely UB
+    std::atomic<bool> m_is_transport_leader{false};
 
     static constexpr std::size_t TEMPO_INLET = 1;
     static constexpr std::size_t METER_INLET = 2;
+
+    static const inline description FOLLOWER_DESCR{"Sync the ser.transport to an external transport object."
+                                                   " Only one follower is active at a time, but multiple followers "
+                                                   "can exist without conflict, and all but one will be ignored."};
+    static const inline description SETTIME_DESCR{"Set the ser.transport to a specific time. "
+                                                  "Only valid if the ser.transport is the leader."};
 
 public:
     MIN_DESCRIPTION{"Control the global Serialist transport"};
@@ -37,11 +46,13 @@ public:
     explicit ser_transport(const atoms& args = {}) {
         SerialistTransport::get_instance().add_listener(*this);
         metro.delay(0.0);
+        follower_metro.delay(0.0);
     }
 
 
     ~ser_transport() override {
         SerialistTransport::get_instance().remove_listener(*this);
+        SerialistTransport::get_instance().remove_leader(*this);
     }
 
 
@@ -51,8 +62,14 @@ public:
     }
 
 
+    void set_active_leader(bool active) override {
+        m_is_transport_leader = active;
+        dumpout.send({"follower", active});
+    }
+
+
     timer<> metro { this, MIN_FUNCTION {
-        if (m_poll_interval > 0) {
+        if (m_poll_interval > 0 && !m_is_transport_leader) {
             output_state();
             metro.delay(m_poll_interval);
             return {};
@@ -60,8 +77,14 @@ public:
 
         metro.delay(50.0);
         return {};
-    }
-    };
+    }};
+
+
+    timer<> follower_metro {this, MIN_FUNCTION {
+        dumpout.send({"follower", m_is_transport_leader.load()});
+        follower_metro.delay(1000.0);
+        return {};
+    }};
 
 
     attribute<int> poll_interval{ this, "pollinterval", 0, Descriptions::POLL_INTERVAL, setter{
@@ -76,8 +99,44 @@ public:
             }
             return poll_interval;
         }
-    }
+    }};
+
+
+    attribute<bool> follower{ this, "follower", false, FOLLOWER_DESCR, setter{
+          MIN_FUNCTION {
+              // Note: attribute name is intentional - from the user perspective, the ser.transport object is
+              //       **following** the Max/Live transport when this attribute is active.
+              //       From the SerialistTransport's perspective, the ser.transport object is **leading**.
+              if (auto follower_active = AtomParser::atoms2value<bool>(args)) {
+                  if (*follower_active) {
+                      SerialistTransport::get_instance().add_leader(*this);
+                  } else {
+                      SerialistTransport::get_instance().remove_leader(*this);
+                  }
+              } else {
+                  cerr << follower_active.err().message() << endl;
+              }
+              return follower;
+          }
+      }
     };
+
+
+    message<> settime{this, "settime", SETTIME_DESCR, setter{MIN_FUNCTION {
+        if (m_is_transport_leader) {
+            if (auto mtp = MaxTimePoint::parse(args)) {
+                SerialistTransport::get_instance().set_time(mtp->as_time_point());
+            } else {
+                cerr << mtp.err().message() << endl;
+            }
+        }
+        // we don't want settime to emit an error here as it may be called in multiple Live instruments without knowing
+        // who is the actual leader.
+
+        // For consistency across Live instruments, we output the current state even if this object is not the leader
+        output_state();
+        return {};
+    }}};
 
 
     message<> number{this, "number", MIN_FUNCTION {
@@ -104,7 +163,9 @@ public:
     message<threadsafe::no> start{this, "start", setter{MIN_FUNCTION {
         // Note: this will output current state through listener callback.
         //       Due to callback, **must** be called from main thread (threadsafe::no)
-        SerialistTransport::get_instance().start();
+        if (!SerialistTransport::get_instance().start()) {
+            warn_on_follower("start");
+        }
         return {};
     }}};
 
@@ -112,7 +173,9 @@ public:
     message<threadsafe::no> pause{this, "pause", setter{MIN_FUNCTION {
         // Note: this will output current state through listener callback.
         //       Due to callback, **must** be called from main thread (threadsafe::no)
-        SerialistTransport::get_instance().pause();
+        if (!SerialistTransport::get_instance().pause()) {
+            warn_on_follower("pause");
+        }
         return {};
     }}};
 
@@ -120,13 +183,17 @@ public:
     message<threadsafe::no> stop{this, "stop", setter{MIN_FUNCTION {
         // Note: this will output current state through listener callback.
         //       Due to callback, **must** be called from main thread (threadsafe::no)
-        SerialistTransport::get_instance().stop();
+        if (!SerialistTransport::get_instance().stop()) {
+            warn_on_follower("stop");
+        }
         return {};
     }}};
 
 
     message<> reset{this, "reset", setter{MIN_FUNCTION {
-        SerialistTransport::get_instance().reset();
+        if (!SerialistTransport::get_instance().reset()) {
+            warn_on_follower("reset");
+        }
         return {};
     }}};
 
@@ -182,7 +249,9 @@ private:
     void set_tempo(const atoms& args) {
         if (auto tempo = AtomParser::atoms2value<double>(args)) {
             if (*tempo > 0.0) {
-                SerialistTransport::get_instance().set_tempo(*tempo);
+                if (!SerialistTransport::get_instance().set_tempo(*tempo)) {
+                    warn_on_follower("tempo");
+                };
             } else {
                 cerr << "tempo must be positive" << endl;
             }
@@ -195,7 +264,9 @@ private:
     void set_meter(const atoms& args) {
         // Input: "null"
         if (args.size() == 1 && args[0].type() == message_type::symbol_argument && args[0] == "null") {
-            SerialistTransport::get_instance().set_meter(std::nullopt);
+            if (!SerialistTransport::get_instance().set_meter(std::nullopt)) {
+                warn_on_follower("meter");
+            }
         }
 
         // input: [numerator, denominator]
@@ -205,7 +276,9 @@ private:
             auto num = static_cast<int>(args[0]);
             auto denom = static_cast<int>(args[1]);
             if (num > 0 && denom > 0) {
-                SerialistTransport::get_instance().set_meter(Meter(num, denom));
+                if (!SerialistTransport::get_instance().set_meter(Meter(num, denom))) {
+                    warn_on_follower("meter");
+                }
             } else {
                 cerr << "numerator and denominator must be positive" << endl;
             }
@@ -227,12 +300,17 @@ private:
         auto t = SerialistTransport::get_instance().get_time();
         outlet_active.send(t.get_transport_running());
         outlet_tempo.send(t.get_tempo());
+
         auto meter = t.get_meter();
         outlet_meter.send({meter.get_numerator(), meter.get_denominator()});
         outlet_ticks.send(t.get_tick());
         outlet_rel_beats.send(t.get_relative_beat());
         outlet_abs_beats.send(t.get_absolute_beat());
         outlet_bars.send(t.get_bar());
+    }
+
+    void warn_on_follower(const std::string& func_name) {
+        cwarn << func_name << " cannot be called when a follower is active" << endl;
     }
 
 };
