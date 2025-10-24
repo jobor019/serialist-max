@@ -10,14 +10,27 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 34.0, 87.0, 2114.0, 1255.0 ],
+		"rect" : [ 34.0, 87.0, 2114.0, 1249.0 ],
 		"openinpresentation" : 1,
 		"gridsize" : [ 15.0, 15.0 ],
 		"integercoordinates" : 1,
 		"boxes" : [ 			{
 				"box" : 				{
+					"comment" : "",
+					"id" : "obj-7",
+					"index" : 1,
+					"maxclass" : "outlet",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 248.0, 680.0, 30.0, 30.0 ]
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"fontname" : "Ableton Sans Medium",
 					"fontsize" : 9.5,
+					"hidden" : 1,
 					"id" : "obj-14",
 					"maxclass" : "comment",
 					"numinlets" : 1,
@@ -37,6 +50,7 @@
 					"bgcolor" : [ 0.125490196078431, 0.125490196078431, 0.125490196078431, 0.7 ],
 					"border" : 1,
 					"bordercolor" : [ 0.576470588235294, 0.576470588235294, 0.576470588235294, 1.0 ],
+					"hidden" : 1,
 					"id" : "obj-18",
 					"maxclass" : "panel",
 					"mode" : 0,
@@ -489,7 +503,7 @@
 
 							}
  ],
-						"originid" : "pat-170"
+						"originid" : "pat-62"
 					}
 ,
 					"patching_rect" : [ 192.0, 266.0, 387.0, 22.0 ],
@@ -778,7 +792,7 @@
 
 							}
  ],
-						"originid" : "pat-172"
+						"originid" : "pat-64"
 					}
 ,
 					"patching_rect" : [ 104.0, 382.0, 71.0, 22.0 ],
@@ -813,7 +827,6 @@
 , 			{
 				"box" : 				{
 					"color" : [ 0.423529411764706, 0.494117647058824, 0.996078431372549, 1.0 ],
-					"columns" : 5,
 					"id" : "obj-38",
 					"ignoreclick" : 1,
 					"maxclass" : "matrixctrl",
@@ -897,6 +910,15 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-38", 0 ],
+					"order" : 1,
+					"source" : [ "obj-4", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-7", 0 ],
+					"order" : 0,
 					"source" : [ "obj-4", 0 ]
 				}
 
@@ -956,6 +978,15 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-38", 0 ],
+					"order" : 1,
+					"source" : [ "obj-45", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-7", 0 ],
+					"order" : 0,
 					"source" : [ "obj-45", 0 ]
 				}
 
@@ -1020,7 +1051,7 @@
 
 			}
  ],
-		"originid" : "pat-168"
+		"originid" : "pat-60"
 	}
 
 }
