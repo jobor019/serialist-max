@@ -67,7 +67,7 @@ public:
     }
 
 
-    void on_transport_state_update(const TimePoint& t) override {
+    void on_transport_state_change(bool active) override {
         if (autoreset.get() == AutoResetMode::transport || autoreset.get() == AutoResetMode::both) {
             assert(c74::max::systhread_ismainthread());
             reset();

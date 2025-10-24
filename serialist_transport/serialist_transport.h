@@ -1,6 +1,8 @@
 #ifndef TRANSPORT_SINGLETON_H
 #define TRANSPORT_SINGLETON_H
 #include <mutex>
+#include <thread>
+
 #include "temporal/transport.h"
 
 
@@ -19,15 +21,12 @@ public:
          * @note We assume that transport state always is changed either by the main (UI thread) in Max,
          *       **NOT** from the scheduler thread or any other thread. For this reason, it should be safe to use
          *       the callback in any non-guarded class
-         *       TODO: Add assertions for this in start, pause and stop!
-         *             Can be done with max::systhread_ismainthread(), but we're currently not linking the
-         *             SerialistTransport library directly to the min api.
          */
-        virtual void on_transport_state_update(const TimePoint& t) = 0;
+        virtual void on_transport_state_change(bool active) = 0;
     };
 
 
-    ~SerialistTransport() = default;
+    ~SerialistTransport();
     SerialistTransport(SerialistTransport const&) = delete;
     void operator=(SerialistTransport const&) = delete;
     SerialistTransport(SerialistTransport&&) noexcept = delete;
@@ -35,12 +34,6 @@ public:
 
     static SerialistTransport& get_instance();
 
-    /**
-    * @note: Since a lot of objects constantly will poll the transport within very small intervals (sub-ms levels),
-    *        this function should generally only be called by a centralized `ser.transport` object,
-    *        where all other objects should use `get_time()` instead
-    */
-    TimePoint update_time();
     TimePoint start();
     TimePoint pause();
     TimePoint reset();
@@ -60,13 +53,18 @@ public:
     bool active();
 
 private:
-    SerialistTransport() = default;
+    SerialistTransport();
+
+    void update_time();
 
     void notify_listeners(const TimePoint&);
 
     Transport m_transport{false};
+    std::atomic<TimePoint> m_current_time{};
+    std::mutex m_transport_mtx{};
 
-    std::mutex m_mtx{};
+    std::thread m_update_thread;
+    std::atomic<bool> m_should_terminate{false};
 
     Vec<Listener*> m_listeners{};
 };

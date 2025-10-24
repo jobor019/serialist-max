@@ -45,9 +45,9 @@ public:
     }
 
 
-    void on_transport_state_update(const TimePoint& t) override {
+    void on_transport_state_change(bool active) override {
         assert(c74::max::systhread_ismainthread());
-        outlet_active.send(t.get_transport_running());
+        outlet_active.send(active);
     }
 
 
@@ -225,7 +225,7 @@ private:
         // For this reason, even though this function may be called from either the timer thread (through its internal
         // metro) or from the main thread (through an explicit bang), we should be able to assume that this is safe, as
         // the only alternative would be to lock a mutex here, which the guide strictly prohibits.
-        auto t = SerialistTransport::get_instance().update_time();
+        auto t = SerialistTransport::get_instance().get_time();
         outlet_active.send(t.get_transport_running());
         outlet_tempo.send(t.get_tempo());
         auto meter = t.get_meter();
