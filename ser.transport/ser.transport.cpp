@@ -10,7 +10,7 @@ using namespace c74::min;
 class ser_transport : public object<ser_transport>
                       , public SerialistTransport::Listener {
 private:
-    std::atomic<int> m_poll_interval{1}; // accessing poll_interval.get() directly on timer thread is probably UB?
+    std::atomic<int> m_poll_interval{1}; // accessing poll_interval.get() directly on timer thread is likely UB
 
     static constexpr std::size_t TEMPO_INLET = 1;
     static constexpr std::size_t METER_INLET = 2;
@@ -36,7 +36,7 @@ public:
 
     explicit ser_transport(const atoms& args = {}) {
         SerialistTransport::get_instance().add_listener(*this);
-        // metro.delay(0.0);
+        metro.delay(0.0);
     }
 
 
@@ -51,18 +51,17 @@ public:
     }
 
 
-    // TODO: This seems to clog the scheduler thread completely
-    // timer<> metro { this, MIN_FUNCTION {
-    //     if (m_poll_interval > 0) {
-    //         output_state();
-    //         metro.delay(m_poll_interval);
-    //         return {};
-    //     }
-    //
-    //     metro.delay(1.0);
-    //     return {};
-    // }
-    // };
+    timer<> metro { this, MIN_FUNCTION {
+        if (m_poll_interval > 0) {
+            output_state();
+            metro.delay(m_poll_interval);
+            return {};
+        }
+
+        metro.delay(50.0);
+        return {};
+    }
+    };
 
 
     attribute<int> poll_interval{ this, "pollinterval", 0, Descriptions::POLL_INTERVAL, setter{
