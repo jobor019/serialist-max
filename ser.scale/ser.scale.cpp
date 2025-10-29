@@ -22,7 +22,7 @@ class ser_scale : public object<ser_scale> {
     InletTriggerHandler m_inlet_triggers{true, false};
 
 public:
-    MIN_DESCRIPTION{""};                   // TODO
+    MIN_DESCRIPTION{"Linearly map ranges of values"};
     MIN_TAGS{"utilities"};
     MIN_AUTHOR{"Borg"};
     MIN_RELATED{"ser.op"};
@@ -32,6 +32,10 @@ public:
 
     outlet<> outlet_main{this, "Mapped value"};
     outlet<> dumpout{this, Inlets::DUMPOUT};
+
+    SER_ENABLED_ATTRIBUTE(m_scaler.enabled, nullptr);
+    SER_NUM_VOICES_ATTRIBUTE(m_scaler.num_voices, nullptr);
+
 
     attribute<atoms> input{ this, "input", {Scaler::DEFAULT_INPUT_LOW, Scaler::DEFAULT_INPUT_HIGH}, setter{
             MIN_FUNCTION {

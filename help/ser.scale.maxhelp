@@ -10,10 +10,11 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 34.0, 100.0, 1052.0, 783.0 ],
+		"rect" : [ 34.0, 100.0, 1052.0, 778.0 ],
 		"gridsize" : [ 15.0, 15.0 ],
 		"subpatcher_template" : "serialist_help",
-		"showontab" : 1,
+		"showrootpatcherontab" : 0,
+		"showontab" : 0,
 		"boxes" : [ 			{
 				"box" : 				{
 					"id" : "obj-2",
@@ -31,12 +32,12 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 0.0, 26.0, 1052.0, 757.0 ],
+						"rect" : [ 0.0, 26.0, 1052.0, 752.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
 						"boxes" : [  ],
 						"lines" : [  ],
-						"originid" : "pat-8"
+						"originid" : "pat-35"
 					}
 ,
 					"patching_rect" : [ 181.0, 20.0, 25.0, 22.0 ],
@@ -61,7 +62,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 34.0, 126.0, 1052.0, 757.0 ],
+						"rect" : [ 34.0, 126.0, 1052.0, 752.0 ],
 						"openrect" : [ 0.0, 0.0, 1040.0, 740.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
@@ -77,7 +78,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 93.0, 375.0, 125.0, 52.0 ],
-									"presentation_linecount" : 2,
 									"text" : "enable transport to trigger output"
 								}
 
@@ -119,7 +119,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 656.0, 582.0, 130.0, 20.0 ],
-									"presentation_linecount" : 6,
 									"text" : "null maps to unit range"
 								}
 
@@ -144,7 +143,6 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 531.0, 514.0, 59.0, 22.0 ],
-									"presentation_linecount" : 3,
 									"text" : "[ [ 0 60 ] ]"
 								}
 
@@ -537,26 +535,6 @@
 							}
 , 							{
 								"box" : 								{
-									"bgcolor" : [ 0.4616160095, 1.0, 0.8905446529, 1.0 ],
-									"bgcolor2" : [ 0.172137149796092, 0.172137100044002, 0.172137113045018, 1 ],
-									"bgfillcolor_autogradient" : 0.0,
-									"bgfillcolor_color" : [ 0.172137149796092, 0.172137100044002, 0.172137113045018, 1 ],
-									"bgfillcolor_color1" : [ 0.4616160095, 1.0, 0.8905446529, 1.0 ],
-									"bgfillcolor_color2" : [ 0.172137149796092, 0.172137100044002, 0.172137113045018, 1 ],
-									"bgfillcolor_type" : "gradient",
-									"gradient" : 1,
-									"id" : "obj-10",
-									"maxclass" : "message",
-									"numinlets" : 2,
-									"numoutlets" : 1,
-									"outlettype" : [ "" ],
-									"patching_rect" : [ 722.0, 152.0, 151.0, 22.0 ],
-									"text" : "TODO: Formalize maxhelp"
-								}
-
-							}
-, 							{
-								"box" : 								{
 									"id" : "obj-6",
 									"maxclass" : "newobj",
 									"numinlets" : 1,
@@ -829,7 +807,7 @@
 
 							}
  ],
-						"originid" : "pat-10"
+						"originid" : "pat-37"
 					}
 ,
 					"patching_rect" : [ 23.0, 20.0, 47.0, 22.0 ],
@@ -840,7 +818,7 @@
 			}
  ],
 		"lines" : [  ],
-		"originid" : "pat-6",
+		"originid" : "pat-33",
 		"parameters" : 		{
 			"obj-1::obj-21::obj-113" : [ "live.text[272]", "live.text", 0 ],
 			"obj-1::obj-21::obj-34" : [ "live.numbox", "live.numbox", 0 ],
