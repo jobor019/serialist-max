@@ -130,7 +130,7 @@ private:
 
 
     void process() {
-        m_op.operator_node.update_time(TimePoint());
+        m_op.operator_node.update_time(TimePoint()); // ignores time and transport state entirely
         auto output = m_op.operator_node.process();
         outlet_main.send(AtomFormatter::voices2atoms<double>(output));
     }

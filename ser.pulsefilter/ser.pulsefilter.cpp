@@ -101,10 +101,10 @@ public:
 
 
     message<> setup = Messages::setup_message_with_loadstate(this, [this](LoadState& s) {
-        s >> enabled >> voices  >> immediate;
+        s >> enabled >> voices  >> immediate >> detach;
     });
     message<> savestate = Messages::savestate_message(this, autorestore, [this](SaveState& s) {
-        s << enabled << voices  << immediate;
+        s << enabled << voices  << immediate << detach;
     });
 
 

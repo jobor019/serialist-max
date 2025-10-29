@@ -39,20 +39,23 @@ public:
         }
     }
 
+
     SER_ENABLED_ATTRIBUTE(m_phasemap.enabled, nullptr);
     SER_NUM_VOICES_ATTRIBUTE(m_phasemap.num_voices, nullptr);
     SER_AUTO_RESTORE_ATTRIBUTE();
+    SER_DETACH_ATTRIBUTE_STATELESS();
+
 
     pseudo_attribute<double> durations{this, "durations", m_phasemap.durations, cerr};
 
 
     message<> setup = Messages::setup_message_with_loadstate(this, [this](LoadState& s) {
-        s >> enabled >> voices >> durations;
+        s >> enabled >> voices >> durations >> detach;
     });
 
 
     message<> savestate = Messages::savestate_message(this, autorestore, [this](SaveState& s) {
-        s << enabled << voices << durations;
+        s << enabled << voices << durations << detach;
     });
 
 
@@ -78,6 +81,8 @@ private:
             m_phasemap.cursor.set_values(Voices<double>::transposed(*cursor));
 
             auto time = SerialistTransport::get_instance().get_time();
+            SerialistTransport::apply_detach(time, detach.get());
+
             if (!time.get_transport_running()) {
                 return;
             }

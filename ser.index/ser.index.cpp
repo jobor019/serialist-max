@@ -78,6 +78,7 @@ public:
     SER_ENABLED_ATTRIBUTE(m_index.enabled, nullptr);
     SER_NUM_VOICES_ATTRIBUTE(m_index.num_voices, nullptr);
     SER_AUTO_RESTORE_ATTRIBUTE();
+    SER_DETACH_ATTRIBUTE_STATELESS();
 
 
     vector_attribute<std::size_t, int> steps{this, "steps", m_index.num_steps
@@ -104,12 +105,12 @@ public:
     };
 
     message<> setup = Messages::setup_message_with_loadstate(this, [this](LoadState& s) {
-        s >> enabled >> voices >> steps >> stride >> autoreset;
+        s >> enabled >> voices >> steps >> stride >> autoreset >> detach;
     });
 
 
     message<> savestate = Messages::savestate_message(this, autorestore, [this](SaveState& s) {
-        s << enabled << voices << steps << stride << autoreset;
+        s << enabled << voices << steps << stride << autoreset << detach;
     });
 
 
@@ -171,9 +172,16 @@ private:
             trigger.set_values(*triggers);
         }
 
-        auto& node = m_index.index_node;
+        auto time = SerialistTransport::get_instance().get_time();
+        SerialistTransport::apply_detach(time, detach.get());
 
-        node.update_time(SerialistTransport::get_instance().get_time());
+        if (!time.get_transport_running()) {
+            return;
+        }
+
+        auto& node = m_index.index_node;
+        node.update_time(time);
+
         auto output = node.process();
 
         trigger.set_values(Voices<Trigger>::empty_like());

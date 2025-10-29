@@ -36,6 +36,7 @@ public:
     SER_ENABLED_ATTRIBUTE(m_waveform.enabled, nullptr);
     SER_NUM_VOICES_ATTRIBUTE(m_waveform.num_voices, nullptr);
     SER_AUTO_RESTORE_ATTRIBUTE();
+    SER_DETACH_ATTRIBUTE_STATELESS();
 
     value_attribute<Waveform::Mode> mode{this, "mode", m_waveform.mode, Waveform::DEFAULT_MODE, cerr};
 
@@ -44,11 +45,11 @@ public:
     vector_attribute<double> curve{this, "curve", m_waveform.curve, Waveform::DEFAULT_CURVE, cerr};
 
     message<> setup = Messages::setup_message_with_loadstate(this, [this](LoadState& s) {
-        s >> enabled >> voices >> duty >> curve;
+        s >> enabled >> voices >> duty >> curve >> detach;
     });
 
     message<> savestate = Messages::savestate_message(this, autorestore, [this](SaveState& s) {
-        s << enabled << voices << duty << curve;
+        s << enabled << voices << duty << curve << detach;
     });
 
 
@@ -77,11 +78,16 @@ private:
         }
 
         auto time = SerialistTransport::get_instance().get_time();
+        SerialistTransport::apply_detach(time, detach.get());
+
+        if (!time.get_transport_running()) {
+            return;
+        }
+
 
         auto& node = m_waveform.waveform;
 
         node.update_time(time);
-        node.update_time(SerialistTransport::get_instance().get_time());
         auto output = node.process();
 
         auto formatted_atoms = AtomFormatter::voices2atoms<float>(output);

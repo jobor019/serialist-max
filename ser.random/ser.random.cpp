@@ -59,6 +59,7 @@ public:
     SER_ENABLED_ATTRIBUTE(m_random.enabled, &m_mutex);
     SER_NUM_VOICES_ATTRIBUTE(m_random.num_voices, &m_mutex);
     SER_AUTO_RESTORE_ATTRIBUTE();
+    SER_DETACH_ATTRIBUTE_STATELESS();
 
 
     timer<> metro { this, MIN_FUNCTION {
@@ -114,23 +115,10 @@ public:
     };
 
 
-    attribute<bool> detached{ this, "detached", false, Descriptions::DETACH_DESCRIPTION, setter{
-        MIN_FUNCTION {
-            if (auto v = AtomParser::atoms2value<bool>(args)) {
-                m_detached = *v;
-                return args;
-            }
-
-            cerr << "bad argument for message \"detached\"" << endl;
-            return detached;
-        }
-    }
-    };
-
-
     message<> setup{this, "setup", "", setter{ MIN_FUNCTION {
         LoadState s{state()};
-        s >> enabled >> mode >> repetitions >> size >> step >> lower_bound >> quantization >> weights >> poll_interval;
+        s >> enabled >> mode >> repetitions >> size >> step >> lower_bound
+          >> quantization >> weights >> poll_interval >> detach;
 
         metro.delay(0);
         return {};
@@ -139,7 +127,8 @@ public:
 
 
     message<> savestate = Messages::savestate_message(this, autorestore, [this](SaveState& s) {
-        s << enabled << mode << repetitions << size << step << lower_bound << quantization << weights << poll_interval;
+        s << enabled << mode << repetitions << size << step << lower_bound
+          << quantization << weights << poll_interval << detach;
     });
 
 
@@ -168,8 +157,9 @@ private:
 
     void process(const atoms& atms) {
         auto time = SerialistTransport::get_instance().get_time();
+        SerialistTransport::apply_detach(time, m_detached);
 
-        if (!m_detached && !time.get_transport_running()) {
+        if (!time.get_transport_running()) {
             return;
         }
 

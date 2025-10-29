@@ -65,6 +65,7 @@ public:
     SER_ENABLED_ATTRIBUTE(m_interpolator.enabled, nullptr);
     SER_NUM_VOICES_ATTRIBUTE(m_interpolator.num_voices, nullptr);
     SER_AUTO_RESTORE_ATTRIBUTE();
+    SER_DETACH_ATTRIBUTE_STATELESS();
 
 
     attribute<std::vector<int>> triggers{this
@@ -105,13 +106,13 @@ public:
 
     message<> setup = Messages::setup_message_with_loadstate(this, [this](LoadState& s) {
         // Cursor is a runtime message, not pseudo-attribute. Won't be stored.
-        s >> enabled >> voices >> triggers >> mode >> uses_index >> octave >> corpus;
+        s >> enabled >> voices >> triggers >> mode >> uses_index >> octave >> corpus >> detach;
     });
 
 
     message<> savestate = Messages::savestate_message(this, autorestore, [this](SaveState& s) {
         // Cursor is a runtime message, not pseudo-attribute. Not stored.
-        s << enabled << voices << triggers << mode << uses_index << octave << corpus;
+        s << enabled << voices << triggers << mode << uses_index << octave << corpus << detach;
     });
 
 
@@ -169,9 +170,16 @@ private:
         auto& trigger = m_interpolator.trigger;
         trigger.set_values(triggers);
 
+        auto time = SerialistTransport::get_instance().get_time();
+        SerialistTransport::apply_detach(time, detach.get());
+
+        if (!time.get_transport_running()) {
+            return;
+        }
 
         auto& node = m_interpolator.interpolator;
-        node.update_time(SerialistTransport::get_instance().get_time());
+        node.update_time(time);
+
         auto output = node.process();
 
         trigger.set_values(Voices<Trigger>::empty_like());

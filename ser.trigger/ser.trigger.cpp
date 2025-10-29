@@ -39,6 +39,8 @@ public:
     SER_ENABLED_ATTRIBUTE(m_internal_interpolator.enabled, nullptr);
     SER_NUM_VOICES_ATTRIBUTE(m_internal_interpolator.num_voices, nullptr);
     SER_AUTO_RESTORE_ATTRIBUTE();
+    SER_DETACH_ATTRIBUTE_STATELESS();
+
 
     attribute<bool> m_targetlist{ this, "targetlist", false};
 
@@ -66,11 +68,11 @@ public:
 
 
     message<> setup = Messages::setup_message_with_loadstate(this, [this](LoadState& s) {
-        s >> enabled >> voices >> m_triggers>> m_values;
+        s >> enabled >> voices >> m_triggers>> m_values >> detach;
     });
 
     message<> savestate = Messages::savestate_message(this, autorestore, [this](SaveState& s) {
-        s << enabled << voices << m_triggers << m_values;
+        s << enabled << voices << m_triggers << m_values << detach;
     });
 
     function handle_input = MIN_FUNCTION {
@@ -110,8 +112,14 @@ private:
         auto& trigger = m_internal_interpolator.trigger;
         trigger.set_values(triggers);
 
+        auto time = SerialistTransport::get_instance().get_time();
+        SerialistTransport::apply_detach(time, detach.get());
+
+        if (!time.get_transport_running()) {
+            return;
+        }
+
         auto& node = m_internal_interpolator.trigger_node;
-        node.update_time(SerialistTransport::get_instance().get_time());
         auto output = node.process();
 
         auto used_triggers = trigger.get_values().adapted_to(output.size());

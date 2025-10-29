@@ -93,7 +93,7 @@ public:
 
     message<> setup{this, "setup", "", setter{ MIN_FUNCTION {
             LoadState s{state()};
-            s >> enabled >> mode >> period >> period_type >> offset >> offset_type >> step_size >> poll_interval;
+            s >> enabled >> mode >> period >> period_type >> offset >> offset_type >> step_size >> poll_interval >> detach;
 
             metro.delay(0);
             return {};
@@ -102,7 +102,7 @@ public:
 
 
     message<> savestate = Messages::savestate_message(this, autorestore, [this](SaveState& s) {
-        s << enabled << mode << period << period_type << offset << offset_type << step_size << poll_interval;
+        s << enabled << mode << period << period_type << offset << offset_type << step_size << poll_interval << detach;
     });
 
 

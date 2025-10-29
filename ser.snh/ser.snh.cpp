@@ -34,17 +34,18 @@ public:
     SER_ENABLED_ATTRIBUTE(m_snh.enabled, nullptr);
     SER_NUM_VOICES_ATTRIBUTE(m_snh.num_voices, nullptr);
     SER_AUTO_RESTORE_ATTRIBUTE();
+    SER_DETACH_ATTRIBUTE_STATELESS();
 
     pseudo_attribute<double> hold{this, "hold", m_snh.hold_state, cerr
         , HOLD_DESCRIPTION
         , input_format::vector , nullptr , [this] { this->process(); } };
 
     message<> setup = Messages::setup_message_with_loadstate(this, [this](LoadState& s) {
-        s >> enabled >> voices >> hold;
+        s >> enabled >> voices >> hold >> detach;
     });
 
     message<> savestate = Messages::savestate_message(this, autorestore, [this](SaveState& s) {
-        s << enabled << voices << hold;
+        s << enabled << voices << hold << detach;
     });
 
 
@@ -72,6 +73,8 @@ private:
 
     void process() {
         auto time = SerialistTransport::get_instance().get_time();
+        SerialistTransport::apply_detach(time, detach.get());
+
         if (!time.get_transport_running()) {
             return;
         }

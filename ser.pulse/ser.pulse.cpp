@@ -88,12 +88,12 @@ public:
     vector_attribute<double> legato{this, "legato", m_pulse.legato_amount, PhasePulsatorParameters::DEFAULT_LEGATO, cerr};
 
     message<> setup = Messages::setup_message_with_loadstate(this, [this](LoadState& s) {
-        s >> enabled >> voices >> legato;
+        s >> enabled >> voices >> legato >> detach;
     });
 
 
     message<> savestate = Messages::savestate_message(this, autorestore, [this](SaveState& s) {
-        s << enabled << voices << legato;
+        s << enabled << voices << legato << detach;
     });
 
 

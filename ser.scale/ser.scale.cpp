@@ -102,7 +102,7 @@ private:
             }
         }
 
-        // Note: triggers are already set by default
+        // Note: triggers are already set by default, actual time is always ignored
         m_scaler.scaler_node.update_time(TimePoint());
         auto output = m_scaler.scaler_node.process();
         outlet_main.send(AtomFormatter::voices2atoms<double>(output));

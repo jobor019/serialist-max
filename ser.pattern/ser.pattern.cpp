@@ -50,9 +50,12 @@ public:
         }
     }
 
+
     SER_ENABLED_ATTRIBUTE(m_patternizer.enabled, nullptr);
     SER_NUM_VOICES_ATTRIBUTE(m_patternizer.num_voices, nullptr);
     SER_AUTO_RESTORE_ATTRIBUTE();
+    SER_DETACH_ATTRIBUTE_STATELESS();
+
 
     attribute<std::vector<int>> triggers{this
                                       , AttributeNames::TRIGGERS
@@ -99,11 +102,11 @@ public:
     }};
 
     message<> setup = Messages::setup_message_with_loadstate(this, [this](LoadState& s) {
-        s >> enabled >> voices >> triggers >> mode >> inverse >> uses_index >> octave >> pattern >> chord;
+        s >> enabled >> voices >> triggers >> mode >> inverse >> uses_index >> octave >> pattern >> chord >> detach;
     });
 
     message<> savestate = Messages::savestate_message(this, autorestore, [this](SaveState& s) {
-        s << enabled << voices << triggers << mode << inverse << uses_index << octave << pattern << chord;
+        s << enabled << voices << triggers << mode << inverse << uses_index << octave << pattern << chord << detach;
     });
 
     function handle_input = MIN_FUNCTION {
@@ -145,9 +148,15 @@ private:
         auto& trigger = m_patternizer.trigger;
         trigger.set_values(triggers);
 
+        auto time = SerialistTransport::get_instance().get_time();
+        SerialistTransport::apply_detach(time, detach.get());
+
+        if (!time.get_transport_running()) {
+            return;
+        }
 
         auto& node = m_patternizer.patternizer_mode;
-        node.update_time(SerialistTransport::get_instance().get_time());
+        node.update_time(time);
         auto output = node.process();
 
         trigger.set_values(Voices<Trigger>::empty_like());

@@ -35,6 +35,7 @@ public:
     SER_ENABLED_ATTRIBUTE(m_lowpass.enabled, nullptr);
     SER_NUM_VOICES_ATTRIBUTE(m_lowpass.num_voices, nullptr);
     SER_AUTO_RESTORE_ATTRIBUTE();
+    SER_DETACH_ATTRIBUTE_STATELESS();
 
     vector_attribute<double> tau{this, "tau", m_lowpass.tau, LowPass::DEFAULT_TAU, cerr};
 
@@ -43,11 +44,11 @@ public:
     value_attribute<bool> stepped{this, "stepped", m_lowpass.is_stepped, LowPass::DEFAULT_UNIT_STEP, cerr};
 
     message<> setup = Messages::setup_message_with_loadstate(this, [this](LoadState& s) {
-        s >> enabled >> voices >> tau >> tau_type >> stepped;
+        s >> enabled >> voices >> tau >> tau_type >> stepped >> detach;
     });
 
     message<> savestate = Messages::savestate_message(this, autorestore, [this](SaveState& s) {
-        s << enabled << voices << tau << tau_type << stepped;
+        s << enabled << voices << tau << tau_type << stepped << detach;
     });
 
     function handle_input = MIN_FUNCTION {
@@ -67,6 +68,8 @@ public:
 private:
     void process(const atoms& args) {
         auto time = SerialistTransport::get_instance().get_time();
+        SerialistTransport::apply_detach(time, detach.get());
+
         if (!time.get_transport_running()) {
             return;
         }
