@@ -120,6 +120,7 @@ private:
         }
 
         auto& node = m_internal_interpolator.trigger_node;
+        node.update_time(time);
         auto output = node.process();
 
         auto used_triggers = trigger.get_values().adapted_to(output.size());

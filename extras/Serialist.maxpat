@@ -14,6 +14,59 @@
 		"gridsize" : [ 15.0, 15.0 ],
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-28",
+					"maxclass" : "newobj",
+					"numinlets" : 2,
+					"numoutlets" : 2,
+					"outlettype" : [ "", "" ],
+					"patching_rect" : [ 266.5, 384.5, 56.0, 22.0 ],
+					"text" : "ser.scale"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-26",
+					"maxclass" : "newobj",
+					"numinlets" : 3,
+					"numoutlets" : 3,
+					"outlettype" : [ "", "", "" ],
+					"patching_rect" : [ 260.5, 351.0, 68.0, 22.0 ],
+					"saved_object_attributes" : 					{
+						"parameter_enable" : 0,
+						"parameter_mappable" : 0
+					}
+,
+					"text" : "ser.multilist"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-25",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 4,
+					"outlettype" : [ "", "", "", "" ],
+					"patching_rect" : [ 245.75, 488.0, 91.0, 22.0 ],
+					"text" : "ser.chordthresh"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-10",
+					"maxclass" : "newobj",
+					"numinlets" : 2,
+					"numoutlets" : 2,
+					"outlettype" : [ "", "" ],
+					"patching_rect" : [ 263.5, 317.0, 62.0, 22.0 ],
+					"text" : "ser.trigger"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"bgmode" : 0,
 					"border" : 0,
 					"clickthrough" : 0,
@@ -90,8 +143,9 @@
 					"maxclass" : "bpatcher",
 					"name" : "ser.interpolateview.ui.maxpat",
 					"numinlets" : 1,
-					"numoutlets" : 0,
+					"numoutlets" : 1,
 					"offset" : [ 0.0, 0.0 ],
+					"outlettype" : [ "" ],
 					"patching_rect" : [ 440.0, 347.0, 102.0, 54.0 ],
 					"viewvisibility" : 1
 				}
@@ -162,8 +216,8 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 276.5, 220.0, 36.0, 20.0 ],
-					"text" : "Misc."
+					"patching_rect" : [ 243.0, 220.0, 103.0, 20.0 ],
+					"text" : "Transport & Utility"
 				}
 
 			}
@@ -218,8 +272,8 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 272.0, 318.0, 45.0, 20.0 ],
-					"text" : "Output"
+					"patching_rect" : [ 248.25, 426.0, 86.0, 20.0 ],
+					"text" : "Input & Output"
 				}
 
 			}
@@ -467,7 +521,7 @@
 					"numinlets" : 4,
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
-					"patching_rect" : [ 259.75, 351.0, 81.0, 22.0 ],
+					"patching_rect" : [ 250.75, 456.0, 81.0, 22.0 ],
 					"text" : "ser.makenote"
 				}
 
@@ -501,8 +555,8 @@
 					"id" : "obj-6",
 					"maxclass" : "newobj",
 					"numinlets" : 4,
-					"numoutlets" : 2,
-					"outlettype" : [ "", "" ],
+					"numoutlets" : 3,
+					"outlettype" : [ "", "", "" ],
 					"patching_rect" : [ 91.5, 119.0, 57.0, 22.0 ],
 					"text" : "ser.index"
 				}
@@ -532,9 +586,10 @@
 			}
  ],
 		"lines" : [  ],
-		"originid" : "pat-102",
+		"originid" : "pat-318",
 		"parameters" : 		{
 			"obj-24::obj-113" : [ "live.text[272]", "live.text", 0 ],
+			"obj-24::obj-34" : [ "live.numbox", "live.numbox", 0 ],
 			"obj-24::obj-40" : [ "live.text", "live.text", 0 ],
 			"obj-24::obj-42" : [ "live.text[1]", "live.text", 0 ],
 			"obj-24::obj-48" : [ "live.text[2]", "live.text[2]", 0 ],
@@ -560,6 +615,10 @@
 				"patcherrelativepath" : "../../pyosc/pyosc/patchers",
 				"type" : "JSON",
 				"implicit" : 1
+			}
+, 			{
+				"name" : "ser.chordthresh.mxo",
+				"type" : "iLaX"
 			}
 , 			{
 				"name" : "ser.index.mxo",
@@ -589,6 +648,10 @@
 			}
 , 			{
 				"name" : "ser.makenote.mxo",
+				"type" : "iLaX"
+			}
+, 			{
+				"name" : "ser.multilist.mxo",
 				"type" : "iLaX"
 			}
 , 			{
@@ -638,6 +701,10 @@
 				"type" : "iLaX"
 			}
 , 			{
+				"name" : "ser.scale.mxo",
+				"type" : "iLaX"
+			}
+, 			{
 				"name" : "ser.scope.ui.maxpat",
 				"bootpath" : "~/MaxProjects/serialist-max/patchers",
 				"patcherrelativepath" : "../patchers",
@@ -665,6 +732,10 @@
 				"patcherrelativepath" : "../patchers",
 				"type" : "JSON",
 				"implicit" : 1
+			}
+, 			{
+				"name" : "ser.trigger.mxo",
+				"type" : "iLaX"
 			}
 , 			{
 				"name" : "ser.util.mxo",

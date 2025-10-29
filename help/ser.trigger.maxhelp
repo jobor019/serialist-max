@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 34.0, 100.0, 1052.0, 783.0 ],
+		"rect" : [ 34.0, 100.0, 1052.0, 778.0 ],
 		"gridsize" : [ 15.0, 15.0 ],
 		"subpatcher_template" : "serialist_help",
 		"showrootpatcherontab" : 0,
@@ -32,7 +32,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 34.0, 126.0, 1052.0, 757.0 ],
+						"rect" : [ 34.0, 126.0, 1052.0, 752.0 ],
 						"openrect" : [ 0.0, 0.0, 1040.0, 740.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
@@ -832,7 +832,7 @@
 
 							}
  ],
-						"originid" : "pat-432"
+						"originid" : "pat-374"
 					}
 ,
 					"patching_rect" : [ 79.0, 20.0, 95.0, 22.0 ],
@@ -858,12 +858,12 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 0.0, 26.0, 1052.0, 757.0 ],
+						"rect" : [ 0.0, 26.0, 1052.0, 752.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
 						"boxes" : [  ],
 						"lines" : [  ],
-						"originid" : "pat-464"
+						"originid" : "pat-406"
 					}
 ,
 					"patching_rect" : [ 185.0, 20.0, 25.0, 22.0 ],
@@ -888,7 +888,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 0.0, 26.0, 1052.0, 757.0 ],
+						"rect" : [ 0.0, 26.0, 1052.0, 752.0 ],
 						"openrect" : [ 0.0, 0.0, 1040.0, 740.0 ],
 						"gridsize" : [ 15.0, 15.0 ],
 						"showontab" : 1,
@@ -1019,7 +1019,7 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 146.0, 416.0, 100.0, 22.0 ],
-									"text" : "0. null 2. null"
+									"text" : "null"
 								}
 
 							}
@@ -1030,8 +1030,8 @@
 									"numinlets" : 2,
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
-									"patching_rect" : [ 146.0, 272.0, 57.0, 22.0 ],
-									"text" : "ser.pulse"
+									"patching_rect" : [ 146.0, 272.0, 125.0, 22.0 ],
+									"text" : "ser.pulse @legato 0.1"
 								}
 
 							}
@@ -1336,7 +1336,7 @@
 
 							}
  ],
-						"originid" : "pat-466"
+						"originid" : "pat-408"
 					}
 ,
 					"patching_rect" : [ 23.0, 20.0, 47.0, 22.0 ],
@@ -1347,7 +1347,7 @@
 			}
  ],
 		"lines" : [  ],
-		"originid" : "pat-430",
+		"originid" : "pat-372",
 		"parameters" : 		{
 			"obj-1::obj-1::obj-113" : [ "live.text[272]", "live.text", 0 ],
 			"obj-1::obj-1::obj-34" : [ "live.numbox[1]", "live.numbox", 0 ],
