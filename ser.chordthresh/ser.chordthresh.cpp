@@ -202,7 +202,6 @@ public:
 
 
     timer<> callback{this, MIN_FUNCTION {
-        assert(c74::max::systhread_istimerthread());
 
         // CRITICAL SECTION: BEGIN //
 

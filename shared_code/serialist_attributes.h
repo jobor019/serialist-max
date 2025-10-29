@@ -6,7 +6,10 @@
 #include "c74_min_api.h"
 
 
+
 enum class input_format { value, vector, vector_singular, voices };
+
+// ==============================================================================================
 
 /**
  * @brief pseudo-attribute base class for passing pseudo-attributes without template args
@@ -27,6 +30,9 @@ public:
 
     virtual void set(const c74::min::atoms& args) = 0;
 };
+
+
+// ==============================================================================================
 
 /**
  * @brief wrapper around a Sequence that may receive nulls and/or lists of lists (Voices<T>), but fundamentally is
@@ -250,6 +256,7 @@ public:
                                   , MUTEX \
                                   , Descriptions::ENABLED};
 
+
 #define SER_NUM_VOICES_ATTRIBUTE(TARGET_MEMBER, MUTEX) \
     value_attribute<std::size_t, int> voices{this \
                                              , AttributeNames::NUM_VOICES \
@@ -259,6 +266,7 @@ public:
                                              , Titles::NUM_VOICES \
                                              , MUTEX \
                                              , Descriptions::NUM_VOICES};
+
 
 #define SER_AUTO_RESTORE_ATTRIBUTE() \
     attribute<bool> autorestore{this \
@@ -277,15 +285,16 @@ public:
     }}}
 
 
+#define SER_DETACH_ATTRIBUTE_STATELESS() \
+    attribute<bool> detach{this, "detach", false, Descriptions::DETACH_DESCRIPTION}
+
+
 #define SER_DEFAULT_CONSTRUCTOR(class_name) \
     explicit class_name(const atoms& args = {}) { \
         if (!args.empty()) { \
             cwarn << ErrorMessages::extra_argument(#class_name); \
         } \
     }
-
-
-
 
 
 #endif //SERIALIST_MAX_SERIALIST_ATTRIBUTES_H

@@ -114,7 +114,7 @@ public:
     };
 
 
-    attribute<bool> detached{ this, "detached", false, Descriptions::DETACHED_DESCRIPTION, setter{
+    attribute<bool> detached{ this, "detached", false, Descriptions::DETACH_DESCRIPTION, setter{
         MIN_FUNCTION {
             if (auto v = AtomParser::atoms2value<bool>(args)) {
                 m_detached = *v;

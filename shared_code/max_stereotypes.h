@@ -96,7 +96,7 @@ public:
         " or @pollinterval 0 to trigger the object manually."
     };
 
-    static inline const c74::min::description DETACHED_DESCRIPTION{
+    static inline const c74::min::description DETACH_DESCRIPTION{
         "Enable object even when transport is disabled (default: false)"
     };
 
@@ -206,8 +206,6 @@ public:
 class Pseudo {
 public:
     Pseudo() = delete;
-
-
 };
 
 

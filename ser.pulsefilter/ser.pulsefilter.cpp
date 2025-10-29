@@ -14,7 +14,8 @@
 using namespace c74::min;
 
 
-class ser_pulsefilter : public object<ser_pulsefilter> {
+class ser_pulsefilter : public object<ser_pulsefilter>
+                        , public SerialistTransport::Listener {
 private:
     static const inline auto STATE_DESCRIPTION = Inlets::voice(Types::number, "Set filter state (non-zero = open)");
 
@@ -32,9 +33,58 @@ public:
     outlet<> outlet_main{this, Inlets::pulse_info("filtered/sustained pulses")};
     outlet<> dumpout{this, Inlets::DUMPOUT};
 
-    SER_ENABLED_ATTRIBUTE(m_pulse_filter.enabled, nullptr);
+
+    explicit ser_pulsefilter(const atoms& args = {}) {
+        SerialistTransport::get_instance().add_listener(*this);
+    }
+
+
+    ~ser_pulsefilter() override {
+        SerialistTransport::get_instance().remove_listener(*this);
+    }
+
+
+    void on_transport_state_change(bool active) override {
+        if (!detach.get() && !active) {
+            flush_internal();
+        }
+    }
+
     SER_NUM_VOICES_ATTRIBUTE(m_pulse_filter.num_voices, nullptr);
     SER_AUTO_RESTORE_ATTRIBUTE();
+
+
+    // Expanded version SER_ENABLED_ATTRIBUTE to handle flushing on disabling
+    attribute<bool> enabled{ this, "enabled", true, Titles::ENABLED, Descriptions::ENABLED, setter{
+        MIN_FUNCTION {
+            if (auto v = AtomParser::atoms2value<bool>(args)) {
+                m_pulse_filter.enabled.set_values(*v);
+                if (!*v) {
+                    flush_internal();
+                }
+                return args;
+
+            } else {
+                cerr << v.err().message() << endl;
+                return enabled;
+            }
+        }
+    }};
+
+
+    // Expanded version SER_DETACH_ATTRIBUTE to handle flushing
+    attribute<bool> detach{this, "detach", false, Descriptions::DETACH_DESCRIPTION, setter{
+        MIN_FUNCTION {
+            if (auto new_value = AtomParser::atoms2value<bool>(args)) {
+                if (*new_value != detach.get() && !*new_value && !SerialistTransport::get_instance().active()) {
+                    flush_internal();
+                }
+                return args;
+            }
+            cerr << "bad argument for message \"detach\"" << endl;
+            return detach;
+        }
+    }};
 
 
     // TODO(Deprecation): Update docstring: Modes "sustain" and "pause" are deprecated
@@ -64,13 +114,7 @@ public:
                 return {};
             }
 
-            // We're not using the `flush` Trigger of the PhasePulsator here, since `process` is only called when
-            // it receives a cursor value, which may not be the case
-            // (cursor disconnected, transport not running, etc.)
-
-            if (auto flushed = m_pulse_filter.pulse_filter_node.flush(); !flushed.is_empty_like()) {
-                TriggerStereotypes::output_as_triggers_sorted(flushed, outlet_main, cerr);
-            }
+            flush_internal();
             return {};
         }
     };
@@ -130,6 +174,8 @@ private:
 
     void process() {
         auto time = SerialistTransport::get_instance().get_time();
+        SerialistTransport::apply_detach(time, detach.get());
+
         if (!time.get_transport_running()) {
             return;
         }
@@ -147,6 +193,18 @@ private:
 
         TriggerStereotypes::output_as_triggers_sorted(output, outlet_main, cerr);
     }
+
+
+    void flush_internal() {
+        // We're not using the `flush` Trigger of the PhasePulsator here, since `process` is only called when
+        // it receives a cursor value, which may not be the case
+        // (cursor disconnected, transport not running, etc.)
+
+        if (auto flushed = m_pulse_filter.pulse_filter_node.flush(); !flushed.is_empty_like()) {
+            TriggerStereotypes::output_as_triggers_sorted(flushed, outlet_main, cerr);
+        }
+    }
+
 };
 
 

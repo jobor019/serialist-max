@@ -14,7 +14,8 @@ using namespace c74::min;
 using namespace serialist;
 
 
-class ser_phasepulse : public object<ser_phasepulse> {
+class ser_pulse : public object<ser_pulse>
+                  , public SerialistTransport::Listener {
     PhasePulsatorWrapper<> m_pulse;
 
 public:
@@ -29,8 +30,26 @@ public:
     outlet<> outlet_main{this, Inlets::voice(Types::pulse, "Generated pulses")};
     outlet<> dumpout{this, Inlets::DUMPOUT};
 
+
+    explicit ser_pulse(const atom& args = {}) {
+        SerialistTransport::get_instance().add_listener(*this);
+    }
+
+    ~ser_pulse() override {
+        SerialistTransport::get_instance().remove_listener(*this);
+    }
+
+
+    void on_transport_state_change(bool active) override {
+        if (!detach.get() && !active) {
+            flush_internal();
+        }
+    }
+
+
     SER_NUM_VOICES_ATTRIBUTE(m_pulse.num_voices, nullptr);
     SER_AUTO_RESTORE_ATTRIBUTE();
+
 
     // Expanded version SER_ENABLED_ATTRIBUTE to handle flushing on disabling
     attribute<bool> enabled{ this, "enabled", true, Titles::ENABLED, Descriptions::ENABLED, setter{
@@ -49,6 +68,21 @@ public:
             }
         }
     };
+
+
+    // Expanded version SER_DETACH_ATTRIBUTE to handle flushing
+    attribute<bool> detach{this, "detach", false, Descriptions::DETACH_DESCRIPTION, setter{
+        MIN_FUNCTION {
+            if (auto new_value = AtomParser::atoms2value<bool>(args)) {
+                if (*new_value != detach.get() && !*new_value && !SerialistTransport::get_instance().active()) {
+                    flush_internal();
+                }
+                return args;
+            }
+            cerr << "bad argument for message \"detach\"" << endl;
+            return detach;
+        }
+    }};
 
 
     vector_attribute<double> legato{this, "legato", m_pulse.legato_amount, PhasePulsatorParameters::DEFAULT_LEGATO, cerr};
@@ -98,6 +132,8 @@ private:
             m_pulse.cursor.set_values(Voices<double>::transposed(*cursor));
 
             auto time = SerialistTransport::get_instance().get_time();
+            SerialistTransport::apply_detach(time, detach.get());
+
             if (!time.get_transport_running()) {
                 return;
             }
@@ -127,4 +163,4 @@ private:
 };
 
 
-MIN_EXTERNAL(ser_phasepulse);
+MIN_EXTERNAL(ser_pulse);

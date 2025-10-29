@@ -43,6 +43,7 @@ public:
     outlet<> outlet_active{this, "active", ""};
     outlet<> dumpout{this, "(any) dumpout"};
 
+
     explicit ser_transport(const atoms& args = {}) {
         SerialistTransport::get_instance().add_listener(*this);
         metro.delay(0.0);
@@ -122,7 +123,7 @@ public:
     };
 
 
-    message<> settime{this, "settime", SETTIME_DESCR, setter{MIN_FUNCTION {
+    message<threadsafe::no> settime{this, "settime", SETTIME_DESCR, setter{MIN_FUNCTION {
         if (m_is_transport_leader) {
             if (auto mtp = MaxTimePoint::parse(args)) {
                 SerialistTransport::get_instance().set_time(mtp->as_time_point());
@@ -139,7 +140,7 @@ public:
     }}};
 
 
-    message<> number{this, "number", MIN_FUNCTION {
+    message<threadsafe::no> number{this, "number", MIN_FUNCTION {
         if (inlet == METER_INLET) {
             cerr << "wrong number of args to set meter" << inlet << endl;
             return {};
@@ -190,7 +191,7 @@ public:
     }}};
 
 
-    message<> reset{this, "reset", setter{MIN_FUNCTION {
+    message<threadsafe::no> reset{this, "reset", setter{MIN_FUNCTION {
         if (!SerialistTransport::get_instance().reset()) {
             warn_on_follower("reset");
         }
@@ -198,7 +199,7 @@ public:
     }}};
 
 
-    message<> tempo{this, "tempo", setter{MIN_FUNCTION {
+    message<threadsafe::no> tempo{this, "tempo", setter{MIN_FUNCTION {
         if (inlet == 0) {
             set_tempo(args);
         } else {
@@ -208,7 +209,7 @@ public:
     }}};
 
 
-    message<> meter{this, "meter", setter{MIN_FUNCTION {
+    message<threadsafe::no> meter{this, "meter", setter{MIN_FUNCTION {
         if (inlet != 0) {
             cerr << "invalid message \"meter\" for inlet " << inlet << endl;
             return {};
@@ -220,7 +221,7 @@ public:
     }}};
 
 
-    message<> bang{this, "bang", setter{MIN_FUNCTION {
+    message<threadsafe::no> bang{this, "bang", setter{MIN_FUNCTION {
         if (inlet != 0) {
             cerr << "invalid message \"bang\" for inlet " << inlet << endl;
             return {};
@@ -232,7 +233,7 @@ public:
     }}};
 
 
-    message<> list{this, "list", setter{MIN_FUNCTION {
+    message<threadsafe::no> list{this, "list", setter{MIN_FUNCTION {
         if (inlet != METER_INLET) {
             cerr << "invalid message \"list\" for inlet " << inlet << endl;
             return {};
@@ -310,7 +311,7 @@ private:
     }
 
     void warn_on_follower(const std::string& func_name) {
-        cwarn << func_name << " cannot be called when a follower is active" << endl;
+        cwarn << func_name << " cannot be called when a follower exists" << endl;
     }
 
 };

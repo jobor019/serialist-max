@@ -12,7 +12,8 @@
 
 using namespace c74::min;
 
-class ser_makenote : public object<ser_makenote> {
+class ser_makenote : public object<ser_makenote>
+                     , public SerialistTransport::Listener {
 private:
     std::mutex m_mutex;
     MakeNoteWrapper m_make_note;
@@ -61,30 +62,52 @@ public:
             note.set(atoms{args[0]});
         }
 
-        metro.delay(500);
+        SerialistTransport::get_instance().add_listener(*this);
     }
 
-    timer<> metro{this, MIN_FUNCTION {
-        if (!m_make_note.enabled.get_values().first_or(true)
-            || (!m_detached && !SerialistTransport::get_instance().active())) {
+    ~ser_makenote() override {
+        SerialistTransport::get_instance().remove_listener(*this);
+    }
+
+
+    void on_transport_state_change(bool active) override {
+        if (!m_detached && !active) {
             flush_internal();
         }
+    }
 
-        metro.delay(500);
-        return {};
-    }};
 
     SER_ENABLED_ATTRIBUTE(m_make_note.enabled, &m_mutex);
     SER_NUM_VOICES_ATTRIBUTE(m_make_note.num_voices, &m_mutex);
     SER_AUTO_RESTORE_ATTRIBUTE();
 
+    // Expanded version SER_ENABLED_ATTRIBUTE to handle flushing and atomicity
+    attribute<bool> detach{this, "detach", false, Descriptions::DETACH_DESCRIPTION, setter{
+        MIN_FUNCTION {
+            if (auto new_value = AtomParser::atoms2value<bool>(args)) {
+                bool previous_value = m_detached;
+                if (*new_value != previous_value && !*new_value && !SerialistTransport::get_instance().active()) {
+                    flush_internal();
+                }
+
+                m_detached = *new_value;
+                return args;
+            }
+            cerr << "bad argument for message \"detach\"" << endl;
+            return detach;
+        }
+    }};
+
+
     pseudo_attribute<NoteNumber> note{this, "note", m_make_note.note_number, cerr
         , NN_DESCRIPTION
         , input_format::voices , &m_mutex};
 
+
     pseudo_attribute<uint32_t> velocity{this, "velocity", m_make_note.velocity, cerr
         , VEL_DESCRIPTION
         , input_format::voices , &m_mutex};
+
 
     pseudo_attribute<uint32_t> channel{this, "channel", m_make_note.channel, cerr
         , CH_DESCRIPTION
@@ -94,20 +117,6 @@ public:
     value_attribute<bool> autochannel{this, "autochannel", m_make_note.auto_channel
         , MakeNoteWrapper::DEFAULT_AUTO_CHANNEL, cerr
         , "", &m_mutex, AUTO_CHANNEL_DESCRIPTION};
-
-
-    attribute<bool> detached{ this, "detached", false, Descriptions::DETACHED_DESCRIPTION, setter{
-            MIN_FUNCTION {
-                if (auto v = AtomParser::atoms2value<bool>(args)) {
-                    m_detached = *v;
-					return args;
-				}
-
-                cerr << "bad argument for message \"detached\"" << endl;
-                return detached;
-            }
-        }
-    };
 
 
     message<> setup = Messages::setup_message_with_loadstate(this, [this](LoadState& s) {
@@ -159,6 +168,7 @@ private:
         }
 
         auto time = SerialistTransport::get_instance().get_time();
+        SerialistTransport::apply_detach(time, m_detached);
 
         m_make_note.trigger.set_values(*triggers);
         m_make_note.make_note_node.update_time(time);

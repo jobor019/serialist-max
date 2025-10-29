@@ -47,6 +47,7 @@ public:
     SER_ENABLED_ATTRIBUTE(m_phase.enabled, &m_mutex);
     SER_NUM_VOICES_ATTRIBUTE(m_phase.num_voices, &m_mutex);
     SER_AUTO_RESTORE_ATTRIBUTE();
+    SER_DETACH_ATTRIBUTE_STATELESS();
 
     timer<> metro { this, MIN_FUNCTION {
         // In terms of thread safety, it's probably better to continuously poll the timer and perform this check
@@ -89,7 +90,6 @@ public:
             }
         }
     };
-
 
     message<> setup{this, "setup", "", setter{ MIN_FUNCTION {
             LoadState s{state()};
@@ -140,6 +140,7 @@ public:
 private:
     void process(const atoms& args) {
         auto time = SerialistTransport::get_instance().get_time();
+        SerialistTransport::apply_detach(time, detach.get());
 
         if (!time.get_transport_running()) {
             return;

@@ -27,6 +27,11 @@ SerialistTransport& SerialistTransport::get_instance() {
 }
 
 
+void SerialistTransport::apply_detach(TimePoint& t, bool detach) {
+    t.with_transport_running(t.get_transport_running() || detach);
+}
+
+
 void SerialistTransport::add_listener(Listener& listener) {
     std::lock_guard lock{m_transport_mtx};
     if (!m_listeners.contains(&listener)) {

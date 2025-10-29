@@ -49,6 +49,8 @@ public:
 
     static SerialistTransport& get_instance();
 
+    static void apply_detach(TimePoint& t, bool detach);
+
     bool start();
     bool pause();
     bool reset();
