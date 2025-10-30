@@ -16,6 +16,9 @@ class ser_trigger : public object<ser_trigger> {
     static const inline auto VALUES_DESCRIPTION = Inlets::voices(Types::number, "Set values to trigger");
     static const inline auto TARGETLIST_DESCRIPTION = Inlets::value(Types::boolean, "Format output for mc~ compatibility");
 
+    static const inline description PREPEND_DESCRIPTION{"Prepend value(s) to every targetlist entry"};
+    static const inline description APPEND_DESCRIPTION{"Append value(s) to every targetlist entry"};
+
     static constexpr std::size_t TRIGGER_INLET = 0;
     static constexpr std::size_t VALUE_INLET = 1;
 
@@ -43,6 +46,18 @@ public:
 
 
     attribute<bool> m_targetlist{ this, "targetlist", false};
+
+    attribute<atoms> m_append{this, "append", AttributeHelpers::EMPTY_ATOMS, APPEND_DESCRIPTION, setter{
+        MIN_FUNCTION {
+            return AttributeHelpers::empty_safeguard(args);
+        }
+    }};
+
+    attribute<atoms> m_prepend{this, "prepend", AttributeHelpers::EMPTY_ATOMS, PREPEND_DESCRIPTION, setter{
+        MIN_FUNCTION {
+            return AttributeHelpers::empty_safeguard(args);
+        }
+    }};
 
     attribute<std::vector<int>> m_triggers{this
                                       , AttributeNames::TRIGGERS
@@ -145,9 +160,21 @@ private:
             for (std::size_t i = 0; i < voices_to_output.size(); ++i) {
                 if  (Trigger::contains_pulse_on(triggers[i]) && !voices_to_output[i].empty()) {
                     atoms formatted_atoms{"setvalue", i + 1};
+
+                    auto& prepend = m_prepend.get();
+                    if (!AttributeHelpers::is_empty_attribute(prepend)) {
+                        formatted_atoms.insert(formatted_atoms.end(), prepend.begin(), prepend.end());
+                    }
+
                     for (const auto& v : voices_to_output[i]) {
                         formatted_atoms.emplace_back(static_cast<double>(v));
                     }
+
+                    auto& append = m_append.get();
+                    if (!AttributeHelpers::is_empty_attribute(append)) {
+                        formatted_atoms.insert(formatted_atoms.end(), append.begin(), append.end());
+                    }
+
                     outlet_main.send(formatted_atoms);
                 }
             }

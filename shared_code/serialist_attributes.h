@@ -5,7 +5,28 @@
 #include "attribute_setters.h"
 #include "c74_min_api.h"
 
+class AttributeHelpers {
+public:
+    static const inline auto EMPTY_ATOMS = c74::min::atoms{""};
 
+    AttributeHelpers() = delete;
+
+    static bool is_empty_attribute(const c74::min::atoms& args) {
+        return args.size() == 1
+        && args[0].type() == c74::min::message_type::symbol_argument
+        && static_cast<std::string>(args[0]).empty();
+    }
+
+    static c74::min::atoms empty_safeguard(const c74::min::atoms& args) {
+        if (args.empty()) {
+            return EMPTY_ATOMS;
+        }
+        return args;
+    }
+};
+
+
+// ==============================================================================================
 
 enum class input_format { value, vector, vector_singular, voices };
 
